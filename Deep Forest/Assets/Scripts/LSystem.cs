@@ -45,6 +45,7 @@ public class LSystem{
         }
         // replace the old alphabet with a new one and increase generation number
         alphabet = next.ToString();
+        Debug.Log("Gen String: "+alphabet);
         generation++;
     }
     // Getters & Setters

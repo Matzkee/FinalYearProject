@@ -112,8 +112,8 @@ public class LifeForm : MonoBehaviour {
         int numOfPoints = treeRoundness;
         // 3 Vertices per triangle, 2 triangles
         int verticesPerCell = 6;
-        int vertexCount = (verticesPerCell * 2 * numOfPoints) * _segments.Count;
-
+        int vertexCount = (verticesPerCell * numOfPoints) * _segments.Count;
+        Debug.Log("Number of vertices: " + vertexCount + "\nPolygons to render: " + vertexCount/3);
         // Alocate new arrays
         Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[vertexCount];
