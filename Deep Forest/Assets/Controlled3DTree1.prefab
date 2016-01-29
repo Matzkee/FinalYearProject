@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &181600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 417378}
+  - 114: {fileID: 11475412}
+  m_Layer: 0
+  m_Name: Controlled3DTree1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &417378
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 181600}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11475412
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 181600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 288b764231a3e4e42a467199f7186aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  treeBark: {fileID: 2100000, guid: c94c14dec1ef8de4d97483c738b4d35c, type: 2}
+  treeGrowthKey: 113
+  length: 5
+  angleX: 22.5
+  angleY: 30
+  lengthRatio: 0.7
+  startRadius: 1
+  treeRoundness: 8
+  widthRatio: 0.7
+  axiom: 46
+  ruleChars: []
+  ruleStrings:
+  - 46465b2b462b465d5b61467a465d5b2d7a465d
+  skeletonLines: 0
+  skeletonCircles: 0
+  generations: 3
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ruleChars.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: generations
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.data[0]
+      value: FF[+F+F][aFzF][-zF]
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleChars.Array.data[0]
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: axiom
+      value: F
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: treeBark
+      value: 
+      objectReference: {fileID: 2100000, guid: c94c14dec1ef8de4d97483c738b4d35c, type: 2}
+    - target: {fileID: 0}
+      propertyPath: generationKey
+      value: 113
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: treeGrowthKey
+      value: 113
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 181600}
+  m_IsPrefabParent: 1
