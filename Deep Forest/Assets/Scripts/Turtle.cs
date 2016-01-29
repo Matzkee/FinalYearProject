@@ -29,6 +29,11 @@ using System.Collections.Generic;
     Turtle uses the specified commands and applies them to each letter found in previously
     appended string from L-System
 */
+/*
+    To do:
+    Implement either booolean flags or linked list to determine tree trunk and its childs
+    This step will allow for easier branch sizing and more control over tree growth
+    */
 public class Turtle{
 
     float length;
@@ -123,6 +128,7 @@ public class Turtle{
                     CreateCircleAt(treeTransform, treeWidth, treeRoundness));
                 coordStack.Push(currentCoord);
             }
+            // Restore last position saved
             else if (c == ']')
             {
                 // Set the last branches colour to green

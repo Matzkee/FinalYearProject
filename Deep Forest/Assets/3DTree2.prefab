@@ -8,7 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 461396}
-  - 114: {fileID: 11443384}
+  - 114: {fileID: 11439004}
   m_Layer: 0
   m_Name: 3DTree2
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11443384
+--- !u!114 &11439004
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -36,10 +36,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 154392}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04706bbfaa73ca9428a0d068bee1e3cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 536df33ced3f8324792ccba0f2516bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeBark: {fileID: 2100000, guid: c94c14dec1ef8de4d97483c738b4d35c, type: 2}
+  treeBark: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
   length: 10
   angleX: 22.5
   angleY: 30
@@ -47,11 +47,11 @@ MonoBehaviour:
   startRadius: 2
   treeRoundness: 8
   widthRatio: 0.7
-  axiom: 4c
-  ruleChars: []
+  axiom: L
+  ruleChars: 4c004600
   ruleStrings:
-  - 61462d5b5b4c5d2b4c5d2b7a465b2b464c5d2d4c
-  - 4646
+  - aF-[[L]+L]+zF[+FL]-L
+  - FF
   skeletonLines: 0
   skeletonCircles: 0
   generations: 3
@@ -63,6 +63,14 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: ruleChars.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -72,11 +80,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.z
-      value: .342019796
+      value: 0.3420198
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.w
-      value: -.939692795
+      value: -0.9396928
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: generations
@@ -85,6 +93,34 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: startRadius
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: treeBark
+      value: 
+      objectReference: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
+    - target: {fileID: 0}
+      propertyPath: length
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: axiom
+      value: L
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleChars.Array.data[0]
+      value: 76
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleChars.Array.data[1]
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.data[0]
+      value: aF-[[L]+L]+zF[+FL]-L
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.data[1]
+      value: FF
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

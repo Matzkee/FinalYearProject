@@ -8,7 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 455676}
-  - 114: {fileID: 11454240}
+  - 114: {fileID: 11493988}
   m_Layer: 0
   m_Name: 2DTree1
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11454240
+--- !u!114 &11493988
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -36,10 +36,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 165492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04706bbfaa73ca9428a0d068bee1e3cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 536df33ced3f8324792ccba0f2516bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeBark: {fileID: 2100000, guid: c94c14dec1ef8de4d97483c738b4d35c, type: 2}
+  treeBark: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
   length: 5
   angleX: 22.5
   angleY: 30
@@ -47,11 +47,11 @@ MonoBehaviour:
   startRadius: 1
   treeRoundness: 8
   widthRatio: 0.8
-  axiom: 58
-  ruleChars: []
+  axiom: X
+  ruleChars: 58004600
   ruleStrings:
-  - 462d5b5b585d2b585d2b465b2b46585d2d58
-  - 4646
+  - F-[[X]+X]+F[+FX]-X
+  - FF
   skeletonLines: 0
   skeletonCircles: 0
   generations: 4
@@ -63,6 +63,14 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: ruleChars.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: generations
       value: 4
       objectReference: {fileID: 0}
@@ -72,7 +80,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: widthRatio
-      value: .800000012
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: treeBark
+      value: 
+      objectReference: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
+    - target: {fileID: 0}
+      propertyPath: axiom
+      value: X
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleChars.Array.data[1]
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleChars.Array.data[0]
+      value: 88
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.data[0]
+      value: F-[[X]+X]+F[+FX]-X
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ruleStrings.Array.data[1]
+      value: FF
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
