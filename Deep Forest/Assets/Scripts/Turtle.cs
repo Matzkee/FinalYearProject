@@ -62,7 +62,7 @@ public class Turtle{
         
     }
 
-    public void DrawPlant()
+    public void GenerateSkeleton()
     {
         Vector3 lastPosition;
 

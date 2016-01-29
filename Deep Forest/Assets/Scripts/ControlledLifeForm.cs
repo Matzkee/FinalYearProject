@@ -83,7 +83,7 @@ public class ControlledLifeForm : MonoBehaviour {
 
             // Generate the alphabet & pass it to the turtle
             turtle.SetAlphabet(lsystem.GetAlphabet());
-            turtle.DrawPlant();
+            turtle.GenerateSkeleton();
 
 
             // Get vector arrays
