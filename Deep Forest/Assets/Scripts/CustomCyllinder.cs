@@ -49,18 +49,27 @@ public class CustomCyllinder : MonoBehaviour {
     List<Vector3> CreateCircleAt(Transform _centre, float _radius, int _numpoints)
     {
         List<Vector3> newPoints = new List<Vector3>();
-        float theta = Mathf.PI * 2.0f / _numpoints;
-        // Save current transform's rotation
+        float thetaInc = (Mathf.PI * 2.0f) / _numpoints;
+        //// Save current transform's rotation
         Quaternion prevRot = _centre.rotation;
         for (int i = 0; i < _numpoints; i++)
         {
             // Rotate the transform by preset theta and get point directly above it
-            _centre.Rotate(Vector3.forward * (theta * Mathf.Rad2Deg));
+            _centre.Rotate(Vector3.forward * (thetaInc * Mathf.Rad2Deg));
             Vector3 newPoint = (_centre.position + (_centre.up * _radius));
             newPoints.Add(newPoint);
         }
         // Return the transform to previous rotation
         _centre.rotation = prevRot;
+        //Vector3 axis = _centre.forward;
+        //Vector3 startPoint = _centre.position + (_centre.up * _radius);
+        //for (int i = 0; i < _numpoints; i++)
+        //{
+        //    float theta = i * thetaInc;
+        //    Quaternion q = Quaternion.AngleAxis(theta * Mathf.Rad2Deg, axis);
+        //    Vector3 newPoint = q * startPoint;
+        //    newPoints.Add(newPoint);
+        //}
         return newPoints;
     }
 
