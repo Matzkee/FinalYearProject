@@ -124,8 +124,8 @@ public class Turtle{
             // Save current position
             else if (c == '[')
             {
-                Coord currentCoord = new Coord(treeTransform.position, treeTransform.rotation, 
-                    CreateCircleAt(treeTransform, treeWidth, treeRoundness));
+                Coord currentCoord = new Coord(treeTransform.position, treeTransform.rotation,
+                    lastCircle);
                 coordStack.Push(currentCoord);
             }
             // Restore last position saved
@@ -155,6 +155,9 @@ public class Turtle{
 
     public Circle CreateCircleAt(Transform _centre, float _radius, int _numpoints)
     {
+        //** Note: Change this to quaternion rotation in the future
+        //** and test for performance?
+
         List<Vector3> newPoints = new List<Vector3>();
         float theta = Mathf.PI * 2.0f / _numpoints;
         // Save current transform's rotation
