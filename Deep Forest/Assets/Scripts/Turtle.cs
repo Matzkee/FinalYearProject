@@ -70,14 +70,13 @@ public class Turtle{
     public void GenerateSkeleton()
     {
         Vector3 lastPosition;
-
         Quaternion lastRotation;
         Circle lastCircle;
         // Make a new branches list
         branches = new List<Segment>();
         circles = new List<Circle>();
         int repeats = 0;
-
+        // Add and extra character for better case scenario
         alphabetToDraw += "x";
 
         lastPosition = treeTransform.position;
@@ -100,6 +99,7 @@ public class Turtle{
                 {
                     // Make a new Circle
                     Circle newCircle = CreateCircleAt(treeTransform, treeWidth, treeRoundness);
+                    // This is mainly for debugging - comment this out in the future
                     circles.Add(newCircle);
                     // Add a new segment
                     branches.Add(new Segment(lastPosition, treeTransform.position, lastCircle, newCircle, lastRotation));
@@ -131,9 +131,12 @@ public class Turtle{
             // Restore last position saved
             else if (c == ']')
             {
-                // Set the last branches colour to green
-                branches[branches.Count - 1].color = Color.green;
                 Coord lastCord = coordStack.Pop();
+                // Set the last branches colour to green
+                if (!Vector3.Equals(treeTransform.position,lastCord.branchPos))
+                {
+                    branches[branches.Count - 1].color = Color.green;
+                }
                 treeTransform.position = lastCord.branchPos;
                 treeTransform.rotation = lastCord.branchRot;
 
