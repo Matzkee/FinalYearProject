@@ -132,7 +132,8 @@ public class Turtle{
             else if (c == ']')
             {
                 Coord lastCord = coordStack.Pop();
-                // Set the last branches colour to green
+                // Check if the branch is last and change its debug color
+                // Note: Expand this to make a cone instead of cylinder
                 if (!Vector3.Equals(treeTransform.position,lastCord.branchPos))
                 {
                     branches[branches.Count - 1].color = Color.green;
