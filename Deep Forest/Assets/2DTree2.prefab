@@ -43,10 +43,10 @@ MonoBehaviour:
   length: 7
   angleX: 22.5
   angleY: 30
-  lengthRatio: 0.6
+  lengthRatio: 1
+  widthRatio: 0.7
   startRadius: 1
   treeRoundness: 8
-  widthRatio: 0.7
   axiom: X
   ruleChars: 58004600
   ruleStrings:
@@ -92,7 +92,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: lengthRatio
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: axiom

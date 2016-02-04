@@ -44,10 +44,10 @@ MonoBehaviour:
   length: 5
   angleX: 22.5
   angleY: 30
-  lengthRatio: 0.7
+  lengthRatio: 1
+  widthRatio: 0.5
   startRadius: 0.8
   treeRoundness: 8
-  widthRatio: 0.5
   axiom: F
   ruleChars: 4600
   ruleStrings:
@@ -123,6 +123,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: ruleStrings.Array.data[0]
       value: FF+[+F-F-F]-[-F+F+F]
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: lengthRatio
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

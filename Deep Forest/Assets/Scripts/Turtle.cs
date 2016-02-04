@@ -40,9 +40,9 @@ public class Turtle{
     float angleX, angleY;
     string alphabetToDraw;
     int treeRoundness;
-    float treeWidth;
+    float trunkWidth;
     float widthDecreseRatio;
-    //float lengthDecreaseRatio;
+    float lengthDecreaseRatio;
 
     List<Segment> branches;
     List<Circle> circles;
@@ -56,7 +56,7 @@ public class Turtle{
         GameObject _currentTree, float _widthRatio, float _lengthRatio)
     {
         treeRoundness = _detail;
-        treeWidth = _radius;
+        trunkWidth = _radius;
 
         treeTransform = _currentTree.transform;
         branches = new List<Segment>();
@@ -68,7 +68,7 @@ public class Turtle{
         angleY = _angleZ;
 
         widthDecreseRatio = _widthRatio;
-        //lengthDecreaseRatio = _lengthRatio;
+        lengthDecreaseRatio = _lengthRatio;
     }
 
     public void GenerateSkeleton()
@@ -82,8 +82,6 @@ public class Turtle{
         int repeats = 0;
         // Add and extra character for better case scenario
         alphabetToDraw += "x";
-        // Prepare the tree width attributes
-        float trunkWidth = treeWidth;
 
         lastPosition = treeTransform.position;
         lastRotation = treeTransform.rotation;
@@ -96,6 +94,7 @@ public class Turtle{
             if (c == 'F')
             {
                 treeTransform.Translate(Vector3.forward * length);
+                length *= lengthDecreaseRatio;
                 if (alphabetToDraw[i + 1].Equals('F'))
                 {
                     // Keep going until another character is found
@@ -133,7 +132,7 @@ public class Turtle{
             else if (c == '[')
             {
                 Coord currentCoord = new Coord(treeTransform.position, treeTransform.rotation,
-                    lastCircle, trunkWidth);
+                    lastCircle, trunkWidth, length);
                 coordStack.Push(currentCoord);
             }
             // Restore last position saved
@@ -149,6 +148,7 @@ public class Turtle{
                 treeTransform.position = lastCord.branchPos;
                 treeTransform.rotation = lastCord.branchRot;
 
+                length = lastCord.length;
                 trunkWidth = lastCord.width;
                 lastCircle = lastCord.circle;
                 lastPosition = lastCord.branchPos;
@@ -193,14 +193,15 @@ public class Turtle{
         public Vector3 branchPos;
         public Quaternion branchRot;
         public Circle circle;
-        public float width;
+        public float width, length;
 
-        public Coord(Vector3 _branchPos, Quaternion _branchRot, Circle _circle, float _width)
+        public Coord(Vector3 _branchPos, Quaternion _branchRot, Circle _circle, float _width, float _length)
         {
             branchPos = _branchPos;
             branchRot = _branchRot;
             circle = _circle;
             width = _width;
+            length = _length;
         }
     }
 
