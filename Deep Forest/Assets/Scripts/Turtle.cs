@@ -41,6 +41,8 @@ public class Turtle{
     string alphabetToDraw;
     int treeRoundness;
     float treeWidth;
+    float widthDecreseRatio;
+    float lengthDecreaseRatio;
 
     List<Segment> branches;
     List<Circle> circles;
@@ -51,7 +53,7 @@ public class Turtle{
     public Material material;
 
     public Turtle(float _radius, int _detail, string a, float _length, float _angleX, float _angleZ, 
-        GameObject _currentTree)
+        GameObject _currentTree, float _widthRatio, float _lengthRatio)
     {
         treeRoundness = _detail;
         treeWidth = _radius;
@@ -64,7 +66,9 @@ public class Turtle{
         length = _length;
         angleX = _angleX;
         angleY = _angleZ;
-        
+
+        widthDecreseRatio = _widthRatio;
+        lengthDecreaseRatio = _lengthRatio;
     }
 
     public void GenerateSkeleton()
@@ -78,6 +82,9 @@ public class Turtle{
         int repeats = 0;
         // Add and extra character for better case scenario
         alphabetToDraw += "x";
+        // Prepare the tree width attributes
+        float trunkWidth = treeWidth;
+        float branchWidth;
 
         lastPosition = treeTransform.position;
         lastRotation = treeTransform.rotation;
@@ -184,33 +191,18 @@ public class Turtle{
         public Vector3 branchPos;
         public Quaternion branchRot;
         public Circle circle;
+        public bool newBranch = false;
 
-        public Coord(Vector3 _branchPos, Quaternion _branchRot, Circle _circle)
+        public Coord(Vector3 _branchPos, Quaternion _branchRot, Circle _circle, bool _newBranch)
         {
             branchPos = _branchPos;
             branchRot = _branchRot;
             circle = _circle;
+            newBranch = _newBranch;
         }
     }
 
     // Getters & Setters
-    public void SetLength(float newLength)
-    {
-        length = newLength;
-    }
-    public void ChangeLength(float changeRatio)
-    {
-        length *= changeRatio;
-    }
-    public void ChangeWidth(float widthRatio)
-    {
-        treeWidth *= widthRatio;
-    }
-    public void SetAngles(float newAngleX, float newAngleZ)
-    {
-        angleX = newAngleX;
-        angleY = newAngleZ;
-    }
     public void SetAlphabet(string newAlphabet)
     {
         alphabetToDraw = newAlphabet;

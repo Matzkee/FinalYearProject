@@ -18,9 +18,9 @@ public class LifeForm : MonoBehaviour {
     public float angleX = 22.5f;
     public float angleY = 30.0f;
     public float lengthRatio = 0.7f;
+    public float widthRatio = 0.7f;
     public float startRadius = 1.0f;
     public int treeRoundness = 8;
-    public float widthRatio = 0.7f;
     public string axiom;
     public char[] ruleChars;
     public string[] ruleStrings;
@@ -48,28 +48,21 @@ public class LifeForm : MonoBehaviour {
         // Create the L-System and a new Turtle
         lsystem = new LSystem(axiom,ruleset);
 
-        turtle = new Turtle(startRadius, treeRoundness, lsystem.GetAlphabet(), length, angleX, angleY, gameObject);
+        turtle = new Turtle(startRadius, treeRoundness, lsystem.GetAlphabet(), 
+            length, angleX, angleY, gameObject, widthRatio, lengthRatio);
 
         // Generate the alphabet n(generations) times
         for (int i = 0; i <= generations; i++)
         {
             lsystem.Generate();
-            
-            // Adjust turtle ratios 
-            // (normaly it happens after the skeleton generation, 
-            // in this case we need to apply it now)
-            turtle.ChangeLength(lengthRatio);
-            turtle.ChangeWidth(widthRatio);
         }
         // Save current transform position & rotation
         Vector3 currentP = transform.position;
         Quaternion currentR = transform.rotation;
 
-
         // Generate the alphabet & pass it to the turtle
         turtle.SetAlphabet(lsystem.GetAlphabet());
         turtle.GenerateSkeleton();
-
 
         // Get vector arrays
         GetTreeBranches();
