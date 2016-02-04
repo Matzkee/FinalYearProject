@@ -11,15 +11,16 @@ public class LifeForm : MonoBehaviour {
     Turtle turtle;
     List<Segment> branches;
     List<Circle> circles;
+    List<BranchEnd> branchEnds;
     
     public Material treeBark;
 
     public float length = 5.0f;
+    public float width = 1.0f;
     public float angleX = 22.5f;
     public float angleY = 30.0f;
     public float lengthRatio = 0.7f;
     public float widthRatio = 0.7f;
-    public float startRadius = 1.0f;
     public int treeRoundness = 8;
     public string axiom;
     public char[] ruleChars;
@@ -48,7 +49,7 @@ public class LifeForm : MonoBehaviour {
         // Create the L-System and a new Turtle
         lsystem = new LSystem(axiom,ruleset);
 
-        turtle = new Turtle(startRadius, treeRoundness, lsystem.GetAlphabet(), 
+        turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(), 
             length, angleX, angleY, gameObject, widthRatio, lengthRatio);
 
         // Generate the alphabet n(generations) times
@@ -70,7 +71,7 @@ public class LifeForm : MonoBehaviour {
         transform.rotation = currentR;
 
         DestroyTree();
-        RenderTree(branches);
+        RenderTree();
     }
 
     // Destroy previous tree structure, if exist
@@ -84,12 +85,13 @@ public class LifeForm : MonoBehaviour {
     // Get vector lists
     void GetTreeBranches()
     {
-        branches = turtle.GetBranches();
-        circles = turtle.GetCircles();
+        branches = turtle.branches;
+        circles = turtle.circles;
+        branchEnds = turtle.branchEnds;
     }
 
     // Make new object for each branch with mesh and material applied
-    void RenderTree(List<Segment> _segments)
+    void RenderTree()
     {
         // Generate new object with MeshFilter and Renderer
         treeStructure = new GameObject("Tree Structure");
@@ -103,17 +105,20 @@ public class LifeForm : MonoBehaviour {
         mesh.Clear();
 
         int numOfPoints = treeRoundness;
-        // 3 Vertices per triangle, 2 triangles
-        int verticesPerCell = 6;
-        int vertexCount = (verticesPerCell * numOfPoints) * _segments.Count;
+        // 3 Vertices per triangle/polygon
+        int verticesPerPolygon = 3;
+        int vertexCount = ((verticesPerPolygon * 2 * numOfPoints) * branches.Count) + 
+            ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
+
         Debug.Log("Number of vertices: " + vertexCount + "\nPolygons to render: " + vertexCount/3);
+        
         // Alocate new arrays
         Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[vertexCount];
 
         int vertexIndex = 0;
 
-        foreach (Segment s in _segments)
+        foreach (Segment s in branches)
         {
             for (int i = 0; i < numOfPoints; i++)
             {
@@ -131,12 +136,35 @@ public class LifeForm : MonoBehaviour {
                 vertices[vertexIndex++] = cellTopRight;
 
                 // Make triangles
-                for (int j = 0; j < verticesPerCell; j++)
+                for (int j = 0; j < verticesPerPolygon * 2; j++)
                 {
                     triangles[startVertex + j] = startVertex + j;
                 }
             }
         }
+        
+        //Create the mesh for cones
+        foreach (BranchEnd c in branchEnds)
+        {
+            for (int i = 0; i < numOfPoints; i++)
+            {
+                Vector3 bottomLeft = c.startCircle.circlePoints[i];
+                Vector3 bottomRight = c.startCircle.circlePoints[(i + 1) % numOfPoints];
+                Vector3 endPoint = c.end;
+
+                int startVertex = vertexIndex;
+                vertices[vertexIndex++] = bottomLeft;
+                vertices[vertexIndex++] = bottomRight;
+                vertices[vertexIndex++] = endPoint;
+
+                // Make triangles
+                for (int j = 0; j < verticesPerPolygon; j++)
+                {
+                    triangles[startVertex + j] = startVertex + j;
+                }
+            }
+        }
+
 
         // Assign values to the mesh
         mesh.vertices = vertices;
@@ -157,6 +185,11 @@ public class LifeForm : MonoBehaviour {
             {
                 Gizmos.color = b.color;
                 Gizmos.DrawLine(b.start, b.end);
+            }
+            foreach (BranchEnd be in branchEnds)
+            {
+                Gizmos.color = be.color;
+                Gizmos.DrawLine(be.start, be.end);
             }
         }
         

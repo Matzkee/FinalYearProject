@@ -44,8 +44,9 @@ public class Turtle{
     float widthDecreseRatio;
     float lengthDecreaseRatio;
 
-    List<Segment> branches;
-    List<Circle> circles;
+    public List<Segment> branches, branchesToDelete;
+    public List<Circle> circles;
+    public List<BranchEnd> branchEnds;
     Stack<Coord> coordStack;
     // We need position information from the attached gameObject
     Transform treeTransform;
@@ -60,6 +61,8 @@ public class Turtle{
 
         treeTransform = _currentTree.transform;
         branches = new List<Segment>();
+        branchesToDelete = new List<Segment>();
+        branchEnds = new List<BranchEnd>();
         coordStack = new Stack<Coord>();
 
         alphabetToDraw = a;
@@ -140,10 +143,17 @@ public class Turtle{
             {
                 Coord lastCord = coordStack.Pop();
                 // Check if the branch is last and change its debug color
-                // Note: Expand this to make a cone instead of cylinder
+
                 if (!Vector3.Equals(treeTransform.position,lastCord.branchPos))
                 {
-                    branches[branches.Count - 1].color = Color.green;
+                    // Delete the cylinder and make a cone instead
+                    BranchEnd branchEnd = new BranchEnd(
+                        branches[branches.Count - 1].start,
+                        branches[branches.Count - 1].end,
+                        branches[branches.Count - 1].startCircle);
+                    branchesToDelete.Add(branches[branches.Count - 1]);
+                    branchEnd.color = Color.green;
+                    branchEnds.Add(branchEnd);
                 }
                 treeTransform.position = lastCord.branchPos;
                 treeTransform.rotation = lastCord.branchRot;
@@ -164,6 +174,19 @@ public class Turtle{
                 treeTransform.Rotate(Vector3.up * -angleY);
             }
         }
+
+        // Recycle branches at the end
+        RecycleBranches();
+    }
+
+    void RecycleBranches()
+    {
+        foreach (Segment s in branchesToDelete)
+        {
+            branches.Remove(s);
+        }
+        branchesToDelete.Clear();
+        branchesToDelete.TrimExcess();
     }
 
     public Circle CreateCircleAt(Transform _centre, float _radius, int _numpoints)
@@ -209,13 +232,5 @@ public class Turtle{
     public void SetAlphabet(string newAlphabet)
     {
         alphabetToDraw = newAlphabet;
-    }
-    public List<Segment> GetBranches()
-    {
-        return branches;
-    }
-    public List<Circle> GetCircles()
-    {
-        return circles;
     }
 }
