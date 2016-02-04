@@ -13,8 +13,6 @@ public class Segment
     public Circle endCircle;
     public Quaternion orientation;
 
-    public bool isTrunk = false;
-
     // Constructor
     public Segment(Vector3 _start, Vector3 _end, Circle _startCircle, Circle _endCircle, Quaternion _orientation)
     {

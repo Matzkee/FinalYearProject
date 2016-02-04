@@ -22,7 +22,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 154392}
-  m_LocalRotation: {x: 0, y: 0, z: 0.3420198, w: -0.9396928}
+  m_LocalRotation: {x: 0, y: 0, z: -0.25881907, w: 0.9659258}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -44,9 +44,9 @@ MonoBehaviour:
   angleX: 22.5
   angleY: 30
   lengthRatio: 0.7
+  widthRatio: 0.7
   startRadius: 2
   treeRoundness: 8
-  widthRatio: 0.7
   axiom: L
   ruleChars: 4c004600
   ruleStrings:
@@ -80,11 +80,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.z
-      value: 0.3420198
+      value: -0.25881907
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.w
-      value: -0.9396928
+      value: 0.9659258
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: generations

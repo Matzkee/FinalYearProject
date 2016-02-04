@@ -42,7 +42,7 @@ public class Turtle{
     int treeRoundness;
     float treeWidth;
     float widthDecreseRatio;
-    float lengthDecreaseRatio;
+    //float lengthDecreaseRatio;
 
     List<Segment> branches;
     List<Circle> circles;
@@ -68,7 +68,7 @@ public class Turtle{
         angleY = _angleZ;
 
         widthDecreseRatio = _widthRatio;
-        lengthDecreaseRatio = _lengthRatio;
+        //lengthDecreaseRatio = _lengthRatio;
     }
 
     public void GenerateSkeleton()
@@ -84,11 +84,10 @@ public class Turtle{
         alphabetToDraw += "x";
         // Prepare the tree width attributes
         float trunkWidth = treeWidth;
-        float branchWidth;
 
         lastPosition = treeTransform.position;
         lastRotation = treeTransform.rotation;
-        lastCircle = CreateCircleAt(treeTransform, treeWidth, treeRoundness);
+        lastCircle = CreateCircleAt(treeTransform, trunkWidth, treeRoundness);
         circles.Add(lastCircle);
         // Follow the action depending on current character in alphabet
         for (int i = 0; i < alphabetToDraw.Length; i++)
@@ -104,8 +103,10 @@ public class Turtle{
                 }
                 else
                 {
+                    // Decrease width ratio
+                    trunkWidth *= widthDecreseRatio;
                     // Make a new Circle
-                    Circle newCircle = CreateCircleAt(treeTransform, treeWidth, treeRoundness);
+                    Circle newCircle = CreateCircleAt(treeTransform, trunkWidth, treeRoundness);
                     // This is mainly for debugging - comment this out in the future
                     circles.Add(newCircle);
                     // Add a new segment
@@ -132,7 +133,7 @@ public class Turtle{
             else if (c == '[')
             {
                 Coord currentCoord = new Coord(treeTransform.position, treeTransform.rotation,
-                    lastCircle);
+                    lastCircle, trunkWidth);
                 coordStack.Push(currentCoord);
             }
             // Restore last position saved
@@ -148,6 +149,7 @@ public class Turtle{
                 treeTransform.position = lastCord.branchPos;
                 treeTransform.rotation = lastCord.branchRot;
 
+                trunkWidth = lastCord.width;
                 lastCircle = lastCord.circle;
                 lastPosition = lastCord.branchPos;
                 lastRotation = lastCord.branchRot;
@@ -191,14 +193,14 @@ public class Turtle{
         public Vector3 branchPos;
         public Quaternion branchRot;
         public Circle circle;
-        public bool newBranch = false;
+        public float width;
 
-        public Coord(Vector3 _branchPos, Quaternion _branchRot, Circle _circle, bool _newBranch)
+        public Coord(Vector3 _branchPos, Quaternion _branchRot, Circle _circle, float _width)
         {
             branchPos = _branchPos;
             branchRot = _branchRot;
             circle = _circle;
-            newBranch = _newBranch;
+            width = _width;
         }
     }
 

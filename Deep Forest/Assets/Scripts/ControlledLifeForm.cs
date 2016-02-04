@@ -35,9 +35,9 @@ public class ControlledLifeForm : MonoBehaviour {
     public float length = 5.0f;
     public float angleX = 22.5f;
     public float angleY = 30.0f;
-    public float lengthRatio = 0.7f;
     public float startRadius = 1.0f;
     public int treeRoundness = 8;
+    public float lengthRatio = 0.7f;
     public float widthRatio = 0.7f;
     public string axiom;
     public char[] ruleChars;
@@ -65,7 +65,8 @@ public class ControlledLifeForm : MonoBehaviour {
         // Create the L-System and a new Turtle
         lsystem = new LSystem(axiom, ruleset);
 
-        turtle = new Turtle(startRadius, treeRoundness, lsystem.GetAlphabet(), length, angleX, angleY, gameObject);
+        turtle = new Turtle(startRadius, treeRoundness, lsystem.GetAlphabet(), 
+            length, angleX, angleY, gameObject, widthRatio, lengthRatio);
     }
 
     void Update()
@@ -90,11 +91,7 @@ public class ControlledLifeForm : MonoBehaviour {
             GetTreeBranches();
             transform.position = currentP;
             transform.rotation = currentR;
-
-            // Adjust turtle ratios
-            turtle.ChangeLength(lengthRatio);
-            turtle.ChangeWidth(widthRatio);
-
+            
             // Finally render the tree structure
             DestroyTree();
             RenderTree(branches);
