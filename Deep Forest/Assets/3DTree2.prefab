@@ -39,9 +39,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536df33ced3f8324792ccba0f2516bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeBark: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
-  length: 10
-  width: 5
+  treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
+  length: 3
+  width: 1
   angleX: 22.5
   angleY: 30
   lengthRatio: 1
@@ -97,10 +97,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: treeBark
       value: 
-      objectReference: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
+      objectReference: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
     - target: {fileID: 0}
       propertyPath: length
-      value: 10
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: axiom
@@ -128,7 +128,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: width
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
