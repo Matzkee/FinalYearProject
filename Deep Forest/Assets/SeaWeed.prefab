@@ -8,7 +8,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 449148}
-  - 114: {fileID: 11439896}
   - 114: {fileID: 11439036}
   m_Layer: 0
   m_Name: SeaWeed
@@ -42,42 +41,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
   length: 5
+  width: 0.5
   angleX: 22.5
   angleY: 30
   lengthRatio: 1
-  widthRatio: 0.5
-  startRadius: 0.8
-  treeRoundness: 8
+  widthRatio: 1
+  treeRoundness: 5
   axiom: F
   ruleChars: 4600
   ruleStrings:
   - FF+[+F-F-F]-[-F+F+F]
-  skeletonLines: 0
-  skeletonCircles: 0
-  generations: 3
---- !u!114 &11439896
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 166872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04706bbfaa73ca9428a0d068bee1e3cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  treeBark: {fileID: 2100000, guid: c94c14dec1ef8de4d97483c738b4d35c, type: 2}
-  length: 5
-  angleX: 22.5
-  angleY: 30
-  lengthRatio: 0.7
-  startRadius: 0.8
-  treeRoundness: 8
-  widthRatio: 0.5
-  axiom: 46
-  ruleChars: []
-  ruleStrings:
-  - 46462b5b2b462d462d465d2d5b2d462b462b465d
   skeletonLines: 0
   skeletonCircles: 0
   generations: 3
@@ -102,7 +75,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: widthRatio
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: generations
@@ -127,6 +100,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: lengthRatio
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: width
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: treeRoundness
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

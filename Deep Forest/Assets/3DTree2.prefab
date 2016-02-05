@@ -41,11 +41,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
   length: 10
+  width: 5
   angleX: 22.5
   angleY: 30
   lengthRatio: 1
   widthRatio: 0.7
-  startRadius: 2
   treeRoundness: 8
   axiom: L
   ruleChars: 4c004600
@@ -125,6 +125,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: lengthRatio
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: width
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

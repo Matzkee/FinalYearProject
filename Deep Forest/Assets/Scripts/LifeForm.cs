@@ -114,6 +114,7 @@ public class LifeForm : MonoBehaviour {
         
         // Alocate new arrays
         Vector3[] vertices = new Vector3[vertexCount];
+        Vector2[] uvs = new Vector2[vertexCount];
         int[] triangles = new int[vertexCount];
 
         int vertexIndex = 0;
@@ -139,6 +140,7 @@ public class LifeForm : MonoBehaviour {
                 for (int j = 0; j < verticesPerPolygon * 2; j++)
                 {
                     triangles[startVertex + j] = startVertex + j;
+                    uvs[startVertex + j] = new Vector2(vertices[startVertex + j].x, vertices[startVertex + j].z);
                 }
             }
         }
@@ -161,6 +163,7 @@ public class LifeForm : MonoBehaviour {
                 for (int j = 0; j < verticesPerPolygon; j++)
                 {
                     triangles[startVertex + j] = startVertex + j;
+                    uvs[startVertex + j] = new Vector2(vertices[startVertex + j].x, vertices[startVertex + j].z);
                 }
             }
         }
@@ -169,6 +172,7 @@ public class LifeForm : MonoBehaviour {
         // Assign values to the mesh
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.uv = uvs;
         mesh.RecalculateNormals();
         meshRenderer.material = treeBark;
         // Set the tree structure object to its parent
