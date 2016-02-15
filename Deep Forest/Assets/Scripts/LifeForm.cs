@@ -118,6 +118,9 @@ public class LifeForm : MonoBehaviour {
         int[] triangles = new int[vertexCount];
 
         int vertexIndex = 0;
+        int vertexIndexUV = 0;
+        int sideCounter = 0;
+        float tilling = (float)(sideCounter++) / (treeRoundness);
 
         foreach (Segment s in branches)
         {
@@ -128,6 +131,12 @@ public class LifeForm : MonoBehaviour {
                 Vector3 cellTopRight = s.endCircle.circlePoints[(i + 1) % numOfPoints];
                 Vector3 cellBottomRight = s.startCircle.circlePoints[(i + 1) % numOfPoints];
 
+                Vector2 uvBottomLeft = new Vector2(tilling, 0f);
+                Vector2 uvBottomRight = new Vector2(tilling, 1f);
+                tilling = (float)(sideCounter++) / (treeRoundness * 2);
+                Vector2 uvTopLeft = new Vector2(tilling, 0f);
+                Vector2 uvTopRight = new Vector2(tilling, 1f);
+
                 int startVertex = vertexIndex;
                 vertices[vertexIndex++] = cellTopLeft;
                 vertices[vertexIndex++] = cellBottomLeft;
@@ -136,15 +145,22 @@ public class LifeForm : MonoBehaviour {
                 vertices[vertexIndex++] = cellBottomRight;
                 vertices[vertexIndex++] = cellTopRight;
 
+                uvs[vertexIndexUV++] = uvTopLeft;
+                uvs[vertexIndexUV++] = uvBottomLeft;
+                uvs[vertexIndexUV++] = uvBottomRight;
+
+                uvs[vertexIndexUV++] = uvTopLeft;
+                uvs[vertexIndexUV++] = uvBottomRight;
+                uvs[vertexIndexUV++] = uvTopRight;
+
                 // Make triangles
                 for (int j = 0; j < verticesPerPolygon * 2; j++)
                 {
                     triangles[startVertex + j] = startVertex + j;
-                    uvs[startVertex + j] = new Vector2(vertices[startVertex + j].x, vertices[startVertex + j].z);
                 }
             }
         }
-        
+
         //Create the mesh for cones
         foreach (BranchEnd c in branchEnds)
         {
@@ -154,25 +170,58 @@ public class LifeForm : MonoBehaviour {
                 Vector3 bottomRight = c.startCircle.circlePoints[(i + 1) % numOfPoints];
                 Vector3 endPoint = c.end;
 
+                Vector2 uvBottomLeft = new Vector2(tilling, 0f);
+                Vector2 uvBottomRight = new Vector2(tilling, 1f);
+                tilling = (float)(sideCounter++) / (treeRoundness * 2);
+                Vector2 uvEndPoint = new Vector2(tilling, 0.5f);
+
                 int startVertex = vertexIndex;
                 vertices[vertexIndex++] = bottomLeft;
                 vertices[vertexIndex++] = bottomRight;
                 vertices[vertexIndex++] = endPoint;
 
+                uvs[vertexIndexUV++] = uvBottomLeft;
+                uvs[vertexIndexUV++] = uvBottomRight;
+                uvs[vertexIndexUV++] = uvEndPoint;
+
                 // Make triangles
                 for (int j = 0; j < verticesPerPolygon; j++)
                 {
                     triangles[startVertex + j] = startVertex + j;
-                    uvs[startVertex + j] = new Vector2(vertices[startVertex + j].x, vertices[startVertex + j].z);
                 }
+
+
             }
         }
+        //int vert = 0;
+        //int sideCounter = 0;
+        //float t = (float)(sideCounter++) / (sideCounter % treeRoundness);
+        //while (vert < vertices.Length)
+        //{
+
+        //    Vector2 bottomLeft = new Vector2(t, 0f);
+        //    Vector2 bottomRight = new Vector2(t, 1f);
+        //    t = (float)(sideCounter++) / (treeRoundness);
+        //    Vector2 topLeft = new Vector2(t, 0f);
+        //    Vector2 topRight = new Vector2(t, 1f);
+
+        //    uvs[vert++] = topLeft;
+        //    uvs[vert++] = bottomLeft;
+        //    uvs[vert++] = bottomRight;
+
+        //    uvs[vert++] = topLeft;
+        //    uvs[vert++] = bottomRight;
+        //    uvs[vert++] = topRight;
+
+        //    //uvs[vert++] = new Vector2(t, 0f);
+        //    //uvs[vert++] = new Vector2(t, 1f);
+        //}
 
 
         // Assign values to the mesh
         mesh.vertices = vertices;
-        mesh.triangles = triangles;
         mesh.uv = uvs;
+        mesh.triangles = triangles;
         mesh.RecalculateNormals();
         meshRenderer.material = treeBark;
         // Set the tree structure object to its parent
