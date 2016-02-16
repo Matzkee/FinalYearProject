@@ -120,7 +120,7 @@ public class LifeForm : MonoBehaviour {
         int vertexIndex = 0;
         int vertexIndexUV = 0;
         int sideCounter = 0;
-        float tilling = (float)(sideCounter++) / (treeRoundness);
+        float tilling = (float)(sideCounter++) / (1f / treeRoundness);
 
         foreach (Segment s in branches)
         {
@@ -131,11 +131,11 @@ public class LifeForm : MonoBehaviour {
                 Vector3 cellTopRight = s.endCircle.circlePoints[(i + 1) % numOfPoints];
                 Vector3 cellBottomRight = s.startCircle.circlePoints[(i + 1) % numOfPoints];
 
-                Vector2 uvBottomLeft = new Vector2(tilling, 0f);
-                Vector2 uvBottomRight = new Vector2(tilling, 1f);
-                tilling = (float)(sideCounter++) / (treeRoundness * 2);
-                Vector2 uvTopLeft = new Vector2(tilling, 0f);
-                Vector2 uvTopRight = new Vector2(tilling, 1f);
+                Vector2 uvBottomLeft = new Vector2(0f, tilling);
+                Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
+                tilling = (float)(sideCounter++) / (1f/ treeRoundness);
+                Vector2 uvTopLeft = new Vector2(0f, tilling);
+                Vector2 uvTopRight = new Vector2(1f / treeRoundness, tilling);
 
                 int startVertex = vertexIndex;
                 vertices[vertexIndex++] = cellTopLeft;
@@ -170,10 +170,10 @@ public class LifeForm : MonoBehaviour {
                 Vector3 bottomRight = c.startCircle.circlePoints[(i + 1) % numOfPoints];
                 Vector3 endPoint = c.end;
 
-                Vector2 uvBottomLeft = new Vector2(tilling, 0f);
-                Vector2 uvBottomRight = new Vector2(tilling, 1f);
-                tilling = (float)(sideCounter++) / (treeRoundness * 2);
-                Vector2 uvEndPoint = new Vector2(tilling, 0.5f);
+                Vector2 uvBottomLeft = new Vector2(0f, tilling);
+                Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
+                tilling = (float)(sideCounter++) / (treeRoundness);
+                Vector2 uvEndPoint = new Vector2(0.5f / treeRoundness, tilling);
 
                 int startVertex = vertexIndex;
                 vertices[vertexIndex++] = bottomLeft;

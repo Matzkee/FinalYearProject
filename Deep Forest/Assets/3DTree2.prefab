@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
-  length: 3
+  length: 1
   width: 1
   angleX: 22.5
   angleY: 30
@@ -100,7 +100,7 @@ Prefab:
       objectReference: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
     - target: {fileID: 0}
       propertyPath: length
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: axiom
