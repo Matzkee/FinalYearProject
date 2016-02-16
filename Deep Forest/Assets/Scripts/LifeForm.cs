@@ -172,7 +172,7 @@ public class LifeForm : MonoBehaviour {
 
                 Vector2 uvBottomLeft = new Vector2(0f, tilling);
                 Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
-                tilling = (float)(sideCounter++) / (treeRoundness);
+                tilling = (float)(sideCounter++) / (1f / treeRoundness);
                 Vector2 uvEndPoint = new Vector2(0.5f / treeRoundness, tilling);
 
                 int startVertex = vertexIndex;
