@@ -3,8 +3,8 @@ using System.Collections;
 
 public class TerrainGenerator : MonoBehaviour {
 
-    public int width = 50;
-    public int height = 50;
+    public int width = 70;
+    public int height = 70;
     public Material terrainMaterial;
 
     public float scale = 10;
