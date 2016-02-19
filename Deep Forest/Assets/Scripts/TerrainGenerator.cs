@@ -3,11 +3,12 @@ using System.Collections;
 
 public class TerrainGenerator : MonoBehaviour {
 
-    public Vector2 samples = new Vector2(20, 20);
+    public int width = 50;
+    public int height = 50;
     public Material terrainMaterial;
 
-    public float scale = 5;
-    public float amplitude = 10;
+    public float scale = 10;
+    public float amplitude = 3;
 
     Mesh mesh;
     MeshRenderer meshRenderer;
@@ -22,22 +23,20 @@ public class TerrainGenerator : MonoBehaviour {
         GenerateMesh();
     }
 
+    // Calculate the Perlin Noise at those coordinates
     float Sample(float x, float y)
     {
-
-        //float theta = Mathf.PI;
-        //return Mathf.Sin(theta * (x / samples.x)) * Mathf.Sin(theta * (y / samples.y)) * amplitude;
         return Mathf.PerlinNoise(x / scale, y / scale) * amplitude;
     }
 
     public void GenerateMesh()
     {
         // We will start the actual xyz's of the mesh from this position
-        Vector3 bottomLeft = new Vector3(-samples.x / 2, 0, -samples.y / 2);
+        Vector3 bottomLeft = new Vector3(-width / 2, 0, -height / 2);
 
         // 3 vertices per triangle and 2 triangles
         int verticesPerCell = 6;
-        int vertexCount = (int)(verticesPerCell * samples.x * samples.y);
+        int vertexCount = (int)(verticesPerCell * width * height);
 
         // Allocate the arrays
         Vector3[] vertices = new Vector3[vertexCount];
@@ -46,9 +45,9 @@ public class TerrainGenerator : MonoBehaviour {
         int vertexIndex = 0;
 
 
-        for (int y = 0; y < samples.y; y++)
+        for (int y = 0; y < height; y++)
         {
-            for (int x = 0; x < samples.x; x++)
+            for (int x = 0; x < width; x++)
             {
                 // Make the vertex positions
                 Vector3 cellBottomLeft = bottomLeft + new Vector3(x, 0, y);
@@ -71,11 +70,11 @@ public class TerrainGenerator : MonoBehaviour {
                 vertices[vertexIndex++] = cellTopRight;
                 vertices[vertexIndex++] = cellBotomRight;
 
-                // Map triangles and uv's
+                // Map triangles
                 for (int i = 0; i < 6; i++)
                 {
                     triangles[startVertex + i] = startVertex + i;
-                    uvs[startVertex + i] = new Vector2((float)x / samples.x, (float)y / samples.y);
+                    uvs[startVertex + i] = new Vector2(vertices[startVertex + i].x, vertices[startVertex + i].z);
                 }
             }
 
