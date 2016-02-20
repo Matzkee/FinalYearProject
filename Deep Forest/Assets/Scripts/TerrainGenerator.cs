@@ -5,11 +5,15 @@ public class TerrainGenerator : MonoBehaviour {
 
     public int width = 70;
     public int height = 70;
+    public int seed;
+    public float scale = 10f;
+    public int octaves = 4;
+    public float persistance = 1.5f;
+    public float lacunarity = 1f;
+    public bool autoUpdate = false;
+
+    Vector2[] octaveOffsets;
     public Material terrainMaterial;
-
-    public float scale = 10;
-    public float amplitude = 3;
-
     Mesh mesh;
     MeshRenderer meshRenderer;
 
@@ -26,12 +30,33 @@ public class TerrainGenerator : MonoBehaviour {
     // Calculate the Perlin Noise at those coordinates
     float Sample(float x, float y)
     {
-        return Mathf.PerlinNoise(x / scale, y / scale) * amplitude;
+        float perlinValue = 0;
+        float frequency = 1f;
+        float amplitude = 1f;
+        for (int i = 0; i < octaves; i++)
+        {
+            float sampleX = x / scale * frequency + octaveOffsets[i].x;
+            float sampleY = y / scale * frequency + octaveOffsets[i].y;
+            perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
+            perlinValue *= amplitude;
+            amplitude *= persistance;
+            frequency *= lacunarity;
+        }
+
+        return perlinValue;
     }
 
     public void GenerateMesh()
     {
-        // We will start the actual xyz's of the mesh from this position
+        // Generate the seed
+        System.Random rng = new System.Random(seed);
+        octaveOffsets = new Vector2[octaves];
+        for (int i = 0; i < octaves; i++)
+        {
+            octaveOffsets[i] = new Vector2(rng.Next(-100000, 100000), rng.Next(-100000, 100000));
+        }
+
+        // To make the mesh at origin we need to start from here
         Vector3 bottomLeft = new Vector3(-width / 2, 0, -height / 2);
 
         // 3 vertices per triangle and 2 triangles

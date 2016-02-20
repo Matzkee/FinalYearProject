@@ -8,8 +8,14 @@ public class TerrainGeneratorEditor :  Editor{
 	public override void OnInspectorGUI()
     {
         terrainGen = target as TerrainGenerator;
-        DrawDefaultInspector();
-
+        if (DrawDefaultInspector())
+        {
+            if (terrainGen.autoUpdate)
+            {
+                terrainGen.GenerateMesh();
+            }
+        }
+        
         if (GUILayout.Button("Generate"))
         {
             terrainGen.GenerateMesh();

@@ -302,6 +302,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 2031926818}
   - 114: {fileID: 2031926817}
+  - 114: {fileID: 2031926819}
   m_Layer: 0
   m_Name: Terrain Generator
   m_TagString: Untagged
@@ -320,11 +321,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc24b6ba2ca26942b366c33147ef1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 50
-  height: 50
-  terrainMaterial: {fileID: 2100000, guid: 8ec28383e7fff4a44afd9cd7586ffc10, type: 2}
+  width: 70
+  height: 70
+  seed: 0
   scale: 10
-  amplitude: 3
+  octaves: 4
+  persistance: 1.5
+  lacunarity: 1
+  autoUpdate: 0
+  terrainMaterial: {fileID: 2100000, guid: 45fd9e61492ca0246a0576bf931ce076, type: 2}
 --- !u!4 &2031926818
 Transform:
   m_ObjectHideFlags: 0
@@ -337,3 +342,15 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+--- !u!114 &2031926819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2031926816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5db3ef613a9d0f46b546b3d145e3e24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 174012, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
