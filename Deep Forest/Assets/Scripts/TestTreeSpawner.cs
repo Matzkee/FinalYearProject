@@ -18,5 +18,6 @@ public class TestTreeSpawner : MonoBehaviour {
             prefab, 
             terrainVerts[Random.Range(1, terrainVerts.Length)], 
             transform.rotation);
+        tree.transform.Rotate(Vector3.up * Random.Range(0,360));
     }
 }
