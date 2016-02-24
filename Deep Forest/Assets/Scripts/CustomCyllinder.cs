@@ -87,8 +87,23 @@ public class CustomCyllinder : MonoBehaviour {
 
         int vertexIndex = 0;
 
+        //Assign vertices
+        //int index = 0;
+        //for (int i = 0; i < _c1.circlePoints.Count; i++)
+        //{
+        //    vertices[index++] = _c2.circlePoints[i];
+        //    vertices[index++] = _c1.circlePoints[i];
+        //}
+        int tLeft = 0;
+        int bLeft = 1;
+        int tRight = 2;
+        int bRight = 3;
+        string nums = "";
         for (int i = 0; i < numOfPoints; i++)
         {
+
+
+
             Vector3 cellBottomLeft = _c1.circlePoints[i];
             Vector3 cellTopLeft = _c2.circlePoints[i];
             Vector3 cellTopRight = _c2.circlePoints[(i + 1)%numOfPoints];
@@ -102,19 +117,29 @@ public class CustomCyllinder : MonoBehaviour {
             vertices[vertexIndex++] = cellBottomRight;
             vertices[vertexIndex++] = cellTopRight;
 
-            // Make triangles
-            for (int j = 0; j < verticesPerCell; j++)
-            {
-                triangles[startVertex + j] = startVertex + j;
-                uvs[startVertex + j] = new Vector2(i / vertices[startVertex + j].x, i / vertices[startVertex + j].z);
-            }
+            triangles[startVertex] = tLeft;
+            triangles[startVertex + 1] = bLeft;
+            triangles[startVertex + 2] = bRight;
+            triangles[startVertex + 3] = tLeft;
+            triangles[startVertex + 4] = bRight;
+            triangles[startVertex + 5] = tRight;
+            nums += triangles[startVertex];
+            nums += triangles[startVertex + 1];
+            nums += triangles[startVertex + 2];
+            nums += triangles[startVertex + 3];
+            nums += triangles[startVertex + 4];
+            nums += triangles[startVertex + 5];
+            tLeft = tRight;
+            tRight += 2;
+            bLeft = bRight;
+            bRight += 2;
+            //// Make triangles
+            //for (int j = 0; j < verticesPerCell; j++)
+            //{
+            //    triangles[startVertex + j] = startVertex + j;
+            //}
         }
-
-        for (int i = 0; i < uvs.Length; i++)
-        {
-            //uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
-        }
-
+        Debug.Log("traingles: "+ nums);
         // Assign values to the mesh
         mesh.vertices = vertices;
         mesh.triangles = triangles;
