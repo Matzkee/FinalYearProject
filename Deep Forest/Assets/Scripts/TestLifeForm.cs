@@ -109,7 +109,7 @@ public class TestLifeForm : MonoBehaviour {
         int verticesPerPolygon = 3;
         int vertexCount = ((verticesPerPolygon * 2 * numOfPoints) * branches.Count) + 
             ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
-        int optimalVertsCount = ((2 * numOfPoints) * branches.Count);// +
+        int optimalVertsCount = 2 * (numOfPoints + 1) * branches.Count;// +
            // ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
 
         Debug.Log("Number of vertices: " + optimalVertsCount + "\nPolygons to render: " + vertexCount/3);
@@ -122,7 +122,7 @@ public class TestLifeForm : MonoBehaviour {
         int vertexIndex = 0;
         int vertexIndexUV = 0;
         int sideCounter = 0;
-        float tilling = (float)(sideCounter++) / (1f / treeRoundness);
+        float tilling = (float)(sideCounter++) / (treeRoundness);
 
 
         int segmentIndex = 0;
@@ -132,11 +132,8 @@ public class TestLifeForm : MonoBehaviour {
         int tRight = 2;
         int bRight = 3;
 
-        Vector2 uvBottomLeft = new Vector2(0f, tilling);
-        Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
-        tilling = (float)(sideCounter++) / (1f / treeRoundness);
-        Vector2 uvTopLeft = new Vector2(0f, tilling);
-        Vector2 uvTopRight = new Vector2(1f / treeRoundness, tilling);
+        Vector2 uvBottom = new Vector2(0f, tilling);
+        Vector2 uvTop = new Vector2(1f / treeRoundness, tilling);
 
         foreach (Segment s in branches)
         {
@@ -146,16 +143,18 @@ public class TestLifeForm : MonoBehaviour {
                 vertices[segmentIndex++] = s.startCircle.circlePoints[i];
             }
 
+            vertices[segmentIndex] = s.endCircle.circlePoints[0];
+            vertices[segmentIndex + 1] = s.startCircle.circlePoints[0];
+
             for (int i = 0; i < numOfPoints; i++)
             {
-                uvs[vertexIndexUV++] = uvBottomLeft;
-                uvs[vertexIndexUV++] = uvBottomRight;
+                uvs[vertexIndexUV++] = uvBottom;
+                uvs[vertexIndexUV++] = uvTop;
 
-                uvBottomLeft = uvTopLeft;
-                uvBottomRight = uvTopRight;
-                tilling = (float)(sideCounter++) / (1f/ treeRoundness);
-                uvTopLeft = new Vector2(0f, tilling);
-                uvTopRight = new Vector2(1f / treeRoundness, tilling);
+                // Calculate next offset
+                tilling = (float)(sideCounter++) / (treeRoundness);
+                uvBottom = new Vector2(0f, tilling);
+                uvTop = new Vector2(1f / treeRoundness, tilling);
 
                 int startVertex = vertexIndex;
                 vertexIndex += 6;
@@ -172,33 +171,20 @@ public class TestLifeForm : MonoBehaviour {
                 bLeft = bRight;
                 bRight += 2;
                 bRight = (bRight >= segmentIndex)? bRight - 16 : bRight;
-
-                //vertices[vertexIndex++] = cellTopLeft;
-                //vertices[vertexIndex++] = cellBottomLeft;
-                //vertices[vertexIndex++] = cellBottomRight;
-                //vertices[vertexIndex++] = cellTopLeft;
-                //vertices[vertexIndex++] = cellBottomRight;
-                //vertices[vertexIndex++] = cellTopRight;
-
-                //uvs[vertexIndexUV++] = uvTopLeft;
-                //uvs[vertexIndexUV++] = uvBottomLeft;
-                //uvs[vertexIndexUV++] = uvBottomRight;
-
-                //uvs[vertexIndexUV++] = uvTopLeft;
-                //uvs[vertexIndexUV++] = uvBottomRight;
-                //uvs[vertexIndexUV++] = uvTopRight;
-
-                // Make triangles
-                //for (int j = 0; j < verticesPerPolygon * 2; j++)
-                //{
-                //    triangles[startVertex + j] = startVertex + j;
-                //}
             }
+            segmentIndex += 2;
 
-            tLeft = segmentIndex;
-            bLeft = segmentIndex + 1;
-            tRight = segmentIndex + 2;
-            bRight = segmentIndex + 3;
+            uvs[vertexIndexUV++] = uvBottom;
+            uvs[vertexIndexUV++] = uvTop;
+
+            tilling = (float)(sideCounter++) / (treeRoundness);
+            uvBottom = new Vector2(0f, tilling);
+            uvTop = new Vector2(1f / treeRoundness, tilling);
+
+            tLeft = segmentIndex + 2;
+            bLeft = segmentIndex + 3;
+            tRight = segmentIndex + 4;
+            bRight = segmentIndex + 5;
         }
 
         /*//Create the mesh for cones

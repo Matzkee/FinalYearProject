@@ -122,11 +122,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 462952, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 174012, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11437802, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
@@ -149,11 +149,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
   length: 1
-  width: 0.5
+  width: 0.4
   angleX: 22.5
   angleY: 30
   lengthRatio: 1
-  widthRatio: 0.7
+  widthRatio: 0.75
   treeRoundness: 8
   axiom: F
   ruleChars: 4600
@@ -283,7 +283,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!1 &1917787732
 GameObject:
   m_ObjectHideFlags: 0
