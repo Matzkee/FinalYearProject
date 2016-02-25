@@ -128,6 +128,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 174012, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
+      propertyPath: m_Name
+      value: TEST
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11437802, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
@@ -149,11 +153,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
   length: 1
-  width: 0.4
+  width: 0.2
   angleX: 22.5
   angleY: 30
   lengthRatio: 1
-  widthRatio: 0.75
+  widthRatio: 0.8
   treeRoundness: 8
   axiom: F
   ruleChars: 4600

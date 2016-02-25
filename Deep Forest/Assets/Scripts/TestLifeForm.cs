@@ -106,14 +106,12 @@ public class TestLifeForm : MonoBehaviour {
 
         int numOfPoints = treeRoundness;
         // 3 Vertices per triangle/polygon
-        int verticesPerPolygon = 3;
-        int vertexCount = ((verticesPerPolygon * 2 * numOfPoints) * branches.Count) + 
-            ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
-        int optimalVertsCount = 2 * (numOfPoints + 1) * branches.Count;// +
-           // ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
+        //int verticesPerPolygon = 3;
+        int vertexCount = ((9 * 6) * branches.Count) + 
+            ((9 * 3) * branchEnds.Count);
+        int optimalVertsCount = (2 * (numOfPoints + 1) * branches.Count) +
+           (2 * (numOfPoints + 1) * branchEnds.Count);
 
-        Debug.Log("Number of vertices: " + optimalVertsCount + "\nPolygons to render: " + vertexCount/3);
-        
         // Alocate new arrays
         Vector3[] vertices = new Vector3[optimalVertsCount];
         Vector2[] uvs = new Vector2[optimalVertsCount];
@@ -122,128 +120,95 @@ public class TestLifeForm : MonoBehaviour {
         int vertexIndex = 0;
         int vertexIndexUV = 0;
         int sideCounter = 0;
-        float tilling = (float)(sideCounter++) / (treeRoundness);
+        int triangleIndex = 0;
+        float tilling = (float)(sideCounter++) / treeRoundness;
 
+        // Set triangle indexes
+        int tLeft, bLeft, tRight, bRight, centre;
 
-        int segmentIndex = 0;
-
-        int tLeft = 0;
-        int bLeft = 1;
-        int tRight = 2;
-        int bRight = 3;
-
-        Vector2 uvBottom = new Vector2(0f, tilling);
-        Vector2 uvTop = new Vector2(1f / treeRoundness, tilling);
+        Vector2 uvBottom = new Vector2(tilling, 0f);
+        Vector2 uvTop = new Vector2(tilling, 1f / treeRoundness);
 
         foreach (Segment s in branches)
         {
-            for (int i = 0; i < numOfPoints; i++)
+            tLeft = vertexIndex;
+            bLeft = vertexIndex + 1;
+            tRight = vertexIndex + 2;
+            bRight = vertexIndex + 3;
+            for (int i = 0; i < numOfPoints + 1; i++)
             {
-                vertices[segmentIndex++] = s.endCircle.circlePoints[i];
-                vertices[segmentIndex++] = s.startCircle.circlePoints[i];
+                vertices[vertexIndex++] = s.endCircle.circlePoints[i % numOfPoints];
+                vertices[vertexIndex++] = s.startCircle.circlePoints[i % numOfPoints];
             }
 
-            vertices[segmentIndex] = s.endCircle.circlePoints[0];
-            vertices[segmentIndex + 1] = s.startCircle.circlePoints[0];
-
-            for (int i = 0; i < numOfPoints; i++)
+            for (int i = 0; i < numOfPoints + 1; i++)
             {
+                // Assign uv control nodes to its corresponding vertices
                 uvs[vertexIndexUV++] = uvBottom;
                 uvs[vertexIndexUV++] = uvTop;
 
-                // Calculate next offset
-                tilling = (float)(sideCounter++) / (treeRoundness);
-                uvBottom = new Vector2(0f, tilling);
-                uvTop = new Vector2(1f / treeRoundness, tilling);
+                // Calculate next uv offset
+                tilling = (float)(sideCounter++) / treeRoundness;
+                uvBottom = new Vector2(tilling, 0f);
+                uvTop = new Vector2(tilling, 1f / treeRoundness);
 
-                int startVertex = vertexIndex;
-                vertexIndex += 6;
+                // Assign triangle indexes
+                triangles[triangleIndex++] = tLeft;
+                triangles[triangleIndex++] = bLeft;
+                triangles[triangleIndex++] = bRight;
+                triangles[triangleIndex++] = tLeft;
+                triangles[triangleIndex++] = bRight;
+                triangles[triangleIndex++] = tRight;
 
-                triangles[startVertex] = tLeft;
-                triangles[startVertex + 1] = bLeft;
-                triangles[startVertex + 2] = bRight;
-                triangles[startVertex + 3] = tLeft;
-                triangles[startVertex + 4] = bRight;
-                triangles[startVertex + 5] = tRight;
+                // Rearrange triangle indexes
                 tLeft = tRight;
                 tRight += 2;
-                tRight = (tRight >= segmentIndex)? tRight - 16 : tRight;
+                tRight = (tRight >= vertexIndex) ? tRight - 18 : tRight;
                 bLeft = bRight;
                 bRight += 2;
-                bRight = (bRight >= segmentIndex)? bRight - 16 : bRight;
+                bRight = (bRight >= vertexIndex) ? bRight - 18 : bRight;
             }
-            segmentIndex += 2;
-
-            uvs[vertexIndexUV++] = uvBottom;
-            uvs[vertexIndexUV++] = uvTop;
-
-            tilling = (float)(sideCounter++) / (treeRoundness);
-            uvBottom = new Vector2(0f, tilling);
-            uvTop = new Vector2(1f / treeRoundness, tilling);
-
-            tLeft = segmentIndex + 2;
-            bLeft = segmentIndex + 3;
-            tRight = segmentIndex + 4;
-            bRight = segmentIndex + 5;
         }
 
-        /*//Create the mesh for cones
+        //Create the mesh for cones
         foreach (BranchEnd c in branchEnds)
         {
-            for (int i = 0; i < numOfPoints; i++)
+            sideCounter = 0;
+            tilling = (float)(sideCounter++) / treeRoundness;
+            uvBottom = new Vector2(tilling, 1f / treeRoundness);
+            tilling = (float)(sideCounter++) / treeRoundness;
+            Vector2 uvEndPoint = new Vector2(tilling, 0.5f / treeRoundness);
+            bLeft = vertexIndex;
+            centre = vertexIndex + 1;
+            bRight = vertexIndex + 2;
+            for (int i = 0; i < numOfPoints + 1; i++)
             {
-                Vector3 bottomLeft = c.startCircle.circlePoints[i];
-                Vector3 bottomRight = c.startCircle.circlePoints[(i + 1) % numOfPoints];
-                Vector3 endPoint = c.end;
-
-                Vector2 uvBottomLeft = new Vector2(0f, tilling);
-                Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
-                tilling = (float)(sideCounter++) / (1f / treeRoundness);
-                Vector2 uvEndPoint = new Vector2(0.5f / treeRoundness, tilling);
-
-                int startVertex = vertexIndex;
-                vertices[vertexIndex++] = bottomLeft;
-                vertices[vertexIndex++] = bottomRight;
-                vertices[vertexIndex++] = endPoint;
-
-                //uvs[vertexIndexUV++] = uvBottomLeft;
-                //uvs[vertexIndexUV++] = uvBottomRight;
-                //uvs[vertexIndexUV++] = uvEndPoint;
-
-                // Make triangles
-                for (int j = 0; j < verticesPerPolygon; j++)
-                {
-                    triangles[startVertex + j] = startVertex + j;
-                }
-
-
+                vertices[vertexIndex++] = c.startCircle.circlePoints[i % numOfPoints];
+                vertices[vertexIndex++] = c.end;
             }
-        }*/
-        //int vert = 0;
-        //int sideCounter = 0;
-        //float t = (float)(sideCounter++) / (sideCounter % treeRoundness);
-        //while (vert < vertices.Length)
-        //{
+            // Add the centre and set its index
+            for (int i = 0; i < numOfPoints + 1; i++)
+            {
+                uvs[vertexIndexUV++] = uvBottom;
+                uvs[vertexIndexUV++] = uvEndPoint;
 
-        //    Vector2 bottomLeft = new Vector2(t, 0f);
-        //    Vector2 bottomRight = new Vector2(t, 1f);
-        //    t = (float)(sideCounter++) / (treeRoundness);
-        //    Vector2 topLeft = new Vector2(t, 0f);
-        //    Vector2 topRight = new Vector2(t, 1f);
+                triangles[triangleIndex++] = bLeft;
+                triangles[triangleIndex++] = bRight;
+                triangles[triangleIndex++] = centre;
 
-        //    uvs[vert++] = topLeft;
-        //    uvs[vert++] = bottomLeft;
-        //    uvs[vert++] = bottomRight;
+                // Assign uv control nodes to its corresponding vertices
+                uvBottom = new Vector2(tilling, 1f / treeRoundness);
+                tilling = (float)(sideCounter++) / treeRoundness;
+                uvEndPoint = new Vector2(tilling, 0.5f / treeRoundness);
 
-        //    uvs[vert++] = topLeft;
-        //    uvs[vert++] = bottomRight;
-        //    uvs[vert++] = topRight;
-
-        //    //uvs[vert++] = new Vector2(t, 0f);
-        //    //uvs[vert++] = new Vector2(t, 1f);
-        //}
-
-
+                // Rearrange triangle indexes
+                bLeft = bRight;
+                centre += 2;
+                bRight += 2;
+                bRight = (bRight >= vertexIndex) ? bRight - 18 : bRight;
+            }
+        }
+        
         // Assign values to the mesh
         mesh.vertices = vertices;
         mesh.uv = uvs;
@@ -252,6 +217,8 @@ public class TestLifeForm : MonoBehaviour {
         meshRenderer.material = treeBark;
         // Set the tree structure object to its parent
         treeStructure.transform.parent = transform;
+
+        Debug.Log("Number of vertices: " + optimalVertsCount + "\nPolygons to render: " + triangleIndex / 3);
     }
 
     // Draw debug lines
