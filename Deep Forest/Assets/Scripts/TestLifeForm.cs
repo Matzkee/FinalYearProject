@@ -109,14 +109,14 @@ public class TestLifeForm : MonoBehaviour {
         int verticesPerPolygon = 3;
         int vertexCount = ((verticesPerPolygon * 2 * numOfPoints) * branches.Count) + 
             ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
-        int optimalVertsCount = ((2 * numOfPoints) * branches.Count) +
-            ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
+        int optimalVertsCount = ((2 * numOfPoints) * branches.Count);// +
+           // ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
 
-        Debug.Log("Number of vertices: " + vertexCount + "\nPolygons to render: " + vertexCount/3);
+        Debug.Log("Number of vertices: " + optimalVertsCount + "\nPolygons to render: " + vertexCount/3);
         
         // Alocate new arrays
-        Vector3[] vertices = new Vector3[vertexCount];
-        //Vector2[] uvs = new Vector2[vertexCount];
+        Vector3[] vertices = new Vector3[optimalVertsCount];
+        Vector2[] uvs = new Vector2[optimalVertsCount];
         int[] triangles = new int[vertexCount];
 
         int vertexIndex = 0;
@@ -132,6 +132,12 @@ public class TestLifeForm : MonoBehaviour {
         int tRight = 2;
         int bRight = 3;
 
+        Vector2 uvBottomLeft = new Vector2(0f, tilling);
+        Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
+        tilling = (float)(sideCounter++) / (1f / treeRoundness);
+        Vector2 uvTopLeft = new Vector2(0f, tilling);
+        Vector2 uvTopRight = new Vector2(1f / treeRoundness, tilling);
+
         foreach (Segment s in branches)
         {
             for (int i = 0; i < numOfPoints; i++)
@@ -142,11 +148,14 @@ public class TestLifeForm : MonoBehaviour {
 
             for (int i = 0; i < numOfPoints; i++)
             {
-                Vector2 uvBottomLeft = new Vector2(0f, tilling);
-                Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
+                uvs[vertexIndexUV++] = uvBottomLeft;
+                uvs[vertexIndexUV++] = uvBottomRight;
+
+                uvBottomLeft = uvTopLeft;
+                uvBottomRight = uvTopRight;
                 tilling = (float)(sideCounter++) / (1f/ treeRoundness);
-                Vector2 uvTopLeft = new Vector2(0f, tilling);
-                Vector2 uvTopRight = new Vector2(1f / treeRoundness, tilling);
+                uvTopLeft = new Vector2(0f, tilling);
+                uvTopRight = new Vector2(1f / treeRoundness, tilling);
 
                 int startVertex = vertexIndex;
                 vertexIndex += 6;
@@ -158,9 +167,11 @@ public class TestLifeForm : MonoBehaviour {
                 triangles[startVertex + 4] = bRight;
                 triangles[startVertex + 5] = tRight;
                 tLeft = tRight;
-                tRight += 2; tRight = tRight % segmentIndex;
+                tRight += 2;
+                tRight = (tRight >= segmentIndex)? tRight - 16 : tRight;
                 bLeft = bRight;
-                bRight += 2; bRight = bRight % segmentIndex;
+                bRight += 2;
+                bRight = (bRight >= segmentIndex)? bRight - 16 : bRight;
 
                 //vertices[vertexIndex++] = cellTopLeft;
                 //vertices[vertexIndex++] = cellBottomLeft;
@@ -184,14 +195,13 @@ public class TestLifeForm : MonoBehaviour {
                 //}
             }
 
-            tLeft += segmentIndex + 1;
-            bLeft += segmentIndex + 1;
-            tRight = tLeft + 2;
-            bRight = bLeft + 2;
+            tLeft = segmentIndex;
+            bLeft = segmentIndex + 1;
+            tRight = segmentIndex + 2;
+            bRight = segmentIndex + 3;
         }
 
-
-        //Create the mesh for cones
+        /*//Create the mesh for cones
         foreach (BranchEnd c in branchEnds)
         {
             for (int i = 0; i < numOfPoints; i++)
@@ -222,7 +232,7 @@ public class TestLifeForm : MonoBehaviour {
 
 
             }
-        }
+        }*/
         //int vert = 0;
         //int sideCounter = 0;
         //float t = (float)(sideCounter++) / (sideCounter % treeRoundness);
@@ -250,7 +260,7 @@ public class TestLifeForm : MonoBehaviour {
 
         // Assign values to the mesh
         mesh.vertices = vertices;
-        //mesh.uv = uvs;
+        mesh.uv = uvs;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         meshRenderer.material = treeBark;
