@@ -81,19 +81,19 @@ public class CustomCyllinder : MonoBehaviour {
         int vertexCount = (verticesPerCell * 2 * numOfPoints);
 
         // Alocate new arrays
-        Vector3[] vertices = new Vector3[vertexCount];
+        Vector3[] vertices = new Vector3[_c1.circlePoints.Count * 2];
         int[] triangles = new int[vertexCount];
-        Vector2[] uvs = new Vector2[vertexCount];
+        Vector2[] uvs = new Vector2[vertices.Length];
 
         int vertexIndex = 0;
 
         //Assign vertices
-        //int index = 0;
-        //for (int i = 0; i < _c1.circlePoints.Count; i++)
-        //{
-        //    vertices[index++] = _c2.circlePoints[i];
-        //    vertices[index++] = _c1.circlePoints[i];
-        //}
+        int index = 0;
+        for (int i = 0; i < _c1.circlePoints.Count; i++)
+        {
+            vertices[index++] = _c2.circlePoints[i];
+            vertices[index++] = _c1.circlePoints[i];
+        }
         int tLeft = 0;
         int bLeft = 1;
         int tRight = 2;
@@ -110,12 +110,13 @@ public class CustomCyllinder : MonoBehaviour {
             Vector3 cellBottomRight = _c1.circlePoints[(i + 1)%numOfPoints];
 
             int startVertex = vertexIndex;
-            vertices[vertexIndex++] = cellTopLeft;
-            vertices[vertexIndex++] = cellBottomLeft;
-            vertices[vertexIndex++] = cellBottomRight;
-            vertices[vertexIndex++] = cellTopLeft;
-            vertices[vertexIndex++] = cellBottomRight;
-            vertices[vertexIndex++] = cellTopRight;
+            vertexIndex += 6;
+            //vertices[vertexIndex++] = cellTopLeft;
+            //vertices[vertexIndex++] = cellBottomLeft;
+            //vertices[vertexIndex++] = cellBottomRight;
+            //vertices[vertexIndex++] = cellTopLeft;
+            //vertices[vertexIndex++] = cellBottomRight;
+            //vertices[vertexIndex++] = cellTopRight;
 
             triangles[startVertex] = tLeft;
             triangles[startVertex + 1] = bLeft;
@@ -123,23 +124,18 @@ public class CustomCyllinder : MonoBehaviour {
             triangles[startVertex + 3] = tLeft;
             triangles[startVertex + 4] = bRight;
             triangles[startVertex + 5] = tRight;
-            nums += triangles[startVertex];
-            nums += triangles[startVertex + 1];
-            nums += triangles[startVertex + 2];
-            nums += triangles[startVertex + 3];
-            nums += triangles[startVertex + 4];
-            nums += triangles[startVertex + 5];
             tLeft = tRight;
-            tRight += 2;
+            tRight += 2; tRight = tRight % index;
             bLeft = bRight;
-            bRight += 2;
+            bRight += 2; bRight = bRight % index;
             //// Make triangles
             //for (int j = 0; j < verticesPerCell; j++)
             //{
             //    triangles[startVertex + j] = startVertex + j;
             //}
         }
-        Debug.Log("traingles: "+ nums);
+        Debug.Log("Number of vertices: "+ vertices.Length);
+        Debug.Log("Number of polygons: " + (triangles.Length)/3);
         // Assign values to the mesh
         mesh.vertices = vertices;
         mesh.triangles = triangles;
