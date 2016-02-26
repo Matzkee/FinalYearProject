@@ -105,12 +105,11 @@ public class TestLifeForm : MonoBehaviour {
         mesh.Clear();
 
         int numOfPoints = treeRoundness;
-        // 3 Vertices per triangle/polygon
-        //int verticesPerPolygon = 3;
+
         int vertexCount = ((9 * 6) * branches.Count) + 
             ((9 * 3) * branchEnds.Count);
         int optimalVertsCount = (2 * (numOfPoints + 1) * branches.Count) +
-           (2 * (numOfPoints + 1) * branchEnds.Count);
+           ((numOfPoints + 2) * branchEnds.Count);
 
         // Alocate new arrays
         Vector3[] vertices = new Vector3[optimalVertsCount];
@@ -148,9 +147,9 @@ public class TestLifeForm : MonoBehaviour {
                 uvs[vertexIndexUV++] = uvTop;
 
                 // Calculate next uv offset
-                tilling = (float)(sideCounter++) / treeRoundness;
+                tilling = (float)(sideCounter++) / numOfPoints;
                 uvBottom = new Vector2(tilling, 0f);
-                uvTop = new Vector2(tilling, 1f / treeRoundness);
+                uvTop = new Vector2(tilling, 1f / numOfPoints);
 
                 // Assign triangle indexes
                 triangles[triangleIndex++] = tLeft;
@@ -174,39 +173,37 @@ public class TestLifeForm : MonoBehaviour {
         foreach (BranchEnd c in branchEnds)
         {
             sideCounter = 0;
-            tilling = (float)(sideCounter++) / treeRoundness;
-            uvBottom = new Vector2(tilling, 1f / treeRoundness);
-            tilling = (float)(sideCounter++) / treeRoundness;
-            Vector2 uvEndPoint = new Vector2(tilling, 0.5f / treeRoundness);
             bLeft = vertexIndex;
-            centre = vertexIndex + 1;
-            bRight = vertexIndex + 2;
+            bRight = vertexIndex + 1;
             for (int i = 0; i < numOfPoints + 1; i++)
             {
                 vertices[vertexIndex++] = c.startCircle.circlePoints[i % numOfPoints];
-                vertices[vertexIndex++] = c.end;
             }
+            // Add extra vertex as centre for uv mapping
+            vertices[vertexIndex++] = c.end;
+            centre = vertexIndex - 1;
             // Add the centre and set its index
             for (int i = 0; i < numOfPoints + 1; i++)
             {
+                // Assign uv control nodes to its corresponding vertices & calculate next offset
+                tilling = (float)(sideCounter++) / numOfPoints;
+                uvBottom = new Vector2(tilling, 1f / numOfPoints);
                 uvs[vertexIndexUV++] = uvBottom;
-                uvs[vertexIndexUV++] = uvEndPoint;
 
+                // Assign triangle indexes
                 triangles[triangleIndex++] = bLeft;
                 triangles[triangleIndex++] = bRight;
                 triangles[triangleIndex++] = centre;
 
-                // Assign uv control nodes to its corresponding vertices
-                uvBottom = new Vector2(tilling, 1f / treeRoundness);
-                tilling = (float)(sideCounter++) / treeRoundness;
-                uvEndPoint = new Vector2(tilling, 0.5f / treeRoundness);
 
                 // Rearrange triangle indexes
                 bLeft = bRight;
-                centre += 2;
-                bRight += 2;
-                bRight = (bRight >= vertexIndex) ? bRight - 18 : bRight;
+                bRight += 1;
+                bRight = (bRight >= vertexIndex) ? bRight - 9 : bRight;
             }
+            // Use 0.5f for now later on trace circle points on mesh and assign values this way
+            Vector2 uvEndPoint = new Vector2(0.5f, 0.5f);
+            uvs[vertexIndexUV++] = uvEndPoint; 
         }
         
         // Assign values to the mesh

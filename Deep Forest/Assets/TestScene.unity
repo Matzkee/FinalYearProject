@@ -156,7 +156,7 @@ MonoBehaviour:
   width: 0.2
   angleX: 22.5
   angleY: 30
-  lengthRatio: 1
+  lengthRatio: 0.95
   widthRatio: 0.8
   treeRoundness: 8
   axiom: F
@@ -165,7 +165,7 @@ MonoBehaviour:
   - FF[+F+F][aFzF][-zF]
   skeletonLines: 0
   skeletonCircles: 0
-  generations: 3
+  generations: 4
 --- !u!1 &1126569301
 GameObject:
   m_ObjectHideFlags: 0
