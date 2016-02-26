@@ -2,17 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TestLifeForm : MonoBehaviour {
-
-    GameObject treeStructure = null;
-
+public class ImprovedLifeForm : MonoBehaviour {
+    
     Rule[] ruleset;
     LSystem lsystem;
     Turtle turtle;
     List<Segment> branches;
     List<Circle> circles;
     List<BranchEnd> branchEnds;
-    
+
+    Mesh mesh;
+    MeshRenderer meshRenderer;
     public Material treeBark;
 
     public float length = 5.0f;
@@ -31,11 +31,15 @@ public class TestLifeForm : MonoBehaviour {
     public int generations = 0;
 
 	void Start () {
+        // Initialize other components
+        mesh = gameObject.AddComponent<MeshFilter>().mesh;
+        meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        mesh.Clear();
         //Randomize generation numbers
         generations = Random.Range(1,generations);
+        // Save current location
+        Vector3 currentP = transform.position;
 
-        // Look up so we rotate the tree structure
-        transform.Rotate(Vector3.right * -90.0f);
         // Rules can be applied in an inspector, once game is started all information is
         // taken from an editor
         if (ruleChars != null)
@@ -57,30 +61,25 @@ public class TestLifeForm : MonoBehaviour {
         {
             lsystem.Generate();
         }
-        // Save current transform position & rotation
-        Vector3 currentP = transform.position;
-        Quaternion currentR = transform.rotation;
-
         // Generate the alphabet & pass it to the turtle
         turtle.SetAlphabet(lsystem.GetAlphabet());
         turtle.GenerateSkeleton();
 
         // Get vector arrays
         GetTreeBranches();
-        transform.position = currentP;
-        transform.rotation = currentR;
 
-        DestroyTree();
+        //DestroyTree();
         RenderTree();
+
+        // Restore starting location and look in the direction of turtle
+        transform.Rotate(Vector3.right * -90.0f);
+        transform.position = currentP;
     }
 
     // Destroy previous tree structure, if exist
     void DestroyTree()
     {
-        if (treeStructure != null)
-        {
-            Destroy(treeStructure);
-        }
+        mesh.Clear();
     }
     // Get vector lists
     void GetTreeBranches()
@@ -93,17 +92,6 @@ public class TestLifeForm : MonoBehaviour {
     // Make new object for each branch with mesh and material applied
     void RenderTree()
     {
-        // Generate new object with MeshFilter and Renderer
-        treeStructure = new GameObject("Tree Structure");
-        Mesh mesh;
-        MeshFilter filter;
-        MeshRenderer meshRenderer;
-
-        filter = treeStructure.AddComponent<MeshFilter>();
-        mesh = filter.mesh;
-        meshRenderer = treeStructure.AddComponent<MeshRenderer>();
-        mesh.Clear();
-
         int numOfPoints = treeRoundness;
 
         int vertexCount = ((9 * 6) * branches.Count) + 
@@ -213,7 +201,7 @@ public class TestLifeForm : MonoBehaviour {
         mesh.RecalculateNormals();
         meshRenderer.material = treeBark;
         // Set the tree structure object to its parent
-        treeStructure.transform.parent = transform;
+        //treeStructure.transform.parent = transform;
 
         Debug.Log("Number of vertices: " + optimalVertsCount + "\nPolygons to render: " + triangleIndex / 3);
     }

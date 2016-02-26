@@ -13,12 +13,12 @@ public class CellularAutomata : MonoBehaviour
 
     [Range(0, 100)]
     public int randomFillPercent;
-
-    int[,] map;
+    [HideInInspector]
+    public int[,] map;
 
     void Start()
     {
-        GenerateMap();
+        //GenerateMap();
     }
 
     public void GenerateMap()
@@ -207,22 +207,6 @@ public class CellularAutomata : MonoBehaviour
         {
             tileX = x;
             tileY = y;
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        if (map != null)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-                    Vector3 pos = new Vector3(-width / 2 + x + .5f, 0, -height / 2 + y + .5f);
-                    Gizmos.DrawCube(pos, Vector3.one);
-                }
-            }
         }
     }
 

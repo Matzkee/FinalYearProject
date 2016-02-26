@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(CellularAutomata))]
 public class TerrainGenerator : MonoBehaviour {
 
-    public int width = 70;
-    public int height = 70;
+    public int width = 100;
+    public int height = 100;
     public int seed;
     public float scale = 10f;
     public int octaves = 4;
@@ -12,19 +13,24 @@ public class TerrainGenerator : MonoBehaviour {
     public float lacunarity = 1f;
     public bool autoUpdate = false;
 
-    Vector2[] octaveOffsets;
+    public GameObject prefab;
     public Material terrainMaterial;
+
+    Vector2[] octaveOffsets;
     Mesh mesh;
     MeshRenderer meshRenderer;
+    CellularAutomata ca;
 
     // Use this for initialization
     void Start()
     {
+        ca = gameObject.GetComponent<CellularAutomata>();
         mesh = gameObject.AddComponent<MeshFilter>().mesh;
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         mesh.Clear();
         
         GenerateMesh();
+        GenerateTrees();
     }
 
     // Calculate the Perlin Noise at those coordinates
@@ -44,6 +50,25 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         return perlinValue;
+    }
+
+    public void GenerateTrees()
+    {
+        ca.GenerateMap();
+        int[,] map = ca.map;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (map[x,y] == 1)
+                {
+                    Vector3 posToSpawn = new Vector3(x, 0, y);
+                    Instantiate(prefab, posToSpawn, transform.rotation);
+                }
+            }
+        }
+
     }
 
     public void GenerateMesh()
