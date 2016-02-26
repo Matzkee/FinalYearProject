@@ -56,16 +56,20 @@ public class TerrainGenerator : MonoBehaviour {
     {
         ca.GenerateMap();
         int[,] map = ca.map;
-
-        for (int x = 0; x < width; x++)
+        int index = 0;
+        for (int y = 0; y < height; y++)
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
                 if (map[x,y] == 1)
                 {
-                    Vector3 posToSpawn = new Vector3(x, 0, y);
+                    Vector3 posToSpawn = new Vector3(
+                        x - (width / 2), 
+                        mesh.vertices[index].y, 
+                        y - (height / 2));
                     Instantiate(prefab, posToSpawn, transform.rotation);
                 }
+                index += 6;
             }
         }
 
@@ -128,13 +132,13 @@ public class TerrainGenerator : MonoBehaviour {
                 }
             }
 
-            // Assign arrays to the mesh
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.uv = uvs;
-
-            mesh.RecalculateNormals();
-            meshRenderer.material = terrainMaterial;
         }
+        // Assign arrays to the mesh
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.uv = uvs;
+
+        mesh.RecalculateNormals();
+        meshRenderer.material = terrainMaterial;
     }
 }
