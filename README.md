@@ -1,1 +1,3 @@
 # FinalYearProject
+
+The purpose of this project is to create a procedurally generated forest inside a 3D stealth game where each tree is generated using code, providing a variety of lifeforms. A user is challenged to escape this procedurally generated forest by experiencing activities like hiding, silent movement and environment awareness due to the simple fact that the player is not alone in this forest. Forest is guarded by a powerful intelligent enemy which is ready to catch any intruders.
