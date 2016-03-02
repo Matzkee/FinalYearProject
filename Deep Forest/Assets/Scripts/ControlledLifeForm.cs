@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ImprovedLifeForm : MonoBehaviour {
+public class ControlledLifeForm : MonoBehaviour {
 
     GameObject treeStructure;
 
@@ -28,12 +28,8 @@ public class ImprovedLifeForm : MonoBehaviour {
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
 
-    public int generations = 0;
-
-	void Start () {
-        //Randomize generation numbers
-        generations = Random.Range(1, generations);
-
+    void Start()
+    {
         // Look up so we rotate the tree structure
         transform.Rotate(Vector3.right * -90.0f);
         // Rules can be applied in an inspector, once game is started all information is
@@ -48,15 +44,13 @@ public class ImprovedLifeForm : MonoBehaviour {
         }
         // Create the L-System and a new Turtle
         lsystem = new LSystem(axiom, ruleset);
+    }
+
+    public void DrawNextGeneration()
+    {
         turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(),
             length, angleX, angleY, gameObject, widthRatio, lengthRatio);
-
-        // Generate the alphabet n(generations) times
-        for (int i = 0; i <= generations; i++)
-        {
-            lsystem.Generate();
-        }
-        // Save current transform position & rotation
+        lsystem.Generate();
         Vector3 currentP = transform.position;
         Quaternion currentR = transform.rotation;
 
@@ -103,7 +97,7 @@ public class ImprovedLifeForm : MonoBehaviour {
 
         int numOfPoints = treeRoundness;
 
-        int vertexCount = ((9 * 6) * branches.Count) + 
+        int vertexCount = ((9 * 6) * branches.Count) +
             ((9 * 3) * branchEnds.Count);
         int optimalVertsCount = (2 * (numOfPoints + 1) * branches.Count) +
            ((numOfPoints + 2) * branchEnds.Count);
@@ -200,9 +194,9 @@ public class ImprovedLifeForm : MonoBehaviour {
             }
             // Use 0.5f for now later on trace circle points on mesh and assign values this way
             Vector2 uvEndPoint = new Vector2(0.5f, 0.5f);
-            uvs[vertexIndexUV++] = uvEndPoint; 
+            uvs[vertexIndexUV++] = uvEndPoint;
         }
-        
+
         // Assign values to the mesh
         mesh.vertices = vertices;
         mesh.uv = uvs;
@@ -218,7 +212,7 @@ public class ImprovedLifeForm : MonoBehaviour {
     // Draw debug lines
     void OnDrawGizmos()
     {
-        
+
         if (branches != null && skeletonLines)
         {
             foreach (Segment b in branches)
@@ -232,7 +226,7 @@ public class ImprovedLifeForm : MonoBehaviour {
                 Gizmos.DrawLine(be.start, be.end);
             }
         }
-        
+
         if (circles != null && skeletonCircles)
         {
             for (int i = 0; i < circles.Count; i++)

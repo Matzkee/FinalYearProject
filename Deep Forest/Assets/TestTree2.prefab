@@ -1,68 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &172078
+--- !u!1 &165810
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 484988}
-  - 114: {fileID: 11457154}
+  - 4: {fileID: 407448}
+  - 114: {fileID: 11408126}
   m_Layer: 0
-  m_Name: Terrain Generator
+  m_Name: TestTree2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &484988
+--- !u!4 &407448
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172078}
+  m_GameObject: {fileID: 165810}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11457154
+--- !u!114 &11408126
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172078}
+  m_GameObject: {fileID: 165810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bc24b6ba2ca26942b366c33147ef1a7, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dca780a291444347a6247b4c08a8b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
-  fillPercentage: 46
-  scale: 10
-  octaves: 2
-  persistance: 1.5
-  lacunarity: 1
-  seed: 
-  useRandomSeed: 1
-  autoUpdate: 0
-  prefab: {fileID: 107558, guid: 876e112ae5c6f074b86695b26c7df976, type: 2}
-  terrainMaterial: {fileID: 2100000, guid: 45fd9e61492ca0246a0576bf931ce076, type: 2}
+  treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
+  length: 1.5
+  width: 0.3
+  angleX: 15
+  angleY: 15
+  lengthRatio: 0.99
+  widthRatio: 0.8
+  treeRoundness: 8
+  axiom: FA
+  ruleChars: 41004200
+  ruleStrings:
+  - aFB---B-----B
+  - '[zzF------A]'
+  skeletonLines: 0
+  skeletonCircles: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: prefab
-      value: 
-      objectReference: {fileID: 107558, guid: 876e112ae5c6f074b86695b26c7df976, type: 2}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 172078}
+  m_RootGameObject: {fileID: 165810}
   m_IsPrefabParent: 1

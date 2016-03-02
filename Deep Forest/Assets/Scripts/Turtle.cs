@@ -54,7 +54,7 @@ public class Turtle{
     public Material material;
 
     public Turtle(float _radius, int _detail, string a, float _length, float _angleX, float _angleZ, 
-        GameObject _currentTree, float _widthRatio, float _lengthRatio)
+        GameObject _currentTree, float widthRatio, float lengthRatio)
     {
         treeRoundness = _detail;
         trunkWidth = _radius;
@@ -70,8 +70,8 @@ public class Turtle{
         angleX = _angleX;
         angleY = _angleZ;
 
-        widthDecreseRatio = _widthRatio;
-        lengthDecreaseRatio = _lengthRatio;
+        widthDecreseRatio =widthRatio;
+        lengthDecreaseRatio = lengthRatio;
     }
 
     public void GenerateSkeleton()
