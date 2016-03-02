@@ -70,7 +70,7 @@ public class Turtle{
         angleX = _angleX;
         angleY = _angleZ;
 
-        widthDecreseRatio =widthRatio;
+        widthDecreseRatio = widthRatio;
         lengthDecreaseRatio = lengthRatio;
     }
 
@@ -131,12 +131,22 @@ public class Turtle{
             {
                 treeTransform.Rotate(Vector3.right * -angleX);
             }
+            //Rotate along Y axis
+            else if (c == 'z')
+            {
+                treeTransform.Rotate(Vector3.up * angleY);
+            }
+            else if(c == 'a'){
+                treeTransform.Rotate(Vector3.up * -angleY);
+            }
             // Save current position
             else if (c == '[')
             {
                 Coord currentCoord = new Coord(treeTransform.position, treeTransform.rotation,
                     lastCircle, trunkWidth, length);
                 coordStack.Push(currentCoord);
+                //trunkWidth *= 0.7f;
+                //lastCircle = CreateCircleAt(treeTransform, trunkWidth, treeRoundness);
             }
             // Restore last position saved
             else if (c == ']')
@@ -163,15 +173,6 @@ public class Turtle{
                 lastCircle = lastCord.circle;
                 lastPosition = lastCord.branchPos;
                 lastRotation = lastCord.branchRot;
-            }
-
-            //Rotate along Y axis
-            else if (c == 'z')
-            {
-                treeTransform.Rotate(Vector3.up * angleY);
-            }
-            else if(c == 'a'){
-                treeTransform.Rotate(Vector3.up * -angleY);
             }
         }
 
