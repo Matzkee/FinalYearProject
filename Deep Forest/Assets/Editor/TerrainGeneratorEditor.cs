@@ -12,13 +12,15 @@ public class TerrainGeneratorEditor :  Editor{
         {
             if (terrainGen.autoUpdate)
             {
-                terrainGen.GenerateMesh();
+                terrainGen.GenerateTrees();
             }
         }
         
-        if (GUILayout.Button("Generate"))
+        if (GUILayout.Button("Generate New Map"))
         {
+            terrainGen.GenerateSeed();
             terrainGen.GenerateMesh();
+            terrainGen.GenerateTrees();
         }
     }
 }

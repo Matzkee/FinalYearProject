@@ -50,7 +50,6 @@ public class ImprovedLifeForm : MonoBehaviour {
         }
         // Create the L-System and a new Turtle
         lsystem = new LSystem(axiom, ruleset);
-
         turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(),
             length, angleX, angleY, gameObject, widthRatio, lengthRatio);
 

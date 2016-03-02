@@ -1,24 +1,23 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-public class CellularAutomata : MonoBehaviour
+public class CellularAutomata
 {
 
     public int width;
     public int height;
-
     public string seed;
-    public bool useRandomSeed;
-
-    [Range(0, 100)]
-    public int randomFillPercent;
-    [HideInInspector]
+    public int fillPercent;
     public int[,] map;
+    public System.Random rng;
 
-    void Start()
+    public CellularAutomata(int mapWidth, int mapHeight, int mapFillPercent, System.Random randomSeed)
     {
-        //GenerateMap();
+        width = mapWidth;
+        height = mapHeight;
+        fillPercent = mapFillPercent;
+        rng = randomSeed;
+
+        GenerateMap();
     }
 
     public void GenerateMap()
@@ -36,13 +35,6 @@ public class CellularAutomata : MonoBehaviour
 
     void RandomFillMap()
     {
-        if (useRandomSeed)
-        {
-            seed = Time.time.ToString();
-        }
-
-        System.Random rng = new System.Random(seed.GetHashCode());
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -53,7 +45,7 @@ public class CellularAutomata : MonoBehaviour
                 }
                 else
                 {
-                    map[x, y] = (rng.Next(0, 100) < randomFillPercent) ? 1 : 0;
+                    map[x, y] = (rng.Next(0, 100) < fillPercent) ? 1 : 0;
                 }
             }
         }

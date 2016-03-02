@@ -1,36 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-[RequireComponent(typeof(CellularAutomata))]
 public class TerrainGenerator : MonoBehaviour {
 
+    [Header("Map Options")]
     public int width = 100;
     public int height = 100;
-    public int seed;
+    [Range(0, 100)]
+    public int fillPercentage;
     public float scale = 10f;
     public int octaves = 4;
     public float persistance = 1.5f;
     public float lacunarity = 1f;
+    public string seed;
+    public bool useRandomSeed = false;
     public bool autoUpdate = false;
 
     public GameObject prefab;
     public Material terrainMaterial;
 
+    System.Random rng;
     Vector2[] octaveOffsets;
     Mesh mesh;
     MeshRenderer meshRenderer;
     CellularAutomata ca;
+    List<GameObject> trees;
 
     // Use this for initialization
     void Start()
     {
-        ca = gameObject.GetComponent<CellularAutomata>();
+        trees = new List<GameObject>();
         mesh = gameObject.AddComponent<MeshFilter>().mesh;
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         mesh.Clear();
-        
+
+        GenerateSeed();
         GenerateMesh();
         GenerateTrees();
+    }
+
+    public void GenerateSeed()
+    {
+        if (useRandomSeed)
+        {
+            seed = Time.time.ToString();
+        }
+        // Generate the seed
+        rng = new System.Random(seed.GetHashCode());
+        ca = new CellularAutomata(width, height, fillPercentage, rng);
     }
 
     // Calculate the Perlin Noise at those coordinates
@@ -54,7 +72,7 @@ public class TerrainGenerator : MonoBehaviour {
 
     public void GenerateTrees()
     {
-        ca.GenerateMap();
+        DestroyTrees();
         int[,] map = ca.map;
         int index = 0;
         for (int y = 0; y < height; y++)
@@ -67,7 +85,9 @@ public class TerrainGenerator : MonoBehaviour {
                         x - (width / 2), 
                         mesh.vertices[index].y, 
                         y - (height / 2));
-                    Instantiate(prefab, posToSpawn, transform.rotation);
+                    GameObject tree = (GameObject)Instantiate(prefab, posToSpawn, transform.rotation);
+                    tree.transform.parent = transform;
+                    trees.Add(tree);
                 }
                 index += 6;
             }
@@ -75,10 +95,19 @@ public class TerrainGenerator : MonoBehaviour {
 
     }
 
+    public void DestroyTrees()
+    {
+        if (trees != null)
+        {
+            foreach (GameObject e in trees)
+            {
+                Destroy(e);
+            }
+        }
+    }
+
     public void GenerateMesh()
     {
-        // Generate the seed
-        System.Random rng = new System.Random(seed);
         octaveOffsets = new Vector2[octaves];
         for (int i = 0; i < octaves; i++)
         {
