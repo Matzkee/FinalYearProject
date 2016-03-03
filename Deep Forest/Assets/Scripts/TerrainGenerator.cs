@@ -16,9 +16,6 @@ public class TerrainGenerator : MonoBehaviour {
     public string seed;
     public bool useRandomSeed = false;
     public bool autoUpdate = false;
-    
-    public int totalPolyCount = 0;
-    public int totalVertsCount = 0;
 
     public GameObject[] prefabs;
     public Material terrainMaterial;

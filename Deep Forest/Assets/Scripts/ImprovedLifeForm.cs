@@ -213,8 +213,6 @@ public class ImprovedLifeForm : MonoBehaviour {
         // Set the tree structure object to its parent
         treeStructure.transform.parent = transform;
         
-        GetComponentInParent<TerrainGenerator>().totalPolyCount += (triangleIndex / 3);
-        GetComponentInParent<TerrainGenerator>().totalVertsCount += optimalVertsCount;
         //Debug.Log("Number of vertices: " + optimalVertsCount + "\nPolygons to render: " + triangleIndex / 3);
     }
 

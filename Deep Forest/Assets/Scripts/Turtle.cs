@@ -167,11 +167,13 @@ public class Turtle{
                 if (!Vector3.Equals(treeTransform.position,lastCord.branchPos))
                 {
                     // Delete the cylinder and make a cone instead
+                    // Also remove the last set of circle points
                     BranchEnd branchEnd = new BranchEnd(
                         branches[branches.Count - 1].start,
                         branches[branches.Count - 1].end,
                         branches[branches.Count - 1].startCircle);
                     branchesToDelete.Add(branches[branches.Count - 1]);
+                    circles.Remove(branches[branches.Count - 1].endCircle);
                     branchEnd.color = Color.green;
                     branchEnds.Add(branchEnd);
                 }
