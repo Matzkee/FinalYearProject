@@ -12,13 +12,12 @@ public class ControlledLifeForm : MonoBehaviour {
     List<Segment> branches;
     List<Circle> circles;
     List<BranchEnd> branchEnds;
-    
-    public Material treeBark;
 
     public float length = 5.0f;
     public float width = 1.0f;
-    public float angleX = 22.5f;
-    public float angleY = 30.0f;
+    public float turn = 22.5f;
+    public float pitch = 30.0f;
+    public float roll = 30.0f;
     public float lengthRatio = 0.7f;
     public float widthRatio = 0.7f;
     public int treeRoundness = 8;
@@ -27,6 +26,8 @@ public class ControlledLifeForm : MonoBehaviour {
     public string[] ruleStrings;
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
+
+    public Material treeBark;
 
     void Start()
     {
@@ -49,7 +50,7 @@ public class ControlledLifeForm : MonoBehaviour {
     public void DrawNextGeneration()
     {
         turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(),
-            length, angleX, angleY, gameObject, widthRatio, lengthRatio);
+            length, turn, pitch, roll, gameObject, widthRatio, lengthRatio);
         lsystem.Generate();
         Vector3 currentP = transform.position;
         Quaternion currentR = transform.rotation;

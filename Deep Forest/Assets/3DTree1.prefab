@@ -1,14 +1,14 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &174012
+--- !u!1 &171844
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 462952}
-  - 114: {fileID: 11437802}
+  - 4: {fileID: 447720}
+  - 114: {fileID: 11417382}
   m_Layer: 0
   m_Name: 3DTree1
   m_TagString: Untagged
@@ -16,41 +16,42 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &462952
+--- !u!4 &447720
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174012}
+  m_GameObject: {fileID: 171844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11437802
+--- !u!114 &11417382
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174012}
+  m_GameObject: {fileID: 171844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536df33ced3f8324792ccba0f2516bf2, type: 3}
+  m_Script: {fileID: 11500000, guid: eb6797ba63efd2c4989bf7661031d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
   length: 1
-  width: 0.5
-  angleX: 22.5
-  angleY: 30
-  lengthRatio: 1
-  widthRatio: 0.7
+  width: 0.4
+  turn: 22.5
+  pitch: 22.5
+  roll: 30
+  lengthRatio: 0.99
+  widthRatio: 0.8
   treeRoundness: 8
   axiom: F
   ruleChars: 4600
   ruleStrings:
-  - FF[+F+F][aFzF][-zF]
+  - FF[+F+F][^FvF][-vF]
   skeletonLines: 0
   skeletonCircles: 0
   generations: 3
@@ -60,28 +61,8 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: generations
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: lengthRatio
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: width
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: treeBark
-      value: 
-      objectReference: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
-    - target: {fileID: 0}
-      propertyPath: length
-      value: 1
-      objectReference: {fileID: 0}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 174012}
+  m_RootGameObject: {fileID: 171844}
   m_IsPrefabParent: 1

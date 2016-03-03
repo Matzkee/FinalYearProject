@@ -1,14 +1,14 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &154392
+--- !u!1 &167302
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 461396}
-  - 114: {fileID: 11439004}
+  - 4: {fileID: 401522}
+  - 114: {fileID: 11494476}
   m_Layer: 0
   m_Name: 3DTree2
   m_TagString: Untagged
@@ -16,121 +16,54 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &461396
+--- !u!4 &401522
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 154392}
-  m_LocalRotation: {x: 0, y: 0, z: -0.25881907, w: 0.9659258}
+  m_GameObject: {fileID: 167302}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11439004
+--- !u!114 &11494476
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 154392}
+  m_GameObject: {fileID: 167302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536df33ced3f8324792ccba0f2516bf2, type: 3}
+  m_Script: {fileID: 11500000, guid: eb6797ba63efd2c4989bf7661031d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
   length: 1
-  width: 1
-  angleX: 22.5
-  angleY: 30
-  lengthRatio: 1
+  width: 0.6
+  turn: 27.5
+  pitch: 20.5
+  roll: 22.5
+  lengthRatio: 0.98
   widthRatio: 0.7
   treeRoundness: 8
   axiom: L
   ruleChars: 4c004600
   ruleStrings:
-  - aF-[[L]+L]+zF[+FL]-L
+  - Fv-[[L]+L]+^^F[+FL]-L
   - FF
   skeletonLines: 0
   skeletonCircles: 0
-  generations: 3
+  generations: 4
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: ruleChars.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleStrings.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_LocalRotation.z
-      value: -0.25881907
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_LocalRotation.w
-      value: 0.9659258
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: generations
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: startRadius
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: treeBark
-      value: 
-      objectReference: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
-    - target: {fileID: 0}
-      propertyPath: length
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: axiom
-      value: L
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleChars.Array.data[0]
-      value: 76
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleChars.Array.data[1]
-      value: 70
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleStrings.Array.data[0]
-      value: aF-[[L]+L]+zF[+FL]-L
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleStrings.Array.data[1]
-      value: FF
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: lengthRatio
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: width
-      value: 1
-      objectReference: {fileID: 0}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 154392}
+  m_RootGameObject: {fileID: 167302}
   m_IsPrefabParent: 1

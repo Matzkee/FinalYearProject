@@ -37,7 +37,7 @@ using System.Collections.Generic;
 public class Turtle{
 
     float length;
-    float angleX, angleY;
+    float turn, pitch, roll;
     string alphabetToDraw;
     int treeRoundness;
     float trunkWidth;
@@ -53,7 +53,7 @@ public class Turtle{
     // Assign a tree bark material
     public Material material;
 
-    public Turtle(float _radius, int _detail, string a, float _length, float _angleX, float _angleZ, 
+    public Turtle(float _radius, int _detail, string a, float _length, float _turn, float _pitch, float _roll, 
         GameObject _currentTree, float widthRatio, float lengthRatio)
     {
         treeRoundness = _detail;
@@ -67,8 +67,9 @@ public class Turtle{
 
         alphabetToDraw = a;
         length = _length;
-        angleX = _angleX;
-        angleY = _angleZ;
+        turn = _turn;
+        pitch = _pitch;
+        roll = _roll;
 
         widthDecreseRatio = widthRatio;
         lengthDecreaseRatio = lengthRatio;
@@ -122,22 +123,31 @@ public class Turtle{
                     repeats = 0;
                 }
             }
-            // Rotate along X axis
+            // +- Turn right or left
             else if (c == '+')
             {
-                treeTransform.Rotate(Vector3.right * angleX);
+                treeTransform.Rotate(Vector3.up * turn);
             }
             else if (c == '-')
             {
-                treeTransform.Rotate(Vector3.right * -angleX);
+                treeTransform.Rotate(Vector3.up * -turn);
             }
-            //Rotate along Y axis
-            else if (c == 'z')
+            // v^ pitch down, pitch up
+            else if (c == 'v')
             {
-                treeTransform.Rotate(Vector3.up * angleY);
+                treeTransform.Rotate(Vector3.right * pitch);
             }
-            else if(c == 'a'){
-                treeTransform.Rotate(Vector3.up * -angleY);
+            else if (c == '^')
+            {
+                treeTransform.Rotate(Vector3.right * -pitch);
+            }
+            // \/ roll left, roll right
+            else if (c == '\\')
+            {
+                treeTransform.Rotate(Vector3.forward * roll);
+            }
+            else if(c == '/'){
+                treeTransform.Rotate(Vector3.forward * -roll);
             }
             // Save current position
             else if (c == '[')

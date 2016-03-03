@@ -17,8 +17,9 @@ public class ImprovedLifeForm : MonoBehaviour {
 
     public float length = 5.0f;
     public float width = 1.0f;
-    public float angleX = 22.5f;
-    public float angleY = 30.0f;
+    public float turn = 22.5f;
+    public float pitch = 30.0f;
+    public float roll = 30.0f;
     public float lengthRatio = 0.7f;
     public float widthRatio = 0.7f;
     public int treeRoundness = 8;
@@ -49,7 +50,7 @@ public class ImprovedLifeForm : MonoBehaviour {
         // Create the L-System and a new Turtle
         lsystem = new LSystem(axiom, ruleset);
         turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(),
-            length, angleX, angleY, gameObject, widthRatio, lengthRatio);
+            length, turn, pitch, roll, gameObject, widthRatio, lengthRatio);
 
         // Generate the alphabet n(generations) times
         for (int i = 0; i <= generations; i++)

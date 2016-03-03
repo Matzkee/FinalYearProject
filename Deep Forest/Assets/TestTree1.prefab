@@ -1,14 +1,14 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &150428
+--- !u!1 &167508
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 470518}
-  - 114: {fileID: 11429992}
+  - 4: {fileID: 442638}
+  - 114: {fileID: 11493990}
   m_Layer: 0
   m_Name: TestTree1
   m_TagString: Untagged
@@ -16,43 +16,44 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &470518
+--- !u!4 &442638
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 150428}
+  m_GameObject: {fileID: 167508}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11429992
+--- !u!114 &11493990
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 150428}
+  m_GameObject: {fileID: 167508}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2dca780a291444347a6247b4c08a8b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
   length: 1.5
   width: 0.3
-  angleX: 25
-  angleY: 25
+  turn: 25
+  pitch: 30
+  roll: 50
   lengthRatio: 0.9
   widthRatio: 0.8
   treeRoundness: 8
   axiom: F
   ruleChars: 4600
   ruleStrings:
-  - F[+aF][-zF[-aF]F]F[zF][-aF]
+  - F\[+F][^-F[-F]F]F[F]/[-F]
   skeletonLines: 0
   skeletonCircles: 0
+  treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -62,5 +63,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 150428}
+  m_RootGameObject: {fileID: 167508}
   m_IsPrefabParent: 1
