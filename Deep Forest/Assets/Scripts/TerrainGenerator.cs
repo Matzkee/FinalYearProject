@@ -16,8 +16,11 @@ public class TerrainGenerator : MonoBehaviour {
     public string seed;
     public bool useRandomSeed = false;
     public bool autoUpdate = false;
+    
+    public int totalPolyCount = 0;
+    public int totalVertsCount = 0;
 
-    public GameObject prefab;
+    public GameObject[] prefabs;
     public Material terrainMaterial;
 
     System.Random rng;
@@ -81,18 +84,19 @@ public class TerrainGenerator : MonoBehaviour {
             {
                 if (map[x,y] == 1)
                 {
+                    int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
                         x - (width / 2), 
                         mesh.vertices[index].y, 
                         y - (height / 2));
-                    GameObject tree = (GameObject)Instantiate(prefab, posToSpawn, transform.rotation);
+                    GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
                     tree.transform.parent = transform;
+                    tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
                     trees.Add(tree);
                 }
                 index += 6;
             }
         }
-
     }
 
     public void DestroyTrees()
