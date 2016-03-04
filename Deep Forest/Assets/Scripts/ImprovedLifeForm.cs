@@ -12,9 +12,9 @@ public class ImprovedLifeForm : MonoBehaviour {
     List<Segment> branches;
     List<Circle> circles;
     List<BranchEnd> branchEnds;
-    
-    public Material treeBark;
+    List<Triangle> leafTriangles;
 
+    [Header("Tree Options")]
     public float length = 5.0f;
     public float width = 1.0f;
     public float turn = 22.5f;
@@ -28,8 +28,13 @@ public class ImprovedLifeForm : MonoBehaviour {
     public string[] ruleStrings;
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
-
     public int generations = 0;
+    public Material treeBark;
+
+    [Header("Leaf Options")]
+    public float leafSize = 2f;
+    public Material leafMaterial;
+    int leavesCount;
 
 	void Start () {
         //Randomize generation numbers
@@ -72,6 +77,7 @@ public class ImprovedLifeForm : MonoBehaviour {
 
         DestroyTree();
         RenderTree();
+        MakeLeaves();
     }
 
     // Destroy previous tree structure, if exist
@@ -246,6 +252,128 @@ public class ImprovedLifeForm : MonoBehaviour {
                     Gizmos.DrawLine(prev, next);
                 }
             }
+        }
+    }
+
+    void RenderLeaves()
+    {
+        // Make new object for leaves
+        GameObject leaves = new GameObject("Leaves");
+        Mesh mesh;
+        MeshRenderer meshRenderer;
+
+        mesh = leaves.AddComponent<MeshFilter>().mesh;
+        meshRenderer = leaves.AddComponent<MeshRenderer>();
+        mesh.Clear();
+
+        int vertexCount = leafTriangles.Count * 3;
+
+        //int triangleIndex = 0;
+        int vertexIndex = 0;
+        // Alocate new arrays
+        Vector3[] vertices = new Vector3[vertexCount];
+        int[] triangles = new int[vertexCount];
+
+        foreach (Triangle t in leafTriangles)
+        {
+            triangles[vertexIndex] = vertexIndex;
+            vertices[vertexIndex++] = t.v1;
+            triangles[vertexIndex] = vertexIndex;
+            vertices[vertexIndex++] = t.v2;
+            triangles[vertexIndex] = vertexIndex;
+            vertices[vertexIndex++] = t.v3;
+        }
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        // Assing leaves to the tree structure
+        meshRenderer.material = leafMaterial;
+        leaves.transform.parent = treeStructure.transform;
+    }
+
+    void MakeLeaves()
+    {
+        leafTriangles = new List<Triangle>();
+
+        foreach (BranchEnd b in branchEnds)
+        {
+            for (int i = 0; i < treeRoundness; i++)
+            {
+                MakeLeaf(b.start, b.startCircle.circlePoints[i], b.end, leafSize);
+                leavesCount++;
+            }
+        }
+        RenderLeaves();
+        Debug.Log("Leaves Count: " + leavesCount);
+    }
+
+    void MakeLeaf(Vector3 centre, Vector3 start, Vector3 end, float size)
+    {
+        Vector3 temp1, temp2, leafStart, leafEnd, leafMid;
+        Vector3 topLeft, bottomLeft, bottomRight, topRight;
+        Vector3 leafPosition = Vector3.Lerp(start, end, Random.value);
+        Vector3 toStart = (start - centre);
+        Vector3 toEnd = (end - start).normalized;
+        // Perpendicular vector to leaf
+        Vector3 leafPerp = Vector3.Cross(toEnd, toStart);
+        // now we have a vector perpendicular to the starting point 
+        // but its direction points to the right, make 2 vectors on each side for stem
+        temp1 = (leafPosition + (leafPerp * (size / 8)));
+        temp2 = (leafPosition + (leafPerp * -(size / 8)));
+        // Now create perpendicular vector rotated 90degrees to previous one
+        // Create the offset vector for calculation
+        leafStart = leafPosition + (leafPerp * size);
+        Vector3 toLeafPos = (leafPosition - leafStart).normalized;
+        leafPerp = Vector3.Cross(toEnd, toLeafPos);
+        leafStart = leafPosition + (leafPerp * size);
+        
+        leafTriangles.Add(new Triangle(temp1, temp2, leafStart));
+
+        leafEnd = leafPosition + (leafPerp * size * size);
+        leafEnd.y = leafStart.y;
+        leafEnd += Vector3.down;
+
+        toEnd = (start - leafStart).normalized;
+        toLeafPos = (leafEnd - leafStart).normalized;
+
+        float leafNodeOffset = Vector3.Distance(leafPosition, leafStart) / 2;
+        leafMid = (leafEnd + leafStart) / 2;
+        leafPerp = Vector3.Cross(toEnd, toLeafPos);
+
+        // Create 2 points on each side of middlepoint & create 2 polygons
+        topLeft = leafMid + (leafPerp * leafNodeOffset);
+        topRight = leafMid + (leafPerp * -leafNodeOffset);
+        leafTriangles.Add(new Triangle(temp1, leafMid, leafEnd));
+        leafTriangles.Add(new Triangle(temp2, leafMid, leafEnd));
+
+        // Create 2 points on each side of leaf start & create 4 polygons
+        bottomLeft = leafStart + (leafStart * leafNodeOffset);
+        bottomRight = leafStart + (leafStart * -leafNodeOffset);
+        leafTriangles.Add(new Triangle(topLeft, leafMid, leafStart));
+        leafTriangles.Add(new Triangle(topRight, leafMid, leafStart));
+        leafTriangles.Add(new Triangle(topRight, bottomLeft, leafStart));
+        leafTriangles.Add(new Triangle(topLeft, bottomRight, leafStart));
+
+        leafNodeOffset = Vector3.Distance(bottomLeft, leafStart) / 2;
+
+        temp1 = (leafMid + ((leafMid - leafEnd).normalized) * leafNodeOffset) + (leafPerp * leafNodeOffset);
+        temp2 = (leafMid + ((leafMid - leafEnd).normalized) * leafNodeOffset) + (leafPerp * -leafNodeOffset);
+        leafTriangles.Add(new Triangle(bottomLeft, leafStart, temp1));
+        leafTriangles.Add(new Triangle(bottomRight, leafStart, temp2));
+    }
+
+    struct Triangle
+    {
+        public Vector3 v1;
+        public Vector3 v2;
+        public Vector3 v3;
+
+        public Triangle(Vector3 _v1, Vector3 _v2, Vector3 _v3)
+        {
+            v1 = _v1;
+            v2 = _v2;
+            v3 = _v3;
         }
     }
 }
