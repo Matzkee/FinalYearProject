@@ -9,11 +9,11 @@ public class Test : MonoBehaviour {
 
     List<Vector3> leafNodes;
 
-    Vector3 rnd;
+    Vector3 leafPosition;
     Vector3 leafNode;
     Vector3 test;
-    Vector3 originDir;
-    Vector3 offsetPoint, offsetLeaf;
+    Vector3 toStart;
+    Vector3 leafStart, leafEnd;
 
     float distance = 2f;
     float leafSize = 2f;
@@ -21,60 +21,61 @@ public class Test : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         leafNodes = new List<Vector3>();
-        Vector3 startPos = transform.position;
+        Vector3 centre = transform.position;
         Quaternion startRot = transform.rotation;
         
         transform.Translate(Vector3.forward * distance);
         start = transform.position;
 
-        transform.position = startPos;
+        transform.position = centre;
         transform.rotation = startRot;
 
         transform.Rotate(Vector3.right * -90f);
         transform.Translate(Vector3.forward * distance * 5);
         end = transform.position;
 
-        rnd = Vector3.Lerp(start, end, Random.value);
+        leafPosition = Vector3.Lerp(start, end, Random.value);
 
-        originDir = start - startPos;
-        originDir.Normalize(); 
+        toStart = start - centre;
+        toStart.Normalize(); 
 
 
-        Vector3 dir = end - start;
-        dir.Normalize();
-        Vector3 perp = Vector3.Cross(dir, originDir);
+        Vector3 toEnd = end - start;
+        toEnd.Normalize();
+        Vector3 leafPerp = Vector3.Cross(toEnd, toStart);
 
-        leafNodes.Add(rnd + (perp * (leafSize / 5)));
-        leafNodes.Add(rnd + (perp * -(leafSize / 5)));
+        leafNodes.Add(leafPosition + (leafPerp * (leafSize / 5)));
+        leafNodes.Add(leafPosition + (leafPerp * -(leafSize / 5)));
 
-        offsetPoint = rnd + (perp * leafSize);
-        Vector3 perpDir = (rnd - offsetPoint).normalized;
-        perp = Vector3.Cross(dir, perpDir);
-        offsetPoint = rnd + (perp * leafSize);
-        offsetLeaf = rnd + (perp * leafSize * (leafSize));
-        offsetLeaf.y = offsetPoint.y;
-        offsetLeaf += Vector3.down;
+        leafStart = leafPosition + (leafPerp * leafSize);
+        Vector3 toLeafPos = (leafPosition - leafStart).normalized;
+        leafPerp = Vector3.Cross(toEnd, toLeafPos);
+        leafStart = leafPosition + (leafPerp * leafSize);
+
+        leafEnd = leafPosition + (leafPerp * leafSize * (leafSize));
+        leafEnd.y = leafStart.y;
+        leafEnd += Vector3.down * leafSize;
         
-        dir = startPos - offsetPoint;
-        perpDir = offsetLeaf - offsetPoint;
+        toEnd = centre - leafStart;
+        toLeafPos = leafEnd - leafStart;
 
-        float leafNodeOffset = Vector3.Distance(rnd, offsetPoint);
-        Vector3 leafNodeMid = (offsetLeaf + offsetPoint) / 2;
-        perp = Vector3.Cross(dir.normalized, perpDir.normalized);
+        float leafNodeOffset = Vector3.Distance(leafPosition, leafStart);
+        Vector3 leafMid = (leafEnd + leafStart) / 2;
+        leafPerp = Vector3.Cross(toEnd.normalized, toLeafPos.normalized);
 
-        leafNode = leafNodeMid + (perp * (leafNodeOffset/2));
+        leafNode = leafMid + (leafPerp * (leafNodeOffset/2));
         leafNodes.Add(leafNode);
-        leafNode = leafNodeMid + (perp * -(leafNodeOffset/2));
+        leafNode = leafMid + (leafPerp * -(leafNodeOffset/2));
         leafNodes.Add(leafNode);
-        leafNode = offsetPoint + (perp * (leafNodeOffset/2));
+        leafNode = leafStart + (leafPerp * (leafNodeOffset/2));
         leafNodes.Add(leafNode);
-        leafNode = offsetPoint + (perp * -(leafNodeOffset/2));
+        leafNode = leafStart + (leafPerp * -(leafNodeOffset/2));
         leafNodes.Add(leafNode);
-        leafNodeOffset = Vector3.Distance(leafNode, offsetPoint);
+        leafNodeOffset = Vector3.Distance(leafNode, leafStart);
 
-        leafNode = (offsetPoint + ((offsetPoint - offsetLeaf).normalized) * (leafNodeOffset / 2)) + (perp * (leafNodeOffset / 2));
+        leafNode = (leafStart + ((leafStart - leafEnd).normalized) * (leafNodeOffset / 2)) + (leafPerp * (leafNodeOffset / 2));
         leafNodes.Add(leafNode);
-        leafNode = (offsetPoint + ((offsetPoint - offsetLeaf).normalized) * (leafNodeOffset / 2)) + (perp * -(leafNodeOffset / 2));
+        leafNode = (leafStart + ((leafStart - leafEnd).normalized) * (leafNodeOffset / 2)) + (leafPerp * -(leafNodeOffset / 2));
         leafNodes.Add(leafNode);
 
     }
@@ -87,14 +88,14 @@ public class Test : MonoBehaviour {
         Gizmos.DrawLine(start, end);
 
         Gizmos.color = Color.gray;
-        Gizmos.DrawWireSphere(rnd, 0.5f);
-        Gizmos.DrawWireSphere(offsetLeaf, 0.5f);
+        Gizmos.DrawWireSphere(leafPosition, 0.5f);
+        Gizmos.DrawWireSphere(leafEnd, 0.5f);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(rnd, offsetPoint);
+        Gizmos.DrawLine(leafPosition, leafStart);
 
         Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(offsetPoint, 0.5f);
+        Gizmos.DrawWireSphere(leafStart, 0.5f);
 
         if (leafNodes != null)
         {

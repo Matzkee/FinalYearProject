@@ -304,23 +304,26 @@ public class ImprovedLifeForm : MonoBehaviour {
                 leavesCount++;
             }
         }
+
         RenderLeaves();
         Debug.Log("Leaves Count: " + leavesCount);
     }
 
+    // Future work:
+    // Change this to use less vertices & apply uv maps for texturing
     void MakeLeaf(Vector3 centre, Vector3 start, Vector3 end, float size)
     {
         Vector3 temp1, temp2, leafStart, leafEnd, leafMid;
         Vector3 topLeft, bottomLeft, bottomRight, topRight;
         Vector3 leafPosition = Vector3.Lerp(start, end, Random.value);
-        Vector3 toStart = (start - centre);
+        Vector3 toStart = (start - centre).normalized;
         Vector3 toEnd = (end - start).normalized;
         // Perpendicular vector to leaf
         Vector3 leafPerp = Vector3.Cross(toEnd, toStart);
         // now we have a vector perpendicular to the starting point 
         // but its direction points to the right, make 2 vectors on each side for stem
-        temp1 = (leafPosition + (leafPerp * (size / 8)));
-        temp2 = (leafPosition + (leafPerp * -(size / 8)));
+        temp1 = (leafPosition + (leafPerp * (size / 10)));
+        temp2 = (leafPosition + (leafPerp * -(size / 10)));
         // Now create perpendicular vector rotated 90degrees to previous one
         // Create the offset vector for calculation
         leafStart = leafPosition + (leafPerp * size);
@@ -330,11 +333,11 @@ public class ImprovedLifeForm : MonoBehaviour {
         
         leafTriangles.Add(new Triangle(temp1, temp2, leafStart));
 
-        leafEnd = leafPosition + (leafPerp * size * size);
+        leafEnd = leafPosition + (leafPerp * size + (leafPerp * size));
         leafEnd.y = leafStart.y;
-        leafEnd += Vector3.down;
+        leafEnd += Vector3.down * leafSize;
 
-        toEnd = (start - leafStart).normalized;
+        toEnd = (centre - leafStart).normalized;
         toLeafPos = (leafEnd - leafStart).normalized;
 
         float leafNodeOffset = Vector3.Distance(leafPosition, leafStart) / 2;
@@ -344,21 +347,21 @@ public class ImprovedLifeForm : MonoBehaviour {
         // Create 2 points on each side of middlepoint & create 2 polygons
         topLeft = leafMid + (leafPerp * leafNodeOffset);
         topRight = leafMid + (leafPerp * -leafNodeOffset);
-        leafTriangles.Add(new Triangle(temp1, leafMid, leafEnd));
-        leafTriangles.Add(new Triangle(temp2, leafMid, leafEnd));
+        leafTriangles.Add(new Triangle(topLeft, leafMid, leafEnd));
+        leafTriangles.Add(new Triangle(topRight, leafMid, leafEnd));
 
         // Create 2 points on each side of leaf start & create 4 polygons
-        bottomLeft = leafStart + (leafStart * leafNodeOffset);
-        bottomRight = leafStart + (leafStart * -leafNodeOffset);
+        bottomLeft = leafStart + (leafPerp * leafNodeOffset);
+        bottomRight = leafStart + (leafPerp * -leafNodeOffset);
         leafTriangles.Add(new Triangle(topLeft, leafMid, leafStart));
         leafTriangles.Add(new Triangle(topRight, leafMid, leafStart));
-        leafTriangles.Add(new Triangle(topRight, bottomLeft, leafStart));
-        leafTriangles.Add(new Triangle(topLeft, bottomRight, leafStart));
+        leafTriangles.Add(new Triangle(topLeft, bottomLeft, leafStart));
+        leafTriangles.Add(new Triangle(topRight, bottomRight, leafStart));
 
         leafNodeOffset = Vector3.Distance(bottomLeft, leafStart) / 2;
 
-        temp1 = (leafMid + ((leafMid - leafEnd).normalized) * leafNodeOffset) + (leafPerp * leafNodeOffset);
-        temp2 = (leafMid + ((leafMid - leafEnd).normalized) * leafNodeOffset) + (leafPerp * -leafNodeOffset);
+        temp1 = (leafStart + ((leafStart - leafEnd).normalized) * leafNodeOffset) + (leafPerp * leafNodeOffset);
+        temp2 = (leafStart + ((leafStart - leafEnd).normalized) * leafNodeOffset) + (leafPerp * -leafNodeOffset);
         leafTriangles.Add(new Triangle(bottomLeft, leafStart, temp1));
         leafTriangles.Add(new Triangle(bottomRight, leafStart, temp2));
     }
