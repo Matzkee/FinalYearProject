@@ -299,11 +299,11 @@ public class ImprovedLifeForm : MonoBehaviour {
 
             // Apply triangles
             triangles[triangleIndex++] = tLeft;
+            triangles[triangleIndex++] = bRight;
             triangles[triangleIndex++] = bLeft;
-            triangles[triangleIndex++] = bRight;
             triangles[triangleIndex++] = tLeft;
-            triangles[triangleIndex++] = bRight;
             triangles[triangleIndex++] = tRight;
+            triangles[triangleIndex++] = bRight;
 
             tLeft = vertexIndex;
             bLeft = vertexIndex + 1;

@@ -82,6 +82,7 @@ public class Test2 : MonoBehaviour {
         int vertexIndex = 0;
         int triangleIndex = 0;
         int uvIndex = 0;
+        int normalIndex = 0;
 
         int tLeft = triangleIndex;
         int bLeft = triangleIndex + 1;
@@ -89,6 +90,7 @@ public class Test2 : MonoBehaviour {
         int bRight = triangleIndex + 3;
         // Alocate new arrays
         Vector3[] vertices = new Vector3[vertexCount];
+        Vector3[] normals = new Vector3[vertexCount];
         Vector2[] uvs = new Vector2[vertexCount];
         int[] triangles = new int[triangleCount];
 
@@ -98,6 +100,13 @@ public class Test2 : MonoBehaviour {
         vertices[vertexIndex++] = bottomLeft;
         vertices[vertexIndex++] = topRight;
         vertices[vertexIndex++] = bottomRight;
+
+        // Apply normals
+        normals[normalIndex++] = topLeft + Vector3.up;
+        normals[normalIndex++] = bottomLeft + Vector3.up;
+        normals[normalIndex++] = topRight + Vector3.up;
+        normals[normalIndex++] = bottomRight + Vector3.up;
+
         // Apply uvs
         uvs[uvIndex++] = new Vector2(0, 1);
         uvs[uvIndex++] = new Vector2(0, 0);
@@ -106,15 +115,16 @@ public class Test2 : MonoBehaviour {
 
         // Apply triangles
         triangles[triangleIndex++] = tLeft;
+        triangles[triangleIndex++] = bRight;
         triangles[triangleIndex++] = bLeft;
-        triangles[triangleIndex++] = bRight;
         triangles[triangleIndex++] = tLeft;
-        triangles[triangleIndex++] = bRight;
         triangles[triangleIndex++] = tRight;
+        triangles[triangleIndex++] = bRight;
         
 
         mesh.vertices = vertices;
         mesh.uv = uvs;
+        //mesh.normals = normals;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         // Assing leaves to the tree structure
