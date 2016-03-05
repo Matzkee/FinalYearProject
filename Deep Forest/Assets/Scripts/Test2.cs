@@ -111,7 +111,7 @@ public class Test2 : MonoBehaviour {
         triangles[triangleIndex++] = tLeft;
         triangles[triangleIndex++] = bRight;
         triangles[triangleIndex++] = tRight;
-
+        
 
         mesh.vertices = vertices;
         mesh.uv = uvs;
