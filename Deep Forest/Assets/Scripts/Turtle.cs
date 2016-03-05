@@ -155,8 +155,8 @@ public class Turtle{
                 Coord currentCoord = new Coord(treeTransform.position, treeTransform.rotation,
                     lastCircle, trunkWidth, length);
                 coordStack.Push(currentCoord);
-                //trunkWidth *= 0.7f;
-                //lastCircle = CreateCircleAt(treeTransform, trunkWidth, treeRoundness);
+                trunkWidth *= 0.7f;
+                lastCircle = CreateCircleAt(treeTransform, trunkWidth, treeRoundness);
             }
             // Restore last position saved
             else if (c == ']')

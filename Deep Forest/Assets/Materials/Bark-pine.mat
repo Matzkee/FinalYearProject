@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Dead-Leaves
+  m_Name: Bark-pine
   m_Shader: {fileID: 10600, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -19,14 +19,14 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: 959a741985683c746ae1229396460b94, type: 3}
-          m_Scale: {x: 0.5, y: 0.5}
+          m_Texture: {fileID: 2800000, guid: 4d96d6bd492573b46864b85860fc4829, type: 3}
+          m_Scale: {x: 1, y: 5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: d9a80b9693adc294d9ded00db90c66ea, type: 3}
+          m_Texture: {fileID: 2800000, guid: 74690d2444360e544ba7e7262696e0be, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -81,20 +81,6 @@ Material:
       data:
         first:
           name: _GlossMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _TranslucencyMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _ShadowOffset
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -156,14 +142,6 @@ Material:
         first:
           name: _SquashAmount
         second: 1
-      data:
-        first:
-          name: _TranslucencyViewDependency
-        second: 0.7
-      data:
-        first:
-          name: _ShadowStrength
-        second: 1
     m_Colors:
       data:
         first:
@@ -185,7 +163,3 @@ Material:
         first:
           name: _TreeInstanceScale
         second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _TranslucencyColor
-        second: {r: 0.73, g: 0.85, b: 0.41, a: 1}

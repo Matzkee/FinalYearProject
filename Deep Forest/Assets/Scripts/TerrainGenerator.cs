@@ -24,6 +24,7 @@ public class TerrainGenerator : MonoBehaviour {
     Vector2[] octaveOffsets;
     Mesh mesh;
     MeshRenderer meshRenderer;
+    MeshCollider colider;
     CellularAutomata ca;
     List<GameObject> trees;
 
@@ -33,11 +34,12 @@ public class TerrainGenerator : MonoBehaviour {
         trees = new List<GameObject>();
         mesh = gameObject.AddComponent<MeshFilter>().mesh;
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        colider = gameObject.AddComponent<MeshCollider>();
         mesh.Clear();
 
         GenerateSeed();
         GenerateMesh();
-        GenerateTrees();
+        //GenerateTrees();
     }
 
     public void GenerateSeed()
@@ -167,8 +169,11 @@ public class TerrainGenerator : MonoBehaviour {
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uvs;
+        //colider.sharedMesh.vertices = vertices;
+        //colider.sharedMesh.triangles = triangles;
 
         mesh.RecalculateNormals();
+        colider.sharedMesh = mesh;
         meshRenderer.material = terrainMaterial;
     }
 }
