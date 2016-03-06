@@ -4,7 +4,7 @@
     This class is used to store information between 2 points in
     an L-System. It is mainly used to create branches
     */
-public class Segment
+public class BranchSegment
 {
     public Vector3 start;
     public Vector3 end;
@@ -14,7 +14,7 @@ public class Segment
     public Quaternion orientation;
 
     // Constructor
-    public Segment(Vector3 _start, Vector3 _end, Circle _startCircle, Circle _endCircle, Quaternion _orientation)
+    public BranchSegment(Vector3 _start, Vector3 _end, Circle _startCircle, Circle _endCircle, Quaternion _orientation)
     {
         start = _start;
         end = _end;

@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 401522}
   - 114: {fileID: 11494476}
   m_Layer: 0
-  m_Name: 3DTree2
+  m_Name: Tree-maple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,8 +56,8 @@ MonoBehaviour:
   skeletonCircles: 0
   generations: 4
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
-  leafSize: 1
-  leafGravity: 1
+  leafSize: 2
+  leafGravity: 0
   leafMaterial: {fileID: 2100000, guid: a9e54f556a5dd784d834478f01bfe1c3, type: 2}
 --- !u!1001 &100100000
 Prefab:

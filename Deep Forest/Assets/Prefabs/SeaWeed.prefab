@@ -1,39 +1,39 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &165492
+--- !u!1 &166872
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 455676}
-  - 114: {fileID: 11493988}
+  - 4: {fileID: 449148}
+  - 114: {fileID: 11439036}
   m_Layer: 0
-  m_Name: 2DTree1
+  m_Name: SeaWeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &455676
+--- !u!4 &449148
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165492}
+  m_GameObject: {fileID: 166872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11493988
+--- !u!114 &11439036
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165492}
+  m_GameObject: {fileID: 166872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 536df33ced3f8324792ccba0f2516bf2, type: 3}
@@ -41,20 +41,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treeBark: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
   length: 5
-  width: 3
-  angleX: 22.5
-  angleY: 30
+  width: 0.5
+  turn: 22.5
+  pitch: 30
+  roll: 30
   lengthRatio: 1
-  widthRatio: 0.8
-  treeRoundness: 8
-  axiom: X
-  ruleChars: 58004600
+  widthRatio: 1
+  treeRoundness: 5
+  axiom: F
+  ruleChars: 4600
   ruleStrings:
-  - F-[[X]+X]+F[+FX]-X
-  - FF
+  - FF+[+F-F-F]-[-F+F+F]
   skeletonLines: 0
   skeletonCircles: 0
-  generations: 4
+  generations: 3
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -64,23 +64,23 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: ruleChars.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleStrings.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: generations
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: startRadius
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: widthRatio
+      propertyPath: ruleStrings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: startRadius
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: widthRatio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: generations
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: treeBark
@@ -88,23 +88,15 @@ Prefab:
       objectReference: {fileID: 2100000, guid: 0b0a74eae72e0b545a9adab087d963cc, type: 2}
     - target: {fileID: 0}
       propertyPath: axiom
-      value: X
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleChars.Array.data[1]
-      value: 70
+      value: F
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ruleChars.Array.data[0]
-      value: 88
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ruleStrings.Array.data[0]
-      value: F-[[X]+X]+F[+FX]-X
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ruleStrings.Array.data[1]
-      value: FF
+      value: FF+[+F-F-F]-[-F+F+F]
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: lengthRatio
@@ -112,9 +104,13 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: width
-      value: 3
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: treeRoundness
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 165492}
+  m_RootGameObject: {fileID: 166872}
   m_IsPrefabParent: 1

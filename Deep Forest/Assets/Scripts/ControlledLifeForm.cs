@@ -9,9 +9,9 @@ public class ControlledLifeForm : MonoBehaviour {
     Rule[] ruleset;
     LSystem lsystem;
     Turtle turtle;
-    List<Segment> branches;
+    List<BranchSegment> branches;
     List<Circle> circles;
-    List<BranchEnd> branchEnds;
+    List<BranchTip> branchEnds;
 
     public float length = 5.0f;
     public float width = 1.0f;
@@ -79,9 +79,9 @@ public class ControlledLifeForm : MonoBehaviour {
     // Get vector lists
     void GetTreeBranches()
     {
-        branches = turtle.branches;
+        branches = turtle.branchSegments;
         circles = turtle.circles;
-        branchEnds = turtle.branchEnds;
+        branchEnds = turtle.branchTips;
     }
 
     // Make new object for each branch with mesh and material applied
@@ -120,7 +120,7 @@ public class ControlledLifeForm : MonoBehaviour {
         Vector2 uvBottom = new Vector2(tilling, 0f);
         Vector2 uvTop = new Vector2(tilling, 1f / treeRoundness);
 
-        foreach (Segment s in branches)
+        foreach (BranchSegment s in branches)
         {
             tLeft = vertexIndex;
             bLeft = vertexIndex + 1;
@@ -162,7 +162,7 @@ public class ControlledLifeForm : MonoBehaviour {
         }
 
         //Create the mesh for cones
-        foreach (BranchEnd c in branchEnds)
+        foreach (BranchTip c in branchEnds)
         {
             sideCounter = 0;
             bLeft = vertexIndex;
@@ -216,12 +216,12 @@ public class ControlledLifeForm : MonoBehaviour {
 
         if (branches != null && skeletonLines)
         {
-            foreach (Segment b in branches)
+            foreach (BranchSegment b in branches)
             {
                 Gizmos.color = b.color;
                 Gizmos.DrawLine(b.start, b.end);
             }
-            foreach (BranchEnd be in branchEnds)
+            foreach (BranchTip be in branchEnds)
             {
                 Gizmos.color = be.color;
                 Gizmos.DrawLine(be.start, be.end);

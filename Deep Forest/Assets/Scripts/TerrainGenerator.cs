@@ -39,7 +39,7 @@ public class TerrainGenerator : MonoBehaviour {
 
         GenerateSeed();
         GenerateMesh();
-        //GenerateTrees();
+        GenerateTrees();
     }
 
     public void GenerateSeed()
@@ -81,7 +81,7 @@ public class TerrainGenerator : MonoBehaviour {
         {
             for (int x = 0; x < width; x++)
             {
-                if (map[x,y] == 1)
+                if (map[x,y] == 1 && (x % 2) == 0 && (y % 2) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
@@ -169,8 +169,6 @@ public class TerrainGenerator : MonoBehaviour {
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uvs;
-        //colider.sharedMesh.vertices = vertices;
-        //colider.sharedMesh.triangles = triangles;
 
         mesh.RecalculateNormals();
         colider.sharedMesh = mesh;

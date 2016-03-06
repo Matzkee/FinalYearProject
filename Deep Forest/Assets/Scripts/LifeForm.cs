@@ -4,17 +4,18 @@ using System.Collections.Generic;
 
 public class LifeForm : MonoBehaviour {
 
-    GameObject treeStructure = null;
+    GameObject treeStructure, treeLeaves;
+    MeshGenerator meshGenerator;
 
     Rule[] ruleset;
     LSystem lsystem;
     Turtle turtle;
-    List<Segment> branches;
+    List<BranchSegment> branchSegments;
+    List<BranchTip> branchTips;
     List<Circle> circles;
-    List<BranchEnd> branchEnds;
-    
-    public Material treeBark;
+    List<Leaf> leaves;
 
+    [Header("Tree Options")]
     public float length = 5.0f;
     public float width = 1.0f;
     public float turn = 22.5f;
@@ -28,12 +29,19 @@ public class LifeForm : MonoBehaviour {
     public string[] ruleStrings;
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
-
     public int generations = 0;
+    public Material treeBark;
+
+    [Header("Leaf Options")]
+    public float leafSize = 2f;
+    [Range(0,1)]
+    public float leafGravity;
+    public Material leafMaterial;
 
 	void Start () {
+        meshGenerator = new MeshGenerator();
         //Randomize generation numbers
-        generations = Random.Range(1,generations);
+        generations = Random.Range(1, generations);
 
         // Look up so we rotate the tree structure
         transform.Rotate(Vector3.right * -90.0f);
@@ -42,15 +50,14 @@ public class LifeForm : MonoBehaviour {
         if (ruleChars != null)
         {
             ruleset = new Rule[ruleChars.Length];
-            for(int i = 0; i < ruleChars.Length; i++)
+            for (int i = 0; i < ruleChars.Length; i++)
             {
                 ruleset[i] = new Rule(ruleChars[i], ruleStrings[i]);
             }
         }
         // Create the L-System and a new Turtle
-        lsystem = new LSystem(axiom,ruleset);
-
-        turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(), 
+        lsystem = new LSystem(axiom, ruleset);
+        turtle = new Turtle(width, treeRoundness, lsystem.GetAlphabet(),
             length, turn, pitch, roll, gameObject, widthRatio, lengthRatio);
 
         // Generate the alphabet n(generations) times
@@ -66,13 +73,14 @@ public class LifeForm : MonoBehaviour {
         turtle.SetAlphabet(lsystem.GetAlphabet());
         turtle.GenerateSkeleton();
 
-        // Get vector arrays
-        GetTreeBranches();
         transform.position = currentP;
         transform.rotation = currentR;
 
+        // Get vector arrays & render the tree
+        GetTreeBranches();
         DestroyTree();
         RenderTree();
+        MakeLeaves();
     }
 
     // Destroy previous tree structure, if exist
@@ -81,150 +89,22 @@ public class LifeForm : MonoBehaviour {
         if (treeStructure != null)
         {
             Destroy(treeStructure);
+            Destroy(treeLeaves);
         }
     }
     // Get vector lists
     void GetTreeBranches()
     {
-        branches = turtle.branches;
+        branchSegments = turtle.branchSegments;
         circles = turtle.circles;
-        branchEnds = turtle.branchEnds;
+        branchTips = turtle.branchTips;
     }
 
     // Make new object for each branch with mesh and material applied
     void RenderTree()
     {
         // Generate new object with MeshFilter and Renderer
-        treeStructure = new GameObject("Tree Structure");
-        Mesh mesh;
-        MeshFilter filter;
-        MeshRenderer meshRenderer;
-
-        filter = treeStructure.AddComponent<MeshFilter>();
-        mesh = filter.mesh;
-        meshRenderer = treeStructure.AddComponent<MeshRenderer>();
-        mesh.Clear();
-
-        int numOfPoints = treeRoundness;
-        // 3 Vertices per triangle/polygon
-        int verticesPerPolygon = 3;
-        int vertexCount = ((verticesPerPolygon * 2 * numOfPoints) * branches.Count) + 
-            ((verticesPerPolygon * numOfPoints) * branchEnds.Count);
-
-        Debug.Log("Number of vertices: " + vertexCount + "\nPolygons to render: " + vertexCount/3);
-        
-        // Alocate new arrays
-        Vector3[] vertices = new Vector3[vertexCount];
-        Vector2[] uvs = new Vector2[vertexCount];
-        int[] triangles = new int[vertexCount];
-
-        int vertexIndex = 0;
-        int vertexIndexUV = 0;
-        int sideCounter = 0;
-        float tilling = (float)(sideCounter++) / (1f / treeRoundness);
-
-        foreach (Segment s in branches)
-        {
-            for (int i = 0; i < numOfPoints; i++)
-            {
-                Vector3 cellBottomLeft = s.startCircle.circlePoints[i];
-                Vector3 cellTopLeft = s.endCircle.circlePoints[i];
-                Vector3 cellTopRight = s.endCircle.circlePoints[(i + 1) % numOfPoints];
-                Vector3 cellBottomRight = s.startCircle.circlePoints[(i + 1) % numOfPoints];
-
-                Vector2 uvBottomLeft = new Vector2(0f, tilling);
-                Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
-                tilling = (float)(sideCounter++) / (1f/ treeRoundness);
-                Vector2 uvTopLeft = new Vector2(0f, tilling);
-                Vector2 uvTopRight = new Vector2(1f / treeRoundness, tilling);
-
-                int startVertex = vertexIndex;
-                vertices[vertexIndex++] = cellTopLeft;
-                vertices[vertexIndex++] = cellBottomLeft;
-                vertices[vertexIndex++] = cellBottomRight;
-                vertices[vertexIndex++] = cellTopLeft;
-                vertices[vertexIndex++] = cellBottomRight;
-                vertices[vertexIndex++] = cellTopRight;
-
-                uvs[vertexIndexUV++] = uvTopLeft;
-                uvs[vertexIndexUV++] = uvBottomLeft;
-                uvs[vertexIndexUV++] = uvBottomRight;
-
-                uvs[vertexIndexUV++] = uvTopLeft;
-                uvs[vertexIndexUV++] = uvBottomRight;
-                uvs[vertexIndexUV++] = uvTopRight;
-
-                // Make triangles
-                for (int j = 0; j < verticesPerPolygon * 2; j++)
-                {
-                    triangles[startVertex + j] = startVertex + j;
-                }
-            }
-        }
-
-        //Create the mesh for cones
-        foreach (BranchEnd c in branchEnds)
-        {
-            for (int i = 0; i < numOfPoints; i++)
-            {
-                Vector3 bottomLeft = c.startCircle.circlePoints[i];
-                Vector3 bottomRight = c.startCircle.circlePoints[(i + 1) % numOfPoints];
-                Vector3 endPoint = c.end;
-
-                Vector2 uvBottomLeft = new Vector2(0f, tilling);
-                Vector2 uvBottomRight = new Vector2(1f / treeRoundness, tilling);
-                tilling = (float)(sideCounter++) / (1f / treeRoundness);
-                Vector2 uvEndPoint = new Vector2(0.5f / treeRoundness, tilling);
-
-                int startVertex = vertexIndex;
-                vertices[vertexIndex++] = bottomLeft;
-                vertices[vertexIndex++] = bottomRight;
-                vertices[vertexIndex++] = endPoint;
-
-                uvs[vertexIndexUV++] = uvBottomLeft;
-                uvs[vertexIndexUV++] = uvBottomRight;
-                uvs[vertexIndexUV++] = uvEndPoint;
-
-                // Make triangles
-                for (int j = 0; j < verticesPerPolygon; j++)
-                {
-                    triangles[startVertex + j] = startVertex + j;
-                }
-
-
-            }
-        }
-        //int vert = 0;
-        //int sideCounter = 0;
-        //float t = (float)(sideCounter++) / (sideCounter % treeRoundness);
-        //while (vert < vertices.Length)
-        //{
-
-        //    Vector2 bottomLeft = new Vector2(t, 0f);
-        //    Vector2 bottomRight = new Vector2(t, 1f);
-        //    t = (float)(sideCounter++) / (treeRoundness);
-        //    Vector2 topLeft = new Vector2(t, 0f);
-        //    Vector2 topRight = new Vector2(t, 1f);
-
-        //    uvs[vert++] = topLeft;
-        //    uvs[vert++] = bottomLeft;
-        //    uvs[vert++] = bottomRight;
-
-        //    uvs[vert++] = topLeft;
-        //    uvs[vert++] = bottomRight;
-        //    uvs[vert++] = topRight;
-
-        //    //uvs[vert++] = new Vector2(t, 0f);
-        //    //uvs[vert++] = new Vector2(t, 1f);
-        //}
-
-
-        // Assign values to the mesh
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-        mesh.triangles = triangles;
-        mesh.RecalculateNormals();
-        meshRenderer.material = treeBark;
+        treeStructure = meshGenerator.GenerateTreeMesh(turtle.branchSegments, turtle.branchTips, treeBark);
         // Set the tree structure object to its parent
         treeStructure.transform.parent = transform;
     }
@@ -233,14 +113,14 @@ public class LifeForm : MonoBehaviour {
     void OnDrawGizmos()
     {
         
-        if (branches != null && skeletonLines)
+        if (branchSegments != null && skeletonLines)
         {
-            foreach (Segment b in branches)
+            foreach (BranchSegment b in branchSegments)
             {
                 Gizmos.color = b.color;
                 Gizmos.DrawLine(b.start, b.end);
             }
-            foreach (BranchEnd be in branchEnds)
+            foreach (BranchTip be in branchTips)
             {
                 Gizmos.color = be.color;
                 Gizmos.DrawLine(be.start, be.end);
@@ -260,5 +140,57 @@ public class LifeForm : MonoBehaviour {
                 }
             }
         }
+    }
+
+    void MakeLeaves()
+    {
+        leaves = new List<Leaf>();
+
+        foreach (BranchTip b in branchTips)
+        {
+            for (int i = 0; i < treeRoundness; i++)
+            {
+                MakeLeaf(b.start, b.startCircle.circlePoints[i], b.end, leafSize, leafGravity);
+            }
+        }
+
+        treeLeaves = meshGenerator.GenerateTreeLeaves(leaves, leafMaterial);
+        treeLeaves.transform.parent = transform;
+    }
+
+
+    void MakeLeaf(Vector3 centre, Vector3 start, Vector3 end, float size, float leafGravity)
+    {
+        Vector3 toStart, toEnd, toLeafStart;
+        Vector3 leafStart;
+        Vector3 leafPosPerpendicular;
+        Vector3 topLeft, bottomLeft, topRight, bottomRight;
+
+        // Create a leaf position at a random spot between start and end points
+        leafStart = Vector3.Lerp(start, end, Random.value);
+        // Calculate direction vectors
+        toStart = (start - centre).normalized;
+        toEnd = (end - start).normalized;
+        // perpendicular vector to leaf position vector
+        leafPosPerpendicular = Vector3.Cross(toEnd, toStart);
+        // at this point we can take 2 points setting boundaries
+        bottomRight = leafStart + (leafPosPerpendicular * (leafSize / 2));
+        bottomLeft = leafStart + (leafPosPerpendicular * -(leafSize / 2));
+        // Now we need to calculate 2 perpendicular points to the ones just created
+        // First calculate direction from just created bottomRight point to leaf starting point
+        toLeafStart = (leafStart - bottomRight).normalized;
+        // Then get the cross priduct between toEnd direction and toLeafStart direction
+        leafPosPerpendicular = Vector3.Cross(toEnd, toLeafStart);
+        // Now that we have a perpendicular vector we can add it to previosly created 2 points to
+        // complete the box, also we can apply gravity
+        Vector3 gravity = Vector3.down * leafGravity;
+        topLeft = bottomLeft + (leafPosPerpendicular * (leafSize));
+        topRight = bottomRight + (leafPosPerpendicular * (leafSize));
+        topLeft += gravity;
+        topRight += gravity;
+        // Apply gravity to bottomLeft as well to create a small illusion of 3d object
+        bottomLeft += gravity;
+
+        leaves.Add(new Leaf(topLeft, bottomLeft, topRight, bottomRight));
     }
 }

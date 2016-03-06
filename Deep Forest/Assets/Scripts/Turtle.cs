@@ -44,9 +44,9 @@ public class Turtle{
     float widthDecreseRatio;
     float lengthDecreaseRatio;
 
-    public List<Segment> branches, branchesToDelete;
+    public List<BranchSegment> branchSegments, branchesToDelete;
     public List<Circle> circles;
-    public List<BranchEnd> branchEnds;
+    public List<BranchTip> branchTips;
     Stack<Coord> coordStack;
     // We need position information from the attached gameObject
     Transform treeTransform;
@@ -60,9 +60,9 @@ public class Turtle{
         trunkWidth = _radius;
 
         treeTransform = _currentTree.transform;
-        branches = new List<Segment>();
-        branchesToDelete = new List<Segment>();
-        branchEnds = new List<BranchEnd>();
+        branchSegments = new List<BranchSegment>();
+        branchesToDelete = new List<BranchSegment>();
+        branchTips = new List<BranchTip>();
         coordStack = new Stack<Coord>();
 
         alphabetToDraw = a;
@@ -81,7 +81,7 @@ public class Turtle{
         Quaternion lastRotation;
         Circle lastCircle;
         // Make a new branches list
-        branches = new List<Segment>();
+        branchSegments = new List<BranchSegment>();
         circles = new List<Circle>();
         int repeats = 0;
         // Add and extra character for better case scenario
@@ -113,7 +113,7 @@ public class Turtle{
                     // This is mainly for debugging - comment this out in the future
                     circles.Add(newCircle);
                     // Add a new segment
-                    branches.Add(new Segment(lastPosition, treeTransform.position, lastCircle, newCircle, lastRotation));
+                    branchSegments.Add(new BranchSegment(lastPosition, treeTransform.position, lastCircle, newCircle, lastRotation));
 
                     // Set a new vector for tracking position
                     lastRotation = treeTransform.rotation;
@@ -168,14 +168,14 @@ public class Turtle{
                 {
                     // Delete the cylinder and make a cone instead
                     // Also remove the last set of circle points
-                    BranchEnd branchEnd = new BranchEnd(
-                        branches[branches.Count - 1].start,
-                        branches[branches.Count - 1].end,
-                        branches[branches.Count - 1].startCircle);
-                    branchesToDelete.Add(branches[branches.Count - 1]);
-                    circles.Remove(branches[branches.Count - 1].endCircle);
+                    BranchTip branchEnd = new BranchTip(
+                        branchSegments[branchSegments.Count - 1].start,
+                        branchSegments[branchSegments.Count - 1].end,
+                        branchSegments[branchSegments.Count - 1].startCircle);
+                    branchesToDelete.Add(branchSegments[branchSegments.Count - 1]);
+                    circles.Remove(branchSegments[branchSegments.Count - 1].endCircle);
                     branchEnd.color = Color.green;
-                    branchEnds.Add(branchEnd);
+                    branchTips.Add(branchEnd);
                 }
                 treeTransform.position = lastCord.branchPos;
                 treeTransform.rotation = lastCord.branchRot;
@@ -194,9 +194,9 @@ public class Turtle{
 
     void RecycleBranches()
     {
-        foreach (Segment s in branchesToDelete)
+        foreach (BranchSegment s in branchesToDelete)
         {
-            branches.Remove(s);
+            branchSegments.Remove(s);
         }
         branchesToDelete.Clear();
         branchesToDelete.TrimExcess();
