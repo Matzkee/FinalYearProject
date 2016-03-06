@@ -189,7 +189,7 @@ public class LifeForm : MonoBehaviour {
         topLeft += gravity;
         topRight += gravity;
         // Apply gravity to bottomLeft as well to create a small illusion of 3d object
-        bottomLeft += gravity;
+        bottomLeft += ((centre - bottomLeft).normalized * leafGravity);
 
         leaves.Add(new Leaf(topLeft, bottomLeft, topRight, bottomRight));
     }
