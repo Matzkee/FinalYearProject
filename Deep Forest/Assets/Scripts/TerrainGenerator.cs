@@ -16,6 +16,7 @@ public class TerrainGenerator : MonoBehaviour {
     public string seed;
     public bool useRandomSeed = false;
     public bool autoUpdate = false;
+    public bool generateTrees = false;
 
     public GameObject[] prefabs;
     public Material terrainMaterial;
@@ -27,6 +28,7 @@ public class TerrainGenerator : MonoBehaviour {
     MeshCollider colider;
     CellularAutomata ca;
     List<GameObject> trees;
+    List<Vector3> edgeMap;
 
     // Use this for initialization
     void Start()
@@ -39,7 +41,22 @@ public class TerrainGenerator : MonoBehaviour {
 
         GenerateSeed();
         GenerateMesh();
-        GenerateTrees();
+        if (generateTrees)
+        {
+            GenerateTrees();
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        if (edgeMap != null)
+        {
+            foreach (Vector3 edge in edgeMap)
+            {
+                Gizmos.DrawWireSphere(edge, 0.5f);
+            }
+        }
     }
 
     public void GenerateSeed()
@@ -51,6 +68,7 @@ public class TerrainGenerator : MonoBehaviour {
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
         ca = new CellularAutomata(width, height, fillPercentage, rng);
+        edgeMap = ca.edgeMap;
     }
 
     // Calculate the Perlin Noise at those coordinates
@@ -81,13 +99,13 @@ public class TerrainGenerator : MonoBehaviour {
         {
             for (int x = 0; x < width; x++)
             {
-                if (map[x,y] == 1 && (x % 2) == 0 && (y % 2) == 0)
+                if (map[x,y] == 1 )//&& (x % 2) == 0 && (y % 2) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
-                        x - (width / 2), 
+                        x - (width / 2) + 0.5f, 
                         mesh.vertices[index].y, 
-                        y - (height / 2));
+                        y - (height / 2) + 0.5f);
                     GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
                     tree.transform.parent = transform;
                     tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
@@ -174,4 +192,5 @@ public class TerrainGenerator : MonoBehaviour {
         colider.sharedMesh = mesh;
         meshRenderer.material = terrainMaterial;
     }
+
 }
