@@ -92,7 +92,6 @@ public class TerrainGenerator : MonoBehaviour {
         // 2 traingles per square 2 * 3 = 6
         int triangleIndexCount = 6 * orderedEdgeMap.Count;
         int vertexCount = orderedEdgeMap.Count * 2;
-        Debug.Log("Wall Vertices Count: " + vertexCount);
         
         Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[triangleIndexCount];

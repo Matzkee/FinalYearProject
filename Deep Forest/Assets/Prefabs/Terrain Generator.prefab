@@ -41,14 +41,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 100
   height: 100
-  fillPercentage: 46
+  fillPercentage: 52
   scale: 10
   octaves: 2
   persistance: 1.5
   lacunarity: 1
+  wallHeight: 10
   seed: 
   useRandomSeed: 1
   autoUpdate: 0
+  generateTrees: 1
   prefabs:
   - {fileID: 171844, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
   - {fileID: 167302, guid: 90a3aa8ad0ee40044ad85bcd9290a875, type: 2}
