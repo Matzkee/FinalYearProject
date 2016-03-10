@@ -4,15 +4,12 @@ using System;
 
 public class MapGenerator
 {
-
     public int width;
     public int height;
     public string seed;
     public int fillPercent;
     public int[,] map;
     public System.Random rng;
-    List<Coord> edgeCoords;
-    public List<Vector3> edgeMap;
     public List<Vector3> orderedEdgeMap;
 
     public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, System.Random randomSeed)
@@ -96,16 +93,26 @@ public class MapGenerator
         survivingRooms[0].isAccessibleFromMainRoom = true;
 
         ConnectClosestRooms(survivingRooms);
+        PreparePlayArea();
 
-        // Get the edge tiles for play area
-        edgeCoords = new List<Coord>();
-        edgeMap = new List<Vector3>();
+    }
+
+    void PreparePlayArea()
+    {
+        List<Coord> edgeCoords = new List<Coord>();
+        List<Coord> orderedEdges = new List<Coord>();
+
+        // Get the edge tiles for play area, since GetRegions will return a list with only 1 list
+        // assign it to a playRoom variable
         Room playRoom = new Room();
         List<List<Coord>> playAreas = GetRegions(0);
         foreach (List<Coord> playArea in playAreas)
         {
             playRoom = new Room(playArea, map);
         }
+
+        // Calculate and add wall tiles which are edging with playroom tiles and
+        // which do not exist in edgeCoord list
         foreach (Coord tile in playRoom.tiles)
         {
             for (int x = tile.tileX - 1; x <= tile.tileX + 1; x++)
@@ -116,7 +123,7 @@ public class MapGenerator
                     {
                         if (map[x, y] == 1 && !edgeCoords.Contains(tile))
                         {
-                            Coord edge = new Coord(x,y);
+                            Coord edge = new Coord(x, y);
                             if (!edgeCoords.Contains(edge))
                             {
                                 edgeCoords.Add(edge);
@@ -126,25 +133,17 @@ public class MapGenerator
                 }
             }
         }
-        foreach (Coord tile in edgeCoords)
-        {
-            edgeMap.Add(new Vector3(-width / 2 + tile.tileX + 0.5f, 4, -height / 2 + tile.tileY + 0.5f));
-        }
-        //foreach (Coord tile in playRoom.edgeTiles)
-        //{
-        //    edgeMap.Add(new Vector3(-width / 2 + tile.tileX + 0.5f, 4, -height / 2 + tile.tileY + 0.5f));
-        //}
-        List<Coord> orderedEdges = CalculateOutline(map, edgeCoords);
+        // Calculate outline tile edges
+        orderedEdges = OrderOutlineEdges(map, edgeCoords);
         orderedEdgeMap = new List<Vector3>();
         foreach (Coord edge in orderedEdges)
         {
-            orderedEdgeMap.Add(new Vector3(-width / 2 + edge.tileX + 0.5f, 4, -height / 2 + edge.tileY + 0.5f));
+            orderedEdgeMap.Add(new Vector3(-width / 2 + edge.tileX + 0.5f, 0, -height / 2 + edge.tileY + 0.5f));
         }
-        Debug.Log("Number of Edge Tiles: " + edgeCoords.Count + " Ordered Edges Count: " + orderedEdges.Count);
     }
 
     // Function to order edge coordinates to later generate the collision mesh
-    List<Coord> CalculateOutline(int[,] map, List<Coord> outlineEdges)
+    List<Coord> OrderOutlineEdges(int[,] map, List<Coord> outlineEdges)
     {
         List<Coord> orderedEdges = new List<Coord>();
         // Add the first edge from the list
@@ -159,7 +158,7 @@ public class MapGenerator
         return orderedEdges;
     }
 
-    bool TouchingSameEdge(Coord currentTile, Coord nextTile, List<Coord> currentTouchingEdges)
+    bool TilesTouchingSameEdge(Coord currentTile, Coord nextTile, List<Coord> currentTouchingEdges)
     {
         int i = 0;
         List<Coord> nextTileTouchingEdges = new List<Coord>();
@@ -211,7 +210,7 @@ public class MapGenerator
 
         foreach (Coord edge in touchingWalls)
         {
-            if (TouchingSameEdge(lastEdge, edge, touchingEdges))
+            if (TilesTouchingSameEdge(lastEdge, edge, touchingEdges))
             {
                 nextEdge = edge;
             }

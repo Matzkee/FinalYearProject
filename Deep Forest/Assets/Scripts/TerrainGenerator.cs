@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class TerrainGenerator : MonoBehaviour {
 
+    GameObject walls;
+
     [Header("Map Options")]
     public int width = 100;
     public int height = 100;
@@ -13,6 +15,7 @@ public class TerrainGenerator : MonoBehaviour {
     public int octaves = 4;
     public float persistance = 1.5f;
     public float lacunarity = 1f;
+    public float wallHeight = 10.0f;
     public string seed;
     public bool useRandomSeed = false;
     public bool autoUpdate = false;
@@ -41,21 +44,10 @@ public class TerrainGenerator : MonoBehaviour {
 
         GenerateSeed();
         GenerateMesh();
+        GenerateWalls();
         if (generateTrees)
         {
             GenerateTrees();
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        if (orderedEdgeMap != null)
-        {
-            for (int i = 0; i < orderedEdgeMap.Count; i++)
-            {
-                Gizmos.DrawLine(orderedEdgeMap[i], orderedEdgeMap[(i + 1 )% (orderedEdgeMap.Count - 1)]);
-            }
         }
     }
 
@@ -90,6 +82,61 @@ public class TerrainGenerator : MonoBehaviour {
         return perlinValue;
     }
 
+    public void GenerateWalls()
+    {
+        Destroy(walls);
+        walls = new GameObject("Walls");
+        MeshCollider meshCollider = walls.AddComponent<MeshCollider>();
+        Mesh mesh = new Mesh();
+
+        // 2 traingles per square 2 * 3 = 6
+        int triangleIndexCount = 6 * orderedEdgeMap.Count;
+        int vertexCount = orderedEdgeMap.Count * 2;
+        Debug.Log("Wall Vertices Count: " + vertexCount);
+        
+        Vector3[] vertices = new Vector3[vertexCount];
+        int[] triangles = new int[triangleIndexCount];
+
+        // Indexes
+        int vertexIndex = 0;
+        int triangleIndex = 0;
+        // Triangle Indexes
+        int tLeft = vertexIndex;
+        int bLeft = vertexIndex + 1;
+        int tRight = vertexIndex + 2;
+        int bRight = vertexIndex + 3;
+
+        for (int i = 0; i < orderedEdgeMap.Count; i++)
+        {
+            Vector3 bottomLeft = orderedEdgeMap[i];
+            Vector3 topLeft = new Vector3(bottomLeft.x, wallHeight, bottomLeft.z);
+
+            vertices[vertexIndex++] = topLeft;
+            vertices[vertexIndex++] = bottomLeft;
+
+            triangles[triangleIndex++] = tLeft;
+            triangles[triangleIndex++] = bLeft;
+            triangles[triangleIndex++] = bRight;
+            triangles[triangleIndex++] = tLeft;
+            triangles[triangleIndex++] = bRight;
+            triangles[triangleIndex++] = tRight;
+
+            // Rearrange triangle indexes
+            tLeft = tRight;
+            tRight += 2;
+            tRight = tRight % vertexCount;
+            bLeft = bRight;
+            bRight += 2;
+            bRight = bRight % vertexCount;
+        }
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        meshCollider.sharedMesh = mesh;
+
+        walls.transform.parent = transform;
+    }
+
     public void GenerateTrees()
     {
         DestroyTrees();
@@ -99,7 +146,7 @@ public class TerrainGenerator : MonoBehaviour {
         {
             for (int x = 0; x < width; x++)
             {
-                if (map[x,y] == 1)//&& (x % 2) == 0 && (y % 2) == 0)
+                if (map[x,y] == 1 && (x % 2) == 0 && (y % 2) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
