@@ -288,7 +288,7 @@ Prefab:
       objectReference: {fileID: 1050242302}
     - target: {fileID: 11466316, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
       propertyPath: generateTrees
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11466316, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
       propertyPath: fillPercentage

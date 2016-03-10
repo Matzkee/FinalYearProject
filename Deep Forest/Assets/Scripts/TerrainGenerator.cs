@@ -26,9 +26,9 @@ public class TerrainGenerator : MonoBehaviour {
     Mesh mesh;
     MeshRenderer meshRenderer;
     MeshCollider colider;
-    CellularAutomata ca;
+    MapGenerator ca;
     List<GameObject> trees;
-    List<Vector3> edgeMap;
+    List<Vector3> orderedEdgeMap;
 
     // Use this for initialization
     void Start()
@@ -50,11 +50,11 @@ public class TerrainGenerator : MonoBehaviour {
     void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        if (edgeMap != null)
+        if (orderedEdgeMap != null)
         {
-            foreach (Vector3 edge in edgeMap)
+            for (int i = 0; i < orderedEdgeMap.Count; i++)
             {
-                Gizmos.DrawWireSphere(edge, 0.5f);
+                Gizmos.DrawLine(orderedEdgeMap[i], orderedEdgeMap[(i + 1 )% (orderedEdgeMap.Count - 1)]);
             }
         }
     }
@@ -67,8 +67,8 @@ public class TerrainGenerator : MonoBehaviour {
         }
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
-        ca = new CellularAutomata(width, height, fillPercentage, rng);
-        edgeMap = ca.edgeMap;
+        ca = new MapGenerator(width, height, fillPercentage, rng);
+        orderedEdgeMap = ca.orderedEdgeMap;
     }
 
     // Calculate the Perlin Noise at those coordinates
@@ -99,7 +99,7 @@ public class TerrainGenerator : MonoBehaviour {
         {
             for (int x = 0; x < width; x++)
             {
-                if (map[x,y] == 1 )//&& (x % 2) == 0 && (y % 2) == 0)
+                if (map[x,y] == 1)//&& (x % 2) == 0 && (y % 2) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(

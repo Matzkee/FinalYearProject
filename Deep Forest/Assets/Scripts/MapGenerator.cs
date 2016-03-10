@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-public class CellularAutomata
+public class MapGenerator
 {
 
     public int width;
@@ -13,8 +13,9 @@ public class CellularAutomata
     public System.Random rng;
     List<Coord> edgeCoords;
     public List<Vector3> edgeMap;
+    public List<Vector3> orderedEdgeMap;
 
-    public CellularAutomata(int mapWidth, int mapHeight, int mapFillPercent, System.Random randomSeed)
+    public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, System.Random randomSeed)
     {
         width = mapWidth;
         height = mapHeight;
@@ -133,8 +134,92 @@ public class CellularAutomata
         //{
         //    edgeMap.Add(new Vector3(-width / 2 + tile.tileX + 0.5f, 4, -height / 2 + tile.tileY + 0.5f));
         //}
-        Debug.Log("Number of Edge Tiles: " + edgeCoords.Count);
+        List<Coord> orderedEdges = CalculateOutline(map, edgeCoords);
+        orderedEdgeMap = new List<Vector3>();
+        foreach (Coord edge in orderedEdges)
+        {
+            orderedEdgeMap.Add(new Vector3(-width / 2 + edge.tileX + 0.5f, 4, -height / 2 + edge.tileY + 0.5f));
+        }
+        Debug.Log("Number of Edge Tiles: " + edgeCoords.Count + " Ordered Edges Count: " + orderedEdges.Count);
     }
+
+    // Function to order edge coordinates to later generate the collision mesh
+    List<Coord> CalculateOutline(int[,] map, List<Coord> outlineEdges)
+    {
+        List<Coord> orderedEdges = new List<Coord>();
+        // Add the first edge from the list
+        orderedEdges.Add(outlineEdges[0]);
+        // Keep adding edges until lists are the same in size
+        while (orderedEdges.Count != outlineEdges.Count)
+        {
+            Coord lastEdge = orderedEdges[orderedEdges.Count - 1];
+            orderedEdges.Add(GetNextEdge(lastEdge, orderedEdges, outlineEdges));
+        }
+        
+        return orderedEdges;
+    }
+
+    bool TouchingSameEdge(Coord currentTile, Coord nextTile, List<Coord> currentTouchingEdges)
+    {
+        int i = 0;
+        List<Coord> nextTileTouchingEdges = new List<Coord>();
+        for (int x = nextTile.tileX - 1; x <= nextTile.tileX + 1; x++)
+        {
+            for (int y = nextTile.tileY - 1; y <= nextTile.tileY + 1; y++)
+            {
+                if (IsInMapRange(x, y) && map[x, y] == 0)
+                {
+                    nextTileTouchingEdges.Add(new Coord(x, y));
+                }
+            }
+        }
+        foreach (Coord edge in currentTouchingEdges)
+        {
+            if (nextTileTouchingEdges.Contains(edge))
+            {
+                i++;
+            }
+        }
+
+        return i > 0;
+    }
+
+    Coord GetNextEdge(Coord lastEdge, List<Coord> orderedEdges, List<Coord> outlineEdges)
+    {
+        Coord nextEdge = new Coord();
+        List<Coord> touchingEdges = new List<Coord>();
+        List<Coord> touchingWalls = new List<Coord>();
+
+        for (int x = lastEdge.tileX - 1; x <= lastEdge.tileX + 1; x++)
+        {
+            for (int y = lastEdge.tileY - 1; y <= lastEdge.tileY + 1; y++)
+            {
+                if (IsInMapRange(x, y) && map[x,y] == 0)
+                {
+                    touchingEdges.Add(new Coord(x, y));
+                }
+                else
+                {
+                    Coord nextCoord = new Coord(x, y);
+                    if (!orderedEdges.Contains(nextCoord) && outlineEdges.Contains(nextCoord))
+                    {
+                        touchingWalls.Add(nextCoord);
+                    }
+                }
+            }
+        }
+
+        foreach (Coord edge in touchingWalls)
+        {
+            if (TouchingSameEdge(lastEdge, edge, touchingEdges))
+            {
+                nextEdge = edge;
+            }
+        }
+
+        return nextEdge;
+    }
+
 
     void ConnectClosestRooms(List<Room> allRooms, bool forceAccessabilityFromMainRoom = false)
     {
