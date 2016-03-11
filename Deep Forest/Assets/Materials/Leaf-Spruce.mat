@@ -6,10 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Leaf-maple
+  m_Name: Leaf-Spruce
   m_Shader: {fileID: 14000, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: EFFECT_BUMP GEOM_TYPE_LEAF
-  m_LightmapFlags: 0
+  m_LightmapFlags: 5
   m_CustomRenderQueue: 2450
   stringTagMap: {}
   m_SavedProperties:
@@ -19,14 +19,14 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: a49744a645c58da4394ccf35cd9b1e09, type: 3}
+          m_Texture: {fileID: 2800000, guid: ae8e38e6cd172554aba9eeb638e2beb4, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: 288dc5345b9148e4fb987071a4b54961, type: 3}
+          m_Texture: {fileID: 2800000, guid: 2dcfc61e3d8d9ee43bce1e8ba2e8605f, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -80,35 +80,7 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _GlossMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _TranslucencyMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _ShadowOffset
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _DetailTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Illum
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -172,31 +144,7 @@ Material:
         second: 0
       data:
         first:
-          name: _SquashAmount
-        second: 1
-      data:
-        first:
           name: _Cull
-        second: 0
-      data:
-        first:
-          name: _BaseLight
-        second: 0.35
-      data:
-        first:
-          name: _AO
-        second: 2.4
-      data:
-        first:
-          name: _Occlusion
-        second: 5
-      data:
-        first:
-          name: _InvFade
-        second: 1
-      data:
-        first:
-          name: _Emission
         second: 0
     m_Colors:
       data:
@@ -206,28 +154,12 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.88235295, g: 1, b: 0.88803244, a: 1}
+        second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
           name: _SpecColor
         second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
-          name: _TreeInstanceColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _TreeInstanceScale
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
           name: _HueVariation
-        second: {r: 0, g: 0, b: 0, a: 0.1}
-      data:
-        first:
-          name: _TintColor
-        second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-      data:
-        first:
-          name: _EmisColor
-        second: {r: 0.2, g: 0.2, b: 0.2, a: 0}
+        second: {r: 1, g: 0.5, b: 0, a: 0.1}

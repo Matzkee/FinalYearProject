@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Leaf-maple
-  m_Shader: {fileID: 14000, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: EFFECT_BUMP GEOM_TYPE_LEAF
-  m_LightmapFlags: 0
-  m_CustomRenderQueue: 2450
+  m_Name: Ground-dead-leaves
+  m_Shader: {fileID: 10600, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -19,14 +19,14 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: a49744a645c58da4394ccf35cd9b1e09, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Texture: {fileID: 2800000, guid: 959a741985683c746ae1229396460b94, type: 3}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: 288dc5345b9148e4fb987071a4b54961, type: 3}
+          m_Texture: {fileID: 2800000, guid: d9a80b9693adc294d9ded00db90c66ea, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -99,20 +99,6 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _DetailTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Illum
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -129,11 +115,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: 0.01
-      data:
-        first:
-          name: _WindQuality
-        second: 0
+        second: 0.15
       data:
         first:
           name: _Parallax
@@ -176,28 +158,12 @@ Material:
         second: 1
       data:
         first:
-          name: _Cull
-        second: 0
+          name: _TranslucencyViewDependency
+        second: 0.7
       data:
         first:
-          name: _BaseLight
-        second: 0.35
-      data:
-        first:
-          name: _AO
-        second: 2.4
-      data:
-        first:
-          name: _Occlusion
-        second: 5
-      data:
-        first:
-          name: _InvFade
+          name: _ShadowStrength
         second: 1
-      data:
-        first:
-          name: _Emission
-        second: 0
     m_Colors:
       data:
         first:
@@ -206,11 +172,11 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.88235295, g: 1, b: 0.88803244, a: 1}
+        second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
           name: _SpecColor
-        second: {r: 0, g: 0, b: 0, a: 0}
+        second: {r: 0.5, g: 0.5, b: 0.5, a: 1}
       data:
         first:
           name: _TreeInstanceColor
@@ -221,13 +187,5 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _HueVariation
-        second: {r: 0, g: 0, b: 0, a: 0.1}
-      data:
-        first:
-          name: _TintColor
-        second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-      data:
-        first:
-          name: _EmisColor
-        second: {r: 0.2, g: 0.2, b: 0.2, a: 0}
+          name: _TranslucencyColor
+        second: {r: 0.73, g: 0.85, b: 0.41, a: 1}

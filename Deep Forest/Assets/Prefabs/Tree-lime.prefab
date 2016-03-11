@@ -55,8 +55,8 @@ MonoBehaviour:
   skeletonCircles: 0
   generations: 3
   treeBark: {fileID: 2100000, guid: 8b47259a3a47287479f8c6792846ca3a, type: 2}
-  leafSize: 2
-  leafGravity: 0.5
+  leafSize: 1
+  leafGravity: 1
   leafMaterial: {fileID: 2100000, guid: 6f35aba12e02f2c45bb27811d930bde5, type: 2}
 --- !u!1001 &100100000
 Prefab:

@@ -16,6 +16,7 @@ public class TerrainGenerator : MonoBehaviour {
     public float persistance = 1.5f;
     public float lacunarity = 1f;
     public float wallHeight = 10.0f;
+    public float treeSeparation = 3f;
     public string seed;
     public bool useRandomSeed = false;
     public bool autoUpdate = false;
@@ -145,7 +146,7 @@ public class TerrainGenerator : MonoBehaviour {
         {
             for (int x = 0; x < width; x++)
             {
-                if (map[x,y] == 1 && (x % 2) == 0 && (y % 2) == 0)
+                if (map[x,y] == 1 && (x % treeSeparation) == 0 && (y % treeSeparation) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(

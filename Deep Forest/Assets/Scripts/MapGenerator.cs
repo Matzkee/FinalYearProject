@@ -154,7 +154,7 @@ public class MapGenerator
             Coord lastEdge = orderedEdges[orderedEdges.Count - 1];
             orderedEdges.Add(GetNextEdge(lastEdge, orderedEdges, outlineEdges));
         }
-        
+
         return orderedEdges;
     }
 
@@ -193,7 +193,7 @@ public class MapGenerator
         {
             for (int y = lastEdge.tileY - 1; y <= lastEdge.tileY + 1; y++)
             {
-                if (IsInMapRange(x, y) && map[x,y] == 0)
+                if (IsInMapRange(x, y) && map[x, y] == 0)
                 {
                     touchingEdges.Add(new Coord(x, y));
                 }
@@ -313,7 +313,6 @@ public class MapGenerator
     void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB)
     {
         Room.ConnectRooms(roomA, roomB);
-        Debug.DrawLine(CoordToWorldPoint(tileA), CoordToWorldPoint(tileB), Color.blue, 10000);
 
         List<Coord> line = GetLine(tileA, tileB);
         foreach (Coord c in line)
@@ -322,13 +321,25 @@ public class MapGenerator
         }
     }
 
-    void DrawCircle(Coord c, int r)
+    void DrawCircle(Coord c, int radius)
     {
-        for (int x = -r; x <= r; x++)
+        /* 
+            Radius is scaling which tiles we traverse through the grid e.g.
+
+            (0,2) (1,2) (2,2) if the tile we look at any centre point and the radius 
+            (0,1) (1,1) (2,1) we want to carve out the path with is 1
+            (0,0) (1,0) (2,0) then the grid will look like this
+
+            The equation for a circle is: (x-a)^2 + (y+b)^2 = r^2
+            Where a and b are centre points of the circle
+            Since we are using 0,0 for our initial circle, the equation shrinks down
+            and all left to do is jsut to add the point to the centre at the end
+        */
+        for (int x = -radius; x <= radius; x++)
         {
-            for (int y = -r; y <= r; y++)
+            for (int y = -radius; y <= radius; y++)
             {
-                if (x * x + y * y <= r * r)
+                if (x * x + y * y <= radius * radius)
                 {
                     int realX = c.tileX + x;
                     int realY = c.tileY + y;
@@ -398,11 +409,6 @@ public class MapGenerator
         }
 
         return line;
-    }
-
-    Vector3 CoordToWorldPoint(Coord tile)
-    {
-        return new Vector3(-width / 2 + 0.5f + tile.tileX, 5, -height / 2 + 0.5f + tile.tileY);
     }
 
     List<List<Coord>> GetRegions(int tileType)
@@ -534,6 +540,7 @@ public class MapGenerator
         public bool isAccessibleFromMainRoom;
         public bool isMainRoom;
 
+        // Default contructor
         public Room()
         {
         }
