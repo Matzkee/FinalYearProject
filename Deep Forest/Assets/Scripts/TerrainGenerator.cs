@@ -5,6 +5,16 @@ using System.Collections.Generic;
 public class TerrainGenerator : MonoBehaviour {
 
     GameObject walls;
+    List<GameObject> trees;
+    List<Vector3> orderedEdgeMap;
+    public Node[,] worldGrid;
+
+    System.Random rng;
+    Vector2[] octaveOffsets;
+    Mesh mesh;
+    MeshRenderer meshRenderer;
+    MeshCollider colider;
+    MapGenerator ca;
 
     [Header("Map Options")]
     public int width = 100;
@@ -25,18 +35,12 @@ public class TerrainGenerator : MonoBehaviour {
     public GameObject[] prefabs;
     public Material terrainMaterial;
 
-    System.Random rng;
-    Vector2[] octaveOffsets;
-    Mesh mesh;
-    MeshRenderer meshRenderer;
-    MeshCollider colider;
-    MapGenerator ca;
-    List<GameObject> trees;
-    List<Vector3> orderedEdgeMap;
+
 
     // Use this for initialization
     void Start()
     {
+        worldGrid = new Node[width, height];
         trees = new List<GameObject>();
         mesh = gameObject.AddComponent<MeshFilter>().mesh;
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -51,6 +55,24 @@ public class TerrainGenerator : MonoBehaviour {
             GenerateTrees();
         }
     }
+
+    //void OnDrawGizmos()
+    //{
+    //    if (worldGrid != null)
+    //    {
+    //        Gizmos.color = Color.black;
+    //        for (int x = 0; x < width; x++)
+    //        {
+    //            for (int y = 0; y < height; y++)
+    //            {
+    //                if (worldGrid[x, y].walkable)
+    //                {
+    //                    Gizmos.DrawWireCube(worldGrid[x,y].worldPosition, Vector3.one);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     public void GenerateSeed()
     {
@@ -150,9 +172,9 @@ public class TerrainGenerator : MonoBehaviour {
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
-                        x - (width / 2) + 0.5f, 
+                        x - (width / 2), 
                         mesh.vertices[index].y, 
-                        y - (height / 2) + 0.5f);
+                        y - (height / 2));
                     GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
                     tree.transform.parent = transform;
                     tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
@@ -183,7 +205,7 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         // To make the mesh at origin we need to start from here
-        Vector3 bottomLeft = new Vector3(-width / 2, 0, -height / 2);
+        Vector3 bottomLeft = new Vector3(-width / 2 - 0.5f, 0, -height / 2 - 0.5f);
 
         // 3 vertices per triangle and 2 triangles
         int verticesPerCell = 6;
@@ -227,6 +249,10 @@ public class TerrainGenerator : MonoBehaviour {
                     triangles[startVertex + i] = startVertex + i;
                     uvs[startVertex + i] = new Vector2(vertices[startVertex + i].x, vertices[startVertex + i].z);
                 }
+
+                // Add the navigation point to the grid
+                bool walkable = (ca.map[x, y] == 0) ? true : false;
+                worldGrid[x, y] = new Node(walkable, cellBottomLeft + (cellTopRight - cellBottomLeft) / 2, x, y);
             }
 
         }

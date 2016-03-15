@@ -138,7 +138,7 @@ public class MapGenerator
         orderedEdgeMap = new List<Vector3>();
         foreach (Coord edge in orderedEdges)
         {
-            orderedEdgeMap.Add(new Vector3(-width / 2 + edge.tileX + 0.5f, 0, -height / 2 + edge.tileY + 0.5f));
+            orderedEdgeMap.Add(new Vector3(-width / 2 + edge.tileX, 0, -height / 2 + edge.tileY));
         }
     }
 

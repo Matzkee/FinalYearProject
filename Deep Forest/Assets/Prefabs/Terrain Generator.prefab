@@ -11,7 +11,7 @@ GameObject:
   - 114: {fileID: 11466316}
   m_Layer: 0
   m_Name: Terrain Generator
-  m_TagString: Untagged
+  m_TagString: TerrainGenerator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,10 +47,11 @@ MonoBehaviour:
   persistance: 1.5
   lacunarity: 1
   wallHeight: 10
+  treeSeparation: 3
   seed: 
   useRandomSeed: 1
   autoUpdate: 0
-  generateTrees: 1
+  generateTrees: 0
   prefabs:
   - {fileID: 171844, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
   - {fileID: 167302, guid: 90a3aa8ad0ee40044ad85bcd9290a875, type: 2}
