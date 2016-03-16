@@ -109,6 +109,7 @@ public class TerrainGenerator : MonoBehaviour {
     {
         Destroy(walls);
         walls = new GameObject("Walls");
+        walls.layer = LayerMask.NameToLayer("Walls");
         MeshCollider meshCollider = walls.AddComponent<MeshCollider>();
         Mesh mesh = new Mesh();
 
@@ -154,6 +155,7 @@ public class TerrainGenerator : MonoBehaviour {
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.RecalculateNormals();
         meshCollider.sharedMesh = mesh;
     }
 
