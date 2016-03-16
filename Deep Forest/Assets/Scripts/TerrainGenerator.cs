@@ -22,10 +22,10 @@ public class TerrainGenerator : MonoBehaviour {
     [Range(0, 100)]
     public int fillPercentage;
     public float scale = 10f;
-    public int octaves = 4;
+    public int octaves = 2;
     public float persistance = 1.5f;
     public float lacunarity = 1f;
-    public float wallHeight = 10.0f;
+    public float wallHeight = 4;
     public float treeSeparation = 3f;
     public string seed;
     public bool useRandomSeed = false;
@@ -155,13 +155,12 @@ public class TerrainGenerator : MonoBehaviour {
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         meshCollider.sharedMesh = mesh;
-
-        walls.transform.parent = transform;
     }
 
     public void GenerateTrees()
     {
         DestroyTrees();
+        GameObject forest = new GameObject("Forest");
         int[,] map = ca.map;
         int index = 0;
         for (int y = 0; y < height; y++)
@@ -176,7 +175,7 @@ public class TerrainGenerator : MonoBehaviour {
                         mesh.vertices[index].y, 
                         y - (height / 2));
                     GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
-                    tree.transform.parent = transform;
+                    tree.transform.parent = forest.transform;
                     tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
                     trees.Add(tree);
                 }

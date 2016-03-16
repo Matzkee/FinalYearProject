@@ -46,7 +46,7 @@ MonoBehaviour:
   octaves: 2
   persistance: 1.5
   lacunarity: 1
-  wallHeight: 10
+  wallHeight: 3
   treeSeparation: 3
   seed: 
   useRandomSeed: 1

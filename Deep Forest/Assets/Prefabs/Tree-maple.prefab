@@ -44,7 +44,7 @@ MonoBehaviour:
   turn: 27.5
   pitch: 20.5
   roll: 22.5
-  lengthRatio: 0.97
+  lengthRatio: 1
   widthRatio: 0.7
   treeRoundness: 8
   axiom: L
@@ -80,7 +80,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: lengthRatio
-      value: 0.97
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
