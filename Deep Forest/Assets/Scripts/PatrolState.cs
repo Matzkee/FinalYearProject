@@ -4,6 +4,8 @@ using System;
 
 public class PatrolState : State {
 
+    GuardController guardController;
+
     public PatrolState(FinalStateMachine owner):base(owner)
     {
 
@@ -16,7 +18,8 @@ public class PatrolState : State {
 
     public override void Enter()
     {
-        throw new NotImplementedException();
+        guardController = owner.GetComponent<GuardController>();
+
     }
 
     public override void Exit()

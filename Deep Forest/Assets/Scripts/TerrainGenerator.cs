@@ -56,23 +56,19 @@ public class TerrainGenerator : MonoBehaviour {
         }
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    if (worldGrid != null)
-    //    {
-    //        Gizmos.color = Color.black;
-    //        for (int x = 0; x < width; x++)
-    //        {
-    //            for (int y = 0; y < height; y++)
-    //            {
-    //                if (worldGrid[x, y].walkable)
-    //                {
-    //                    Gizmos.DrawWireCube(worldGrid[x,y].worldPosition, Vector3.one);
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+    void OnDrawGizmos()
+    {
+        if (ca != null && ca.patrolPoints != null)
+        {
+            foreach (Vector3 patrolNode in ca.patrolPoints)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireCube(
+                    worldGrid[Mathf.RoundToInt(patrolNode.x + width/2), Mathf.RoundToInt(patrolNode.z + height/2)].worldPosition, 
+                    Vector3.one);
+            }
+        }
+    }
 
     public void GenerateSeed()
     {

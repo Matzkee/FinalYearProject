@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GuardController : MonoBehaviour {
 
+    [Header("Guard Options")]
     public Vector3 velocity;
     public Vector3 acceleration;
     public Vector3 force;
@@ -14,8 +15,12 @@ public class GuardController : MonoBehaviour {
     public float maxSpeed = 3.0f;
     public float maxForce = 3.0f;
 
+    [Header("Seeking Target")]
     public bool seekPlayerPosition = false;
     public Vector3 targetPosition;
+
+    [Header("Patrolling")]
+    public bool patrolling = false;
 
 	void Start () {
 	}
@@ -26,6 +31,10 @@ public class GuardController : MonoBehaviour {
         if (seekPlayerPosition)
         {
             force += SeekPlayer(targetPosition);
+        }
+        if (patrolling)
+        {
+            force += Patrol();
         }
 
         force = Vector3.ClampMagnitude(force, maxForce);
@@ -39,6 +48,11 @@ public class GuardController : MonoBehaviour {
         }
 
         velocity *= (1.0f - damping);
+    }
+
+    public Vector3 Patrol()
+    {
+        return Vector3.zero;
     }
 
     public Vector3 SeekPlayer(Vector3 target)

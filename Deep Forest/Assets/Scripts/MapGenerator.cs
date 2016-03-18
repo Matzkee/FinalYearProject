@@ -11,6 +11,7 @@ public class MapGenerator
     public int[,] map;
     public System.Random rng;
     public List<Vector3> orderedEdgeMap;
+    public List <Vector3> patrolPoints;
 
     public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, System.Random randomSeed)
     {
@@ -93,8 +94,58 @@ public class MapGenerator
         survivingRooms[0].isAccessibleFromMainRoom = true;
 
         ConnectClosestRooms(survivingRooms);
+        CalculatePatrolPoints(survivingRooms);
         PreparePlayArea();
 
+    }
+
+    void CalculatePatrolPoints(List<Room> rooms)
+    {
+        // Since we already have calculated the inside tiles in each room
+        // All we are left to do is check which tile has the most tiles
+        // next to it
+        patrolPoints = new List<Vector3>();
+        int i = 0;
+
+        foreach (Room room in rooms)
+        {
+            int biggestDistance = 0;
+            Coord bestTileA = new Coord();
+            Coord bestTileB = new Coord();
+            foreach (Coord tile in room.edgeTiles)
+            {
+                Coord currentTile = tile;
+                foreach (Coord nextTile in room.edgeTiles)
+                {
+                    int dist = GetDistance(currentTile, nextTile);
+                    if (dist > biggestDistance)
+                    {
+                        bestTileA = currentTile;
+                        bestTileB = nextTile;
+                        biggestDistance = dist;
+                    }
+                }
+            }
+
+            Vector3 posFromTileA = new Vector3(-width / 2 + bestTileA.tileX, 0, -height / 2 + bestTileA.tileY);
+            Vector3 posFromTileB = new Vector3(-width / 2 + bestTileB.tileX, 0, -height / 2 + bestTileB.tileY);
+            Vector3 midPoint = posFromTileA + (posFromTileB - posFromTileA) / 2;
+            patrolPoints.Add(midPoint);
+            i++;
+        }
+    }
+
+    // Taken from Pathfinding class
+    int GetDistance(Coord tileA, Coord tileB)
+    {
+        int dstX = Mathf.Abs(tileA.tileX - tileB.tileX);
+        int dstY = Mathf.Abs(tileA.tileY - tileB.tileY);
+
+        if (dstX > dstY)
+        {
+            return 14 * dstY + 10 * (dstX - dstY);
+        }
+        return 14 * dstX + 10 * (dstY - dstX);
     }
 
     void PreparePlayArea()
