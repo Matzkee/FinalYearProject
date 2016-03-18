@@ -8,19 +8,16 @@ public class GuardController : MonoBehaviour {
     public Vector3 acceleration;
     public Vector3 force;
     public float mass = 1.0f;
-    public float damping = 0.5f;
+    [Range(0, 1)]
+    public float damping = 0.0f;
 
     public float maxSpeed = 3.0f;
     public float maxForce = 3.0f;
 
     public bool seekPlayerPosition = false;
+    public Vector3 targetPosition;
 
-
-
-    public Transform player;
-    
 	void Start () {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
 	}
 	
 	void Update () {
@@ -28,7 +25,7 @@ public class GuardController : MonoBehaviour {
 
         if (seekPlayerPosition)
         {
-            force += SeekPlayer(player.position);
+            force += SeekPlayer(targetPosition);
         }
 
         force = Vector3.ClampMagnitude(force, maxForce);
