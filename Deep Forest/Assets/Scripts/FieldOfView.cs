@@ -7,11 +7,14 @@ public class FieldOfView : MonoBehaviour {
     Transform player;
     LayerMask walls;
 
+    GuardController guardController;
+
     public float viewRange;
     public float viewAngle;
     bool canSee;
 
 	void Start () {
+        guardController = GetComponent<GuardController>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         walls = LayerMask.GetMask("Walls");
 	}
@@ -28,10 +31,17 @@ public class FieldOfView : MonoBehaviour {
             {
                 if (!Physics.Raycast(transform.position, toPlayer, distanceToPlayer, walls))
                 {
-                    Debug.Log("Enemy sees you!");
                     canSee = true;
                 }
             }
+        }
+        if (canSee)
+        {
+            guardController.seekPlayerPosition = true;
+        }
+        else
+        {
+            guardController.seekPlayerPosition = false;
         }
 	}
 
