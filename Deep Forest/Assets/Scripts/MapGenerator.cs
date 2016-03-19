@@ -105,33 +105,36 @@ public class MapGenerator
         // All we are left to do is check which tile has the most tiles
         // next to it
         patrolPoints = new List<Vector3>();
-        int i = 0;
 
         foreach (Room room in rooms)
         {
-            int biggestDistance = 0;
-            Coord bestTileA = new Coord();
-            Coord bestTileB = new Coord();
-            foreach (Coord tile in room.edgeTiles)
+            Coord bestTile = new Coord();
+            int bestTileAmount = 0;
+            // Calculate which tile has the most tiles next to it in 4 directions
+            // Only tiles touching most average on each side count
+            foreach (Coord currentTile in room.tiles)
             {
-                Coord currentTile = tile;
-                foreach (Coord nextTile in room.edgeTiles)
+                int currentTileAmount = 0;
+                int i = 0;
+
+                // Check tile in all directions
+                while (map[currentTile.tileX + i, currentTile.tileY + i] != 1 &&
+                    map[currentTile.tileX - i, currentTile.tileY + i] != 1 &&
+                    map[currentTile.tileX + i, currentTile.tileY - i] != 1 &&
+                    map[currentTile.tileX - i, currentTile.tileY - i] != 1)
                 {
-                    int dist = GetDistance(currentTile, nextTile);
-                    if (dist > biggestDistance)
-                    {
-                        bestTileA = currentTile;
-                        bestTileB = nextTile;
-                        biggestDistance = dist;
-                    }
+                    currentTileAmount++;
+                    i++;
+                }
+
+                if (bestTileAmount < currentTileAmount)
+                {
+                    bestTileAmount = currentTileAmount;
+                    bestTile = currentTile;
                 }
             }
 
-            Vector3 posFromTileA = new Vector3(-width / 2 + bestTileA.tileX, 0, -height / 2 + bestTileA.tileY);
-            Vector3 posFromTileB = new Vector3(-width / 2 + bestTileB.tileX, 0, -height / 2 + bestTileB.tileY);
-            Vector3 midPoint = posFromTileA + (posFromTileB - posFromTileA) / 2;
-            patrolPoints.Add(midPoint);
-            i++;
+            patrolPoints.Add(new Vector3(-width / 2 + bestTile.tileX, 0, -height / 2 + bestTile.tileY));
         }
     }
 
