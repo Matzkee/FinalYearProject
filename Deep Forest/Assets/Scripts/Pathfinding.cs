@@ -33,6 +33,10 @@ public class Pathfinding : MonoBehaviour {
                         {
                             Gizmos.color = Color.cyan;
                         }
+                        if (tg.patrolPoints != null&& tg.patrolPoints.Contains(n.worldPosition))
+                        {
+                            Gizmos.color = Color.white;
+                        }
                         Gizmos.DrawWireCube(n.worldPosition, Vector3.one);
                     }
                 }

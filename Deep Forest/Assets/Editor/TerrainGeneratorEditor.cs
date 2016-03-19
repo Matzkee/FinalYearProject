@@ -8,19 +8,18 @@ public class TerrainGeneratorEditor :  Editor{
 	public override void OnInspectorGUI()
     {
         terrainGen = target as TerrainGenerator;
-        if (DrawDefaultInspector())
-        {
-            if (terrainGen.autoUpdate)
-            {
-                terrainGen.GenerateTrees();
-            }
-        }
+        DrawDefaultInspector();
         
         if (GUILayout.Button("Generate New Map"))
         {
             terrainGen.GenerateSeed();
             terrainGen.GenerateMesh();
-            terrainGen.GenerateTrees();
+            terrainGen.GenerateWalls();
+            terrainGen.GeneratePatrolPoints();
+            if (terrainGen.generateTrees)
+            {
+                terrainGen.GenerateTrees();
+            }
         }
     }
 }

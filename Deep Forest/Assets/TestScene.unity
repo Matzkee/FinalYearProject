@@ -130,7 +130,7 @@ Prefab:
       objectReference: {fileID: 1878639766}
     - target: {fileID: 109530, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
@@ -177,6 +177,14 @@ Prefab:
     - target: {fileID: 11466316, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
       propertyPath: generateTrees
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466316, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
+      propertyPath: fillPercentage
+      value: 52
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466316, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
+      propertyPath: roomRadius
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}

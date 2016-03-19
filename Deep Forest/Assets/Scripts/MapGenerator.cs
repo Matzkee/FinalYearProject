@@ -6,6 +6,7 @@ public class MapGenerator
 {
     public int width;
     public int height;
+    public int connectionRadius;
     public string seed;
     public int fillPercent;
     public int[,] map;
@@ -13,11 +14,12 @@ public class MapGenerator
     public List<Vector3> orderedEdgeMap;
     public List <Vector3> patrolPoints;
 
-    public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, System.Random randomSeed)
+    public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, int roomRadius, System.Random randomSeed)
     {
         width = mapWidth;
         height = mapHeight;
         fillPercent = mapFillPercent;
+        connectionRadius = roomRadius;
         rng = randomSeed;
 
         GenerateMap();
@@ -92,8 +94,10 @@ public class MapGenerator
         survivingRooms.Sort();
         survivingRooms[0].isMainRoom = true;
         survivingRooms[0].isAccessibleFromMainRoom = true;
-
+        
         ConnectClosestRooms(survivingRooms);
+        // Smooth the map once more after connecting rooms to remove outliers
+        SmoothMap();
         CalculatePatrolPoints(survivingRooms);
         PreparePlayArea();
 
@@ -117,7 +121,7 @@ public class MapGenerator
                 int currentTileAmount = 0;
                 int i = 0;
 
-                // Check tile in all directions
+                // Check tiles in all directions
                 while (map[currentTile.tileX + i, currentTile.tileY + i] != 1 &&
                     map[currentTile.tileX - i, currentTile.tileY + i] != 1 &&
                     map[currentTile.tileX + i, currentTile.tileY - i] != 1 &&
@@ -136,19 +140,6 @@ public class MapGenerator
 
             patrolPoints.Add(new Vector3(-width / 2 + bestTile.tileX, 0, -height / 2 + bestTile.tileY));
         }
-    }
-
-    // Taken from Pathfinding class
-    int GetDistance(Coord tileA, Coord tileB)
-    {
-        int dstX = Mathf.Abs(tileA.tileX - tileB.tileX);
-        int dstY = Mathf.Abs(tileA.tileY - tileB.tileY);
-
-        if (dstX > dstY)
-        {
-            return 14 * dstY + 10 * (dstX - dstY);
-        }
-        return 14 * dstX + 10 * (dstY - dstX);
     }
 
     void PreparePlayArea()
@@ -371,7 +362,7 @@ public class MapGenerator
         List<Coord> line = GetLine(tileA, tileB);
         foreach (Coord c in line)
         {
-            DrawCircle(c, 1);
+            DrawCircle(c, connectionRadius);
         }
     }
 

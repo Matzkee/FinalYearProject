@@ -7,6 +7,7 @@ public class TerrainGenerator : MonoBehaviour {
     GameObject walls;
     List<GameObject> trees;
     List<Vector3> orderedEdgeMap;
+    public List<Vector3> patrolPoints;
     public Node[,] worldGrid;
 
     System.Random rng;
@@ -19,17 +20,20 @@ public class TerrainGenerator : MonoBehaviour {
     [Header("Map Options")]
     public int width = 100;
     public int height = 100;
+    [Range(1,5)]
+    public int roomRadius;
     [Range(0, 100)]
     public int fillPercentage;
+    public string seed;
+    [Header("Perlin Noise")]
     public float scale = 10f;
     public int octaves = 2;
     public float persistance = 1.5f;
     public float lacunarity = 1f;
+    [Header("Other Options")]
     public float wallHeight = 4;
     public float treeSeparation = 3f;
-    public string seed;
     public bool useRandomSeed = false;
-    public bool autoUpdate = false;
     public bool generateTrees = false;
 
     public GameObject[] prefabs;
@@ -50,23 +54,10 @@ public class TerrainGenerator : MonoBehaviour {
         GenerateSeed();
         GenerateMesh();
         GenerateWalls();
+        GeneratePatrolPoints();
         if (generateTrees)
         {
             GenerateTrees();
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        if (ca != null && ca.patrolPoints != null)
-        {
-            foreach (Vector3 patrolNode in ca.patrolPoints)
-            {
-                Gizmos.color = Color.white;
-                Gizmos.DrawWireCube(
-                    worldGrid[Mathf.RoundToInt(patrolNode.x + width/2), Mathf.RoundToInt(patrolNode.z + height/2)].worldPosition, 
-                    Vector3.one);
-            }
         }
     }
 
@@ -78,8 +69,22 @@ public class TerrainGenerator : MonoBehaviour {
         }
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
-        ca = new MapGenerator(width, height, fillPercentage, rng);
+        ca = new MapGenerator(width, height, fillPercentage, roomRadius, rng);
         orderedEdgeMap = ca.orderedEdgeMap;
+        patrolPoints = ca.patrolPoints;
+    }
+
+    public void GeneratePatrolPoints()
+    {
+        patrolPoints = ca.patrolPoints;
+        for (int i = 0; i < patrolPoints.Count; i++)
+        {
+            Vector3 worldPatrolPoint = patrolPoints[i];
+            worldPatrolPoint = worldGrid[
+                Mathf.RoundToInt(worldPatrolPoint.x + width / 2), 
+                Mathf.RoundToInt(worldPatrolPoint.z + height / 2)].worldPosition;
+            patrolPoints[i] = worldPatrolPoint;
+        }
     }
 
     // Calculate the Perlin Noise at those coordinates
