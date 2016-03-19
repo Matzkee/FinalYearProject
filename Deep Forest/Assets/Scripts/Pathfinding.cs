@@ -7,6 +7,7 @@ public class Pathfinding : MonoBehaviour {
     TerrainGenerator tg;
     public Transform seeker, target;
     public List<Node> tracePath;
+    public List<Vector3> betterPath;
 
     void Start()
     {
@@ -16,12 +17,21 @@ public class Pathfinding : MonoBehaviour {
     void Update()
     {
         FindPath(seeker.position, target.position);
+        betterPath = GetOptimizedPath(tracePath);
     }
 
     void OnDrawGizmos()
     {
         if (tracePath != null)
         {
+            if (betterPath != null)
+            {
+                Gizmos.color = Color.magenta;
+                foreach (Vector3 pos in betterPath)
+                {
+                    Gizmos.DrawWireSphere(pos, 0.5f);
+                }
+            }
             if (tg.worldGrid != null)
             {
                 foreach (Node n in tg.worldGrid)
@@ -42,6 +52,64 @@ public class Pathfinding : MonoBehaviour {
                 }
             }
         }
+    }
+
+    List<Vector3> GetOptimizedPath(List<Node> path)
+    {
+        bool previousNodeDiagonal;
+        List<Vector3> optimizedPath = new List<Vector3>();
+        int indexSum;
+
+        // Path is already ordered
+        // Add the first node to the list
+        // Compare first 2 nodes to find direction
+        optimizedPath.Add(path[0].worldPosition);
+        indexSum = nodeIndexSum(path[0], path[1]);
+        if (indexSum == 1 || indexSum == -1)
+        {
+            previousNodeDiagonal = false;
+        }
+        else
+        {
+            previousNodeDiagonal = true;
+        }
+        // Iterate through the path and add the best nodes
+        for (int i = 2; i < path.Count; i++)
+        {
+            Node current = path[i];
+            Node last = path[i - 1];
+            indexSum = nodeIndexSum(last, current);
+
+            // if current sum is horizontal or vertical
+            if (indexSum == 1 || indexSum == -1)
+            {
+                if (previousNodeDiagonal)
+                {
+                    optimizedPath.Add(last.worldPosition);
+                    previousNodeDiagonal = false;
+                }
+            }
+            // else the sum is either 2, -2 or 0. Diagonal in each case
+            else
+            {
+                if (!previousNodeDiagonal)
+                {
+                    optimizedPath.Add(last.worldPosition);
+                    previousNodeDiagonal = true;
+                }
+            }
+        }
+        // Add the last node if the path does not contain it already
+        if (!optimizedPath.Contains(path[path.Count - 1].worldPosition))
+        {
+            optimizedPath.Add(path[path.Count - 1].worldPosition);
+        }
+        return optimizedPath;
+    }
+
+    int nodeIndexSum(Node a, Node b)
+    {
+        return (b.gridX - a.gridX) + (b.gridY - a.gridY);
     }
 
     void FindPath(Vector3 startPos, Vector3 targetPos)
@@ -98,8 +166,6 @@ public class Pathfinding : MonoBehaviour {
                 }
             }
         }
-
-
     }
 
     void RetracePath(Node startNode, Node endNode)
