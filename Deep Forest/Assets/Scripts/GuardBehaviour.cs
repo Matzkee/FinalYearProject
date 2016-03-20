@@ -15,6 +15,8 @@ public class GuardBehaviour : MonoBehaviour {
 
     public float viewRange;
     public float viewAngle;
+    public int directionsToLook = 4;
+    public float rotationSpeed = 2.0f;
 
     void Start () {
         player = GameObject.FindGameObjectWithTag("Player").transform;

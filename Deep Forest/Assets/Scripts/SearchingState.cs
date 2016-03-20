@@ -44,8 +44,7 @@ public class SearchingState : State {
         {
             if (guardController.path.reachedLastWaypoint)
             {
-                guardController.followingEnabled = false;
-
+                owner.SwitchState(new LookingAroundState(owner));
             }
         }
     }

@@ -131,21 +131,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &769470421 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 105680, guid: 714ea5726429e974181e81312b8a0eb9, type: 2}
-  m_PrefabInternal: {fileID: 437547723}
---- !u!114 &769470424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 769470421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f1c364b3e2dca44b5b64856375bdc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1339324062
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,17 +231,15 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 11428316, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
-      propertyPath: maxSpeed
+    - target: {fileID: 11429718, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
+      propertyPath: viewRange
       value: 15
       objectReference: {fileID: 0}
-    - target: {fileID: 11428316, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
-      propertyPath: maxForce
-      value: 15
+    - target: {fileID: 11429718, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
+      propertyPath: viewAngle
+      value: 100
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 11481552, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
-    - {fileID: 5460360, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &2067170803

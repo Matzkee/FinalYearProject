@@ -15,19 +15,22 @@ public class GuardBehaviourEditor : Editor {
 
     void OnSceneGUI()
     {
-        Handles.color = new Color(1, 1, 1, 0.1f);
-        Handles.DrawSolidArc(
-            gh.transform.position,
-            gh.transform.up,
-            gh.transform.forward,
-            gh.viewAngle/2,
-            gh.viewRange);
-        Handles.DrawSolidArc(
-            gh.transform.position,
-            -gh.transform.up,
-            gh.transform.forward,
-            gh.viewAngle / 2,
-            gh.viewRange);
+        if (gh != null)
+        {
+            Handles.color = new Color(1, 1, 1, 0.1f);
+            Handles.DrawSolidArc(
+                gh.transform.position,
+                gh.transform.up,
+                gh.transform.forward,
+                gh.viewAngle/2,
+                gh.viewRange);
+            Handles.DrawSolidArc(
+                gh.transform.position,
+                -gh.transform.up,
+                gh.transform.forward,
+                gh.viewAngle / 2,
+                gh.viewRange);
+        }
     }
 
 }

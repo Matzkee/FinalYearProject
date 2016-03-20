@@ -76,17 +76,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3507974db87d74597fde6cbf4cbf98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
-  acceleration: {x: 0, y: 0, z: 0}
-  force: {x: 0, y: 0, z: 0}
   mass: 1
   damping: 0.1
   maxSpeed: 15
   maxForce: 15
-  seekPlayerPosition: 0
+  slowingDistance: 5
+  seekEnabled: 0
+  followingEnabled: 0
   targetPosition: {x: 0, y: 0, z: 0}
-  patrolling: 0
-  followingPath: 0
 --- !u!114 &11429718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -101,8 +98,10 @@ MonoBehaviour:
   tg: {fileID: 0}
   player: {fileID: 0}
   seesTarget: 0
-  viewRange: 10
-  viewAngle: 130
+  viewRange: 15
+  viewAngle: 100
+  directionsToLook: 5
+  rotationSpeed: 1
 --- !u!136 &13664252
 CapsuleCollider:
   m_ObjectHideFlags: 1

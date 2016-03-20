@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 
 public class PatrolState : State {
     
@@ -23,7 +22,7 @@ public class PatrolState : State {
         pathfinder = owner.pathfinder;
         tg = owner.tg;
 
-        int patrolArea = UnityEngine.Random.Range(0, tg.patrolPoints.Count);
+        int patrolArea = Random.Range(0, tg.patrolPoints.Count);
         Path patrolPath = pathfinder.GetBestPossiblePath(owner.transform.position, tg.patrolPoints[patrolArea]);
         guardController.path = patrolPath;
 
@@ -40,6 +39,13 @@ public class PatrolState : State {
         if (owner.seesTarget)
         {
             owner.SwitchState(new ChasingState(owner));
+        }
+        if (guardController.followingEnabled)
+        {
+            if (guardController.path.reachedLastWaypoint)
+            {
+                owner.SwitchState(new LookingAroundState(owner));
+            }
         }
     }
 }

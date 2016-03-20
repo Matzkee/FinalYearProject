@@ -15,10 +15,12 @@ public class Path{
 
     public void AdvanceToNextWaypoint()
     {
+        // Make sure the guard doesnt point to null
         next = (next + 1);
         if (next > waypoints.Count - 1)
         {
             reachedLastWaypoint = true;
+            next = waypoints.Count - 1;
         }
     }
 

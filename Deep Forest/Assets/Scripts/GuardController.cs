@@ -7,31 +7,32 @@ public class GuardController : MonoBehaviour {
     new Rigidbody rigidbody;
 
     [Header("Guard Options")]
-    public Vector3 velocity;
-    public Vector3 acceleration;
-    public Vector3 force;
+    Vector3 velocity;
+    Vector3 acceleration;
+    Vector3 force;
     public float mass = 1.0f;
     [Range(0, 1)]
     public float damping = 0.0f;
-
     public float maxSpeed = 3.0f;
     public float maxForce = 3.0f;
+    public float slowingDistance = 5.0f;
 
-    [Header("Seeking Target")]
-    public bool seekEnabled = false;
+    [HideInInspector]
+    public bool seekEnabled = false, followingEnabled = false;
+    [HideInInspector]
     public Vector3 targetPosition;
-
-    [Header("Following Path")]
-    public bool followingEnabled = false;
     public Path path = new Path();
-
-    [Header("Arriving at target")]
-    public bool arriveEnabled = false;
-    public float slowingDistance = 2.0f;
+    
+    
 
     void Start () {
         rigidbody = gameObject.AddComponent<Rigidbody>();
         rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+    }
+
+    void ResetAll()
+    {
+        seekEnabled = followingEnabled = false;
     }
 	
 	void Update () {
@@ -45,10 +46,6 @@ public class GuardController : MonoBehaviour {
         {
             force += FollowingPath();
         }
-        if (arriveEnabled)
-        {
-            force += Arrive(targetPosition);
-        }
 
         force = Vector3.ClampMagnitude(force, maxForce);
         acceleration = force / mass;
@@ -58,7 +55,10 @@ public class GuardController : MonoBehaviour {
         //transform.position += velocity * Time.deltaTime;
         if (velocity.magnitude > float.Epsilon)
         {
-            transform.forward = velocity;
+            if (velocity != Vector3.zero)
+            {
+                transform.forward = velocity;
+            }
         }
 
         velocity *= (1.0f - damping);
@@ -67,8 +67,9 @@ public class GuardController : MonoBehaviour {
     public Vector3 Arrive(Vector3 target)
     {
         Vector3 toTarget = target - transform.position;
+
         float distance = toTarget.magnitude;
-        if (distance < 0.2f)
+        if (distance < 0.3f)
         {
             velocity = Vector3.zero;
             return Vector3.zero;
@@ -82,7 +83,11 @@ public class GuardController : MonoBehaviour {
 
     public Vector3 FollowingPath()
     {
-        float skipDistance = 0.25f;
+        if (path.reachedLastWaypoint)
+        {
+            return Vector3.zero;
+        }
+        float skipDistance = 0.4f;
         float toNextWaypoint = (transform.position - path.NextWaypoint().worldPosition).magnitude;
         if (toNextWaypoint < skipDistance)
         {
@@ -91,10 +96,6 @@ public class GuardController : MonoBehaviour {
         if (path.isLast)
         {
             return Arrive(path.NextWaypoint().worldPosition);
-        }
-        else if (path.reachedLastWaypoint)
-        {
-            return Vector3.zero;
         }
         else
         {
@@ -115,12 +116,13 @@ public class GuardController : MonoBehaviour {
         if (path.waypoints != null)
         {
             Gizmos.color = Color.white;
-            for (int i = 0; i < path.waypoints.Count; i++)
+            for (int i = 0; i < path.waypoints.Count - 1; i++)
             {
                 Gizmos.DrawCube(path.waypoints[i].worldPosition, Vector3.one * 0.2f);
                 Gizmos.DrawLine(
                     path.waypoints[i].worldPosition,
-                    path.waypoints[(i + 1) % path.waypoints.Count].worldPosition);
+                    path.waypoints[i + 1].worldPosition);
+                Gizmos.DrawCube(path.waypoints[i + 1].worldPosition, Vector3.one * 0.2f);
             }
         }
     }
