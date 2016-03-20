@@ -18,16 +18,16 @@ public class GuardController : MonoBehaviour {
     public float maxForce = 3.0f;
 
     [Header("Seeking Target")]
-    public bool seekPlayerPosition = false;
+    public bool seekEnabled = false;
     public Vector3 targetPosition;
 
-    [Header("Patrolling")]
-    public bool patrolling = false;
-    public Path patrollingPath = new Path();
-
     [Header("Following Path")]
-    public bool followingPath = false;
-    public Path followPath = new Path();
+    public bool followingEnabled = false;
+    public Path path = new Path();
+
+    [Header("Arriving at target")]
+    public bool arriveEnabled = false;
+    public float slowingDistance = 2.0f;
 
     void Start () {
         rigidbody = gameObject.AddComponent<Rigidbody>();
@@ -37,24 +37,24 @@ public class GuardController : MonoBehaviour {
 	void Update () {
         force = Vector3.zero;
 
-        if (seekPlayerPosition)
+        if (seekEnabled)
         {
             force += SeekTarget(targetPosition);
         }
-        if (patrolling)
-        {
-            force += PatrolPath();
-        }
-        if (followingPath)
+        if (followingEnabled)
         {
             force += FollowingPath();
+        }
+        if (arriveEnabled)
+        {
+            force += Arrive(targetPosition);
         }
 
         force = Vector3.ClampMagnitude(force, maxForce);
         acceleration = force / mass;
         velocity += acceleration * Time.deltaTime;
         velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
-        rigidbody.position += velocity * Time.deltaTime;
+        transform.position += velocity * Time.deltaTime;
         //transform.position += velocity * Time.deltaTime;
         if (velocity.magnitude > float.Epsilon)
         {
@@ -64,26 +64,42 @@ public class GuardController : MonoBehaviour {
         velocity *= (1.0f - damping);
     }
 
-    public Vector3 PatrolPath()
+    public Vector3 Arrive(Vector3 target)
     {
-        float skipDistance = 0.25f;
-        float toNextWaypoint = (transform.position - patrollingPath.NextWaypoint()).magnitude;
-        if (toNextWaypoint < skipDistance)
+        Vector3 toTarget = target - transform.position;
+        float distance = toTarget.magnitude;
+        if (distance < 0.2f)
         {
-            patrollingPath.AdvanceToNextWaypoint();
+            velocity = Vector3.zero;
+            return Vector3.zero;
         }
-        return SeekTarget(patrollingPath.NextWaypoint());
+        float rampedSpeed = maxSpeed * (distance / slowingDistance);
+        float clampedSpeed = Mathf.Min(rampedSpeed, maxSpeed);
+        Vector3 desired = clampedSpeed * (toTarget / distance);
+
+        return desired - velocity;
     }
 
     public Vector3 FollowingPath()
     {
         float skipDistance = 0.25f;
-        float toNextWaypoint = (transform.position - followPath.NextWaypoint()).magnitude;
+        float toNextWaypoint = (transform.position - path.NextWaypoint().worldPosition).magnitude;
         if (toNextWaypoint < skipDistance)
         {
-            followPath.AdvanceToNextWaypoint();
+            path.AdvanceToNextWaypoint();
         }
-        return SeekTarget(followPath.NextWaypoint());
+        if (path.isLast)
+        {
+            return Arrive(path.NextWaypoint().worldPosition);
+        }
+        else if (path.reachedLastWaypoint)
+        {
+            return Vector3.zero;
+        }
+        else
+        {
+            return SeekTarget(path.NextWaypoint().worldPosition);
+        }
     }
 
     public Vector3 SeekTarget(Vector3 target)
@@ -92,5 +108,20 @@ public class GuardController : MonoBehaviour {
         Vector3 desired = toTarget * maxSpeed;
 
         return desired - velocity;
+    }
+
+    void OnDrawGizmos()
+    {
+        if (path.waypoints != null)
+        {
+            Gizmos.color = Color.white;
+            for (int i = 0; i < path.waypoints.Count; i++)
+            {
+                Gizmos.DrawCube(path.waypoints[i].worldPosition, Vector3.one * 0.2f);
+                Gizmos.DrawLine(
+                    path.waypoints[i].worldPosition,
+                    path.waypoints[(i + 1) % path.waypoints.Count].worldPosition);
+            }
+        }
     }
 }

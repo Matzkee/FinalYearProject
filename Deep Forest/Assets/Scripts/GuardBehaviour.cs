@@ -6,6 +6,7 @@ public class GuardBehaviour : MonoBehaviour {
     State state = null;
     LayerMask walls;
     [HideInInspector]
+    public TerrainGenerator tg;
     public Pathfinding pathfinder;
     [HideInInspector]
     public Transform player;
@@ -16,9 +17,9 @@ public class GuardBehaviour : MonoBehaviour {
     public float viewAngle;
 
     void Start () {
-        pathfinder = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<Pathfinding>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         walls = LayerMask.GetMask("Walls");
+        tg = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
 
         // Start warming up
         StartCoroutine("WarmUp");
@@ -75,11 +76,13 @@ public class GuardBehaviour : MonoBehaviour {
     // processing, we have to wait for it to load and give it time to prepare
     IEnumerator WarmUp()
     {
-        while (pathfinder == null || pathfinder.mainPatrolPath == null)
+        while (tg == null || tg.worldGrid == null)
         {
             yield return new WaitForSeconds(0.5f);
         }
-        GetComponent<GuardController>().patrollingPath = pathfinder.mainPatrolPath;
+        // Make a new pathfnder with the grid form terrain generator
+        pathfinder = new Pathfinding(tg.worldGrid);
+        // Start Patrolling the area
         SwitchState(new PatrolState(this));
         // Start looking out for player endlesly
         StartCoroutine("LookOut");

@@ -37,11 +37,11 @@ public class FieldOfView : MonoBehaviour {
         }
         if (canSee)
         {
-            guardController.seekPlayerPosition = true;
+            guardController.seekEnabled = true;
         }
         else
         {
-            guardController.seekPlayerPosition = false;
+            guardController.seekEnabled = false;
         }
 	}
 

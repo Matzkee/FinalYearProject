@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class TerrainGenerator : MonoBehaviour {
 
     GameObject walls;
-    Pathfinding pathfinder;
     List<GameObject> trees;
     List<Vector3> orderedEdgeMap;
     public List<Vector3> patrolPoints;
@@ -49,7 +48,6 @@ public class TerrainGenerator : MonoBehaviour {
         trees = new List<GameObject>();
         mesh = gameObject.AddComponent<MeshFilter>().mesh;
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        pathfinder = gameObject.GetComponent<Pathfinding>();
         colider = gameObject.AddComponent<MeshCollider>();
         mesh.Clear();
 
@@ -87,7 +85,7 @@ public class TerrainGenerator : MonoBehaviour {
                 Mathf.RoundToInt(worldPatrolPoint.z + height / 2)].worldPosition;
             patrolPoints[i] = worldPatrolPoint;
         }
-        pathfinder.CreatePatrolPath();
+        Debug.Log("Patrol Points: " + patrolPoints.Count);
     }
 
     // Calculate the Perlin Noise at those coordinates
@@ -255,9 +253,10 @@ public class TerrainGenerator : MonoBehaviour {
                     uvs[startVertex + i] = new Vector2(vertices[startVertex + i].x, vertices[startVertex + i].z);
                 }
 
-                // Add the navigation point to the grid
+                // Add the navigation point to the grid, add vector.up to each node for better navigation
                 bool walkable = (mapGenerator.map[x, y] == 0) ? true : false;
                 worldGrid[x, y] = new Node(walkable, cellBottomLeft + (cellTopRight - cellBottomLeft) / 2, x, y);
+                worldGrid[x, y].worldPosition += Vector3.up;
             }
 
         }

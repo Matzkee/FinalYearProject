@@ -2,31 +2,29 @@
 using System.Collections;
 using System;
 
-public class PatrolState : State {
-    
+public class SearchingState : State {
+
     GuardController guardController;
     Pathfinding pathfinder;
-    TerrainGenerator tg;
+    Vector3 lastSeenPosition;
 
-    public PatrolState(GuardBehaviour owner):base(owner)
+    public SearchingState(GuardBehaviour owner, Vector3 _lastSeenPosition):base(owner)
     {
+        lastSeenPosition = _lastSeenPosition;
     }
 
     public override string Description()
     {
-        return "Patrolling State";
+        return "Searching State";
     }
 
     public override void Enter()
     {
         guardController = owner.GetComponent<GuardController>();
         pathfinder = owner.pathfinder;
-        tg = owner.tg;
+        Path searchPath = pathfinder.GetBestPossiblePath(owner.transform.position, lastSeenPosition);
 
-        int patrolArea = UnityEngine.Random.Range(0, tg.patrolPoints.Count);
-        Path patrolPath = pathfinder.GetBestPossiblePath(owner.transform.position, tg.patrolPoints[patrolArea]);
-        guardController.path = patrolPath;
-
+        guardController.path = searchPath;
         guardController.followingEnabled = true;
     }
 
@@ -40,6 +38,15 @@ public class PatrolState : State {
         if (owner.seesTarget)
         {
             owner.SwitchState(new ChasingState(owner));
+        }
+
+        if (guardController.followingEnabled)
+        {
+            if (guardController.path.reachedLastWaypoint)
+            {
+                guardController.followingEnabled = false;
+
+            }
         }
     }
 }

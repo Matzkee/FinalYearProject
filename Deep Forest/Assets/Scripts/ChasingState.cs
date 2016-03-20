@@ -20,12 +20,12 @@ public class ChasingState : State
     {
         target = owner.player.transform;
         guardController = owner.GetComponent<GuardController>();
-        guardController.seekPlayerPosition = true;
+        guardController.seekEnabled = true;
     }
 
     public override void Exit()
     {
-        guardController.seekPlayerPosition = false;
+        guardController.seekEnabled = false;
     }
 
     public override void Update()
@@ -36,7 +36,7 @@ public class ChasingState : State
         }
         else
         {
-            owner.SwitchState(new ReturningToPatrolState(owner));
+            owner.SwitchState(new SearchingState(owner, target.position));
         }
     }
 }

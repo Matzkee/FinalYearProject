@@ -2,71 +2,71 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Pathfinding : MonoBehaviour
+public class Pathfinding
 {
+    Node[,] grid;
+    float width, height;
 
-    TerrainGenerator tg;
-    public List<Node> tracePath;
-    public Path mainPatrolPath;
-
-    void Start()
+    public Pathfinding(Node[,] _grid)
     {
-        tg = GetComponent<TerrainGenerator>();
-        mainPatrolPath = null;
+        grid = _grid;
+        width = grid.GetLength(0);
+        height = grid.GetLength(1);
     }
 
-    //void Update()
-    //{
-    //    FindPath(seeker.position, target.position);
-    //}
-
-    void OnDrawGizmos()
+    public Path GetBestPossiblePath(Vector3 startPos, Vector3 targetPos)
     {
-        if (tg != null && tg.worldGrid != null)
+        Path path = new Path();
+        List<Node> waypoints = FindPath(startPos, targetPos);
+
+        // Since the algorithm checks the first 3 nodes in list we need to add this list
+        // instead of optimizing it
+        if (waypoints.Count < 3)
         {
-            foreach (Node n in tg.worldGrid)
-            {
-                Gizmos.color = Color.black;
-                if (n.walkable)
-                {
-                    if (tg.patrolPoints != null && tg.patrolPoints.Contains(n.worldPosition))
-                    {
-                        Gizmos.color = Color.white;
-                    }
-                    Gizmos.DrawWireCube(n.worldPosition, Vector3.one);
-                }
-            }
+            path.waypoints.AddRange(waypoints);
+        }
+        else
+        {
+            waypoints = OptimizePath(waypoints);
+            path.waypoints.AddRange(waypoints);
         }
 
+        return path;
     }
 
-    public void CreatePatrolPath()
+    public Path CreatePatrolPath(List<Vector3> patrolPoints)
     {
-        Path loopedPath = new Path();
-        List<Vector3> patrolPoints = tg.patrolPoints;
+        Path path = new Path();
 
         // Find path, optimize it and parse into loopedPath's list of waypoints
         for (int i = 0; i < patrolPoints.Count; i++)
         {
-            FindPath(patrolPoints[i], patrolPoints[(i + 1) % patrolPoints.Count]);
-            List<Vector3> waypoints = OptimizePath(tracePath);
-            loopedPath.waypoints.AddRange(waypoints);
+            List<Node> waypoints = FindPath(patrolPoints[i], patrolPoints[(i + 1) % patrolPoints.Count]);
+            if (waypoints.Count < 3)
+            {
+                path.waypoints.AddRange(waypoints);
+            }
+            else
+            {
+                waypoints = OptimizePath(waypoints);
+                path.waypoints.AddRange(waypoints);
+            }
         }
-        Debug.Log("Number of waypoints: " + loopedPath.waypoints.Count);
+        Debug.Log("Number of waypoints: " + path.waypoints.Count);
 
-        mainPatrolPath = loopedPath;
+        return path;
     }
 
-    public List<Vector3> OptimizePath(List<Node> path)
+    public List<Node> OptimizePath(List<Node> path)
     {
         bool previousNodeDiagonal;
-        List<Vector3> optimizedPath = new List<Vector3>();
+        List<Node> optimizedPath = new List<Node>();
         int indexSum;
 
         // Path is already ordered
         // Add the first node to the list
         // Compare first 2 nodes to find direction
-        optimizedPath.Add(path[0].worldPosition);
+        optimizedPath.Add(path[0]);
         indexSum = nodeIndexSum(path[0], path[1]);
         if (indexSum == 1 || indexSum == -1)
         {
@@ -90,7 +90,7 @@ public class Pathfinding : MonoBehaviour
             {
                 if (previousNodeDiagonal)
                 {
-                    optimizedPath.Add(last.worldPosition);
+                    optimizedPath.Add(last);
                     previousNodeDiagonal = false;
                 }
             }
@@ -99,20 +99,15 @@ public class Pathfinding : MonoBehaviour
             {
                 if (!previousNodeDiagonal)
                 {
-                    optimizedPath.Add(last.worldPosition);
+                    optimizedPath.Add(last);
                     previousNodeDiagonal = true;
                 }
             }
         }
         // Add the last node if the path does not contain it already
-        if (!optimizedPath.Contains(path[path.Count - 1].worldPosition))
+        if (!optimizedPath.Contains(path[path.Count - 1]))
         {
-            optimizedPath.Add(path[path.Count - 1].worldPosition);
-        }
-
-        for (int i = 0; i < optimizedPath.Count; i++)
-        {
-            optimizedPath[i] += Vector3.up;
+            optimizedPath.Add(path[path.Count - 1]);
         }
 
         return optimizedPath;
@@ -123,14 +118,15 @@ public class Pathfinding : MonoBehaviour
         return (b.gridX - a.gridX) + (b.gridY - a.gridY);
     }
 
-    public void FindPath(Vector3 startPos, Vector3 targetPos)
+    public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
     {
-        Node startNode = tg.worldGrid[
-            Mathf.RoundToInt(startPos.x) + tg.width / 2,
-            Mathf.RoundToInt(startPos.z) + tg.height / 2];
-        Node targetNode = tg.worldGrid[
-            Mathf.RoundToInt(targetPos.x) + tg.width / 2,
-            Mathf.RoundToInt(targetPos.z) + tg.height / 2];
+        List<Node> calculatedPath = new List<Node>();
+        Node startNode = grid[
+            Mathf.RoundToInt((startPos.x) + width / 2),
+            Mathf.RoundToInt((startPos.z) + height / 2)];
+        Node targetNode = grid[
+            Mathf.RoundToInt((targetPos.x) + width / 2),
+            Mathf.RoundToInt((targetPos.z) + height / 2)];
 
         List<Node> openSet = new List<Node>();
         HashSet<Node> closedSet = new HashSet<Node>();
@@ -152,8 +148,8 @@ public class Pathfinding : MonoBehaviour
 
             if (currentNode == targetNode)
             {
-                RetracePath(startNode, targetNode);
-                return;
+                calculatedPath = RetracePath(startNode, targetNode);
+                return calculatedPath;
             }
 
             foreach (Node neighbour in GetNeighbours(currentNode))
@@ -177,9 +173,10 @@ public class Pathfinding : MonoBehaviour
                 }
             }
         }
+        return calculatedPath;
     }
 
-    void RetracePath(Node startNode, Node endNode)
+    List<Node> RetracePath(Node startNode, Node endNode)
     {
         List<Node> path = new List<Node>();
         Node currentNode = endNode;
@@ -191,7 +188,7 @@ public class Pathfinding : MonoBehaviour
         }
 
         path.Reverse();
-        tracePath = path;
+        return path;
     }
 
     int GetDistance(Node nodeA, Node nodeB)
@@ -223,9 +220,9 @@ public class Pathfinding : MonoBehaviour
                 int checkX = node.gridX + x;
                 int checkY = node.gridY + y;
 
-                if (checkX >= 0 && checkX < tg.width && checkY >= 0 && checkY < tg.height)
+                if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height)
                 {
-                    neighbours.Add(tg.worldGrid[checkX, checkY]);
+                    neighbours.Add(grid[checkX, checkY]);
                 }
             }
         }
