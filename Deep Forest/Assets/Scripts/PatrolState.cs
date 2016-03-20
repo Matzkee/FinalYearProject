@@ -3,12 +3,11 @@ using System.Collections;
 using System;
 
 public class PatrolState : State {
-
+    
     GuardController guardController;
 
-    public PatrolState(FinalStateMachine owner):base(owner)
+    public PatrolState(GuardBehaviour owner):base(owner)
     {
-
     }
 
     public override string Description()
@@ -19,16 +18,19 @@ public class PatrolState : State {
     public override void Enter()
     {
         guardController = owner.GetComponent<GuardController>();
-
+        guardController.patrolling = true;
     }
 
     public override void Exit()
     {
-        throw new NotImplementedException();
+        guardController.patrolling = false;
     }
 
     public override void Update()
     {
-        throw new NotImplementedException();
+        if (owner.seesTarget)
+        {
+            owner.SwitchState(new ChasingState(owner));
+        }
     }
 }

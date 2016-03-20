@@ -3,9 +3,9 @@ using System.Collections;
 
 public abstract class State
 {
-    public FinalStateMachine owner;
+    public GuardBehaviour owner;
 
-    public State(FinalStateMachine _owner)
+    public State(GuardBehaviour _owner)
     {
         owner = _owner;
     }

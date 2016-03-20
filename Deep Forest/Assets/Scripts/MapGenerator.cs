@@ -11,7 +11,7 @@ public class MapGenerator
     public int fillPercent;
     public int[,] map;
     public System.Random rng;
-    public List<Vector3> orderedEdgeMap;
+    public List <Vector3> orderedEdgeMap;
     public List <Vector3> patrolPoints;
 
     public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, int roomRadius, System.Random randomSeed)

@@ -2,59 +2,62 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Pathfinding : MonoBehaviour {
+public class Pathfinding : MonoBehaviour
+{
 
     TerrainGenerator tg;
-    public Transform seeker, target;
     public List<Node> tracePath;
-    public List<Vector3> betterPath;
+    public Path mainPatrolPath;
 
     void Start()
     {
-        tg = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
+        tg = GetComponent<TerrainGenerator>();
+        mainPatrolPath = null;
     }
 
-    void Update()
-    {
-        FindPath(seeker.position, target.position);
-        betterPath = GetOptimizedPath(tracePath);
-    }
+    //void Update()
+    //{
+    //    FindPath(seeker.position, target.position);
+    //}
 
     void OnDrawGizmos()
     {
-        if (tracePath != null)
+        if (tg != null && tg.worldGrid != null)
         {
-            if (betterPath != null)
+            foreach (Node n in tg.worldGrid)
             {
-                Gizmos.color = Color.magenta;
-                foreach (Vector3 pos in betterPath)
+                Gizmos.color = Color.black;
+                if (n.walkable)
                 {
-                    Gizmos.DrawWireSphere(pos, 0.5f);
-                }
-            }
-            if (tg.worldGrid != null)
-            {
-                foreach (Node n in tg.worldGrid)
-                {
-                    Gizmos.color = Color.black;
-                    if (n.walkable)
+                    if (tg.patrolPoints != null && tg.patrolPoints.Contains(n.worldPosition))
                     {
-                        if (tracePath.Contains(n))
-                        {
-                            Gizmos.color = Color.cyan;
-                        }
-                        if (tg.patrolPoints != null&& tg.patrolPoints.Contains(n.worldPosition))
-                        {
-                            Gizmos.color = Color.white;
-                        }
-                        Gizmos.DrawWireCube(n.worldPosition, Vector3.one);
+                        Gizmos.color = Color.white;
                     }
+                    Gizmos.DrawWireCube(n.worldPosition, Vector3.one);
                 }
             }
         }
+
     }
 
-    List<Vector3> GetOptimizedPath(List<Node> path)
+    public void CreatePatrolPath()
+    {
+        Path loopedPath = new Path();
+        List<Vector3> patrolPoints = tg.patrolPoints;
+
+        // Find path, optimize it and parse into loopedPath's list of waypoints
+        for (int i = 0; i < patrolPoints.Count; i++)
+        {
+            FindPath(patrolPoints[i], patrolPoints[(i + 1) % patrolPoints.Count]);
+            List<Vector3> waypoints = OptimizePath(tracePath);
+            loopedPath.waypoints.AddRange(waypoints);
+        }
+        Debug.Log("Number of waypoints: " + loopedPath.waypoints.Count);
+
+        mainPatrolPath = loopedPath;
+    }
+
+    public List<Vector3> OptimizePath(List<Node> path)
     {
         bool previousNodeDiagonal;
         List<Vector3> optimizedPath = new List<Vector3>();
@@ -74,6 +77,8 @@ public class Pathfinding : MonoBehaviour {
             previousNodeDiagonal = true;
         }
         // Iterate through the path and add the best nodes
+        // due to how map is created we can be sure that each direction takes at least 
+        // 2 tiles and there is no sudden change
         for (int i = 2; i < path.Count; i++)
         {
             Node current = path[i];
@@ -104,6 +109,12 @@ public class Pathfinding : MonoBehaviour {
         {
             optimizedPath.Add(path[path.Count - 1].worldPosition);
         }
+
+        for (int i = 0; i < optimizedPath.Count; i++)
+        {
+            optimizedPath[i] += Vector3.up;
+        }
+
         return optimizedPath;
     }
 
@@ -112,13 +123,13 @@ public class Pathfinding : MonoBehaviour {
         return (b.gridX - a.gridX) + (b.gridY - a.gridY);
     }
 
-    void FindPath(Vector3 startPos, Vector3 targetPos)
+    public void FindPath(Vector3 startPos, Vector3 targetPos)
     {
         Node startNode = tg.worldGrid[
-            Mathf.RoundToInt(startPos.x) + tg.width/2, 
-            Mathf.RoundToInt(startPos.z) + tg.height/2];
+            Mathf.RoundToInt(startPos.x) + tg.width / 2,
+            Mathf.RoundToInt(startPos.z) + tg.height / 2];
         Node targetNode = tg.worldGrid[
-            Mathf.RoundToInt(targetPos.x) + tg.width / 2, 
+            Mathf.RoundToInt(targetPos.x) + tg.width / 2,
             Mathf.RoundToInt(targetPos.z) + tg.height / 2];
 
         List<Node> openSet = new List<Node>();
@@ -188,6 +199,8 @@ public class Pathfinding : MonoBehaviour {
         int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
         int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
 
+        // 14 is the cost for diagonal movement on a 2D grid
+        // horizontal/vertical cost is 10
         if (dstX > dstY)
         {
             return 14 * dstY + 10 * (dstX - dstY);

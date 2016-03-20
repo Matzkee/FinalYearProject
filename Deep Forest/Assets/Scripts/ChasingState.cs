@@ -7,9 +7,8 @@ public class ChasingState : State
     Transform target;
     GuardController guardController;
 
-    public ChasingState(FinalStateMachine owner, Transform _target):base(owner)
+    public ChasingState(GuardBehaviour owner):base(owner)
     {
-        target = _target;
     }
 
     public override string Description()
@@ -19,6 +18,7 @@ public class ChasingState : State
 
     public override void Enter()
     {
+        target = owner.player.transform;
         guardController = owner.GetComponent<GuardController>();
         guardController.seekPlayerPosition = true;
     }
@@ -30,6 +30,13 @@ public class ChasingState : State
 
     public override void Update()
     {
-        guardController.targetPosition = target.position;
+        if (owner.seesTarget)
+        {
+            guardController.targetPosition = target.position;
+        }
+        else
+        {
+            owner.SwitchState(new ReturningToPatrolState(owner));
+        }
     }
 }

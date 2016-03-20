@@ -1,22 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FinalStateMachine : MonoBehaviour {
-
-    static string STATE_CHASING = "Chasing state";
-
+public class GuardBehaviour : MonoBehaviour {
+    
     State state = null;
-    Transform player;
     LayerMask walls;
-    bool seesTarget = false;
+    [HideInInspector]
+    public Pathfinding pathfinder;
+    [HideInInspector]
+    public Transform player;
+    [HideInInspector]
+    public bool seesTarget = false;
 
     public float viewRange;
     public float viewAngle;
 
     void Start () {
-	    player = GameObject.FindGameObjectWithTag("Player").transform;
+        pathfinder = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<Pathfinding>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         walls = LayerMask.GetMask("Walls");
-        StartCoroutine("LookOut");
+
+        // Start warming up
+        StartCoroutine("WarmUp");
     }
 	
     public void SwitchState(State _state)
@@ -42,6 +47,7 @@ public class FinalStateMachine : MonoBehaviour {
 
     // In order to assure that our guard looks for player no matter in which state it currently is
     // We need the guard to constantly calculate positions at set intervals.
+    // The states then decide when to switch depending if the guard sees the target
     IEnumerator LookOut()
     {
         while (true)
@@ -61,19 +67,21 @@ public class FinalStateMachine : MonoBehaviour {
                     }
                 }
             }
-            // If the player is seen, start chasing the player
-            if (seesTarget)
-            {
-                if (!STATE_CHASING.Equals(state.Description()))
-                {
-                    SwitchState(new ChasingState(this, player.transform));
-                }
-            }
-            else
-            {
-                SwitchState(new PatrolState(this));
-            }
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    // To get to actual map generator script and generated waypoints without interfering with current
+    // processing, we have to wait for it to load and give it time to prepare
+    IEnumerator WarmUp()
+    {
+        while (pathfinder == null || pathfinder.mainPatrolPath == null)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+        GetComponent<GuardController>().patrollingPath = pathfinder.mainPatrolPath;
+        SwitchState(new PatrolState(this));
+        // Start looking out for player endlesly
+        StartCoroutine("LookOut");
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class TerrainGenerator : MonoBehaviour {
 
     GameObject walls;
+    Pathfinding pathfinder;
     List<GameObject> trees;
     List<Vector3> orderedEdgeMap;
     public List<Vector3> patrolPoints;
@@ -15,7 +16,7 @@ public class TerrainGenerator : MonoBehaviour {
     Mesh mesh;
     MeshRenderer meshRenderer;
     MeshCollider colider;
-    MapGenerator ca;
+    MapGenerator mapGenerator;
 
     [Header("Map Options")]
     public int width = 100;
@@ -48,6 +49,7 @@ public class TerrainGenerator : MonoBehaviour {
         trees = new List<GameObject>();
         mesh = gameObject.AddComponent<MeshFilter>().mesh;
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        pathfinder = gameObject.GetComponent<Pathfinding>();
         colider = gameObject.AddComponent<MeshCollider>();
         mesh.Clear();
 
@@ -69,14 +71,14 @@ public class TerrainGenerator : MonoBehaviour {
         }
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
-        ca = new MapGenerator(width, height, fillPercentage, roomRadius, rng);
-        orderedEdgeMap = ca.orderedEdgeMap;
-        patrolPoints = ca.patrolPoints;
+        mapGenerator = new MapGenerator(width, height, fillPercentage, roomRadius, rng);
+        orderedEdgeMap = mapGenerator.orderedEdgeMap;
+        patrolPoints = mapGenerator.patrolPoints;
     }
 
     public void GeneratePatrolPoints()
     {
-        patrolPoints = ca.patrolPoints;
+        patrolPoints = mapGenerator.patrolPoints;
         for (int i = 0; i < patrolPoints.Count; i++)
         {
             Vector3 worldPatrolPoint = patrolPoints[i];
@@ -85,6 +87,7 @@ public class TerrainGenerator : MonoBehaviour {
                 Mathf.RoundToInt(worldPatrolPoint.z + height / 2)].worldPosition;
             patrolPoints[i] = worldPatrolPoint;
         }
+        pathfinder.CreatePatrolPath();
     }
 
     // Calculate the Perlin Noise at those coordinates
@@ -164,7 +167,7 @@ public class TerrainGenerator : MonoBehaviour {
     {
         DestroyTrees();
         GameObject forest = new GameObject("Forest");
-        int[,] map = ca.map;
+        int[,] map = mapGenerator.map;
         int index = 0;
         for (int y = 0; y < height; y++)
         {
@@ -253,7 +256,7 @@ public class TerrainGenerator : MonoBehaviour {
                 }
 
                 // Add the navigation point to the grid
-                bool walkable = (ca.map[x, y] == 0) ? true : false;
+                bool walkable = (mapGenerator.map[x, y] == 0) ? true : false;
                 worldGrid[x, y] = new Node(walkable, cellBottomLeft + (cellTopRight - cellBottomLeft) / 2, x, y);
             }
 

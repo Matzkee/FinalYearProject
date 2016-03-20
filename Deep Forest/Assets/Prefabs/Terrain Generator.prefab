@@ -39,18 +39,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc24b6ba2ca26942b366c33147ef1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  patrolPoints: []
   width: 100
   height: 100
+  roomRadius: 2
   fillPercentage: 52
+  seed: 
   scale: 10
   octaves: 2
   persistance: 1.5
   lacunarity: 1
   wallHeight: 3
   treeSeparation: 3
-  seed: 
   useRandomSeed: 1
-  autoUpdate: 0
   generateTrees: 0
   prefabs:
   - {fileID: 171844, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
