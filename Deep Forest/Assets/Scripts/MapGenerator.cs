@@ -13,6 +13,7 @@ public class MapGenerator
     public System.Random rng;
     public List <Vector3> orderedEdgeMap;
     public List <Vector3> patrolPoints;
+    public Vector3 playerSpawn, guardSpawn;
 
     public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, int roomRadius, System.Random randomSeed)
     {
@@ -99,8 +100,34 @@ public class MapGenerator
         // Smooth the map once more after connecting rooms to remove outliers
         SmoothMap();
         CalculatePatrolPoints(survivingRooms);
+        CreateSpawnPoints(patrolPoints);
         PreparePlayArea();
 
+    }
+
+    void CreateSpawnPoints(List<Vector3> patrolPoints)
+    {
+        // For spawning points I will use a simple logic
+        // get the 2 most distant patrol points  and pick one for player and other for guard
+        float distance = 0;
+        Vector3 bestSpawnA = new Vector3();
+        Vector3 bestSpawnB = new Vector3();
+        foreach (Vector3 pointA in patrolPoints)
+        {
+            foreach (Vector3 pointB in patrolPoints)
+            {
+                float newDistance = Vector3.Distance(pointA, pointB);
+                if (newDistance > distance)
+                {
+                    distance = newDistance;
+                    bestSpawnA = pointA;
+                    bestSpawnB = pointB;
+                }
+            }
+        }
+        // Set the spawns
+        playerSpawn = bestSpawnA;
+        guardSpawn = bestSpawnB;
     }
 
     void CalculatePatrolPoints(List<Room> rooms)

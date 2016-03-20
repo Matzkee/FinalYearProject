@@ -24,7 +24,7 @@ public class LookingAroundState : State {
         nothingFound = false;
         for (int i = 0; i < owner.directionsToLook; i++)
         {
-            Vector3 randomDirection = Random.insideUnitSphere;
+            Vector3 randomDirection = Random.insideUnitSphere + owner.transform.position;
             randomDirection.y = owner.transform.position.y;
             directions.Add(randomDirection);
         }

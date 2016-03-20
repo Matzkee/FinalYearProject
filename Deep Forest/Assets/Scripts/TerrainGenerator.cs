@@ -9,6 +9,8 @@ public class TerrainGenerator : MonoBehaviour {
     List<Vector3> orderedEdgeMap;
     public List<Vector3> patrolPoints;
     public Node[,] worldGrid;
+    [HideInInspector]
+    public Vector3 playerSpawn, guardSpawn;
 
     System.Random rng;
     Vector2[] octaveOffsets;
@@ -36,6 +38,8 @@ public class TerrainGenerator : MonoBehaviour {
     public bool useRandomSeed = false;
     public bool generateTrees = false;
 
+    public GameObject player;
+    public GameObject guard;
     public GameObject[] prefabs;
     public Material terrainMaterial;
 
@@ -55,10 +59,15 @@ public class TerrainGenerator : MonoBehaviour {
         GenerateMesh();
         GenerateWalls();
         GeneratePatrolPoints();
+        GenerateSpawnPoints();
         if (generateTrees)
         {
             GenerateTrees();
         }
+
+        // Spawn player and guard
+        SpawnPlayer(playerSpawn);
+        SpawnGuard(guardSpawn);
     }
 
     public void GenerateSeed()
@@ -74,6 +83,27 @@ public class TerrainGenerator : MonoBehaviour {
         patrolPoints = mapGenerator.patrolPoints;
     }
 
+    public void SpawnPlayer(Vector3 spawnPoint)
+    {
+        Instantiate(player, spawnPoint, transform.rotation);
+    }
+    public void SpawnGuard(Vector3 spawnPoint)
+    {
+        Instantiate(guard, spawnPoint, transform.rotation);
+    }
+
+    public void GenerateSpawnPoints()
+    {
+        playerSpawn = mapGenerator.playerSpawn;
+        playerSpawn = worldGrid[Mathf.RoundToInt(playerSpawn.x + width / 2), 
+            Mathf.RoundToInt(playerSpawn.z + height / 2)].worldPosition + Vector3.up;
+        guardSpawn = mapGenerator.guardSpawn;
+        guardSpawn = worldGrid[Mathf.RoundToInt(guardSpawn.x + width / 2),
+            Mathf.RoundToInt(guardSpawn.z + height / 2)].worldPosition + Vector3.up;
+        Debug.Log("Player Spawn: " + playerSpawn);
+        Debug.Log("Guard Spawn: " + guardSpawn);
+    }
+
     public void GeneratePatrolPoints()
     {
         patrolPoints = mapGenerator.patrolPoints;
@@ -85,7 +115,6 @@ public class TerrainGenerator : MonoBehaviour {
                 Mathf.RoundToInt(worldPatrolPoint.z + height / 2)].worldPosition;
             patrolPoints[i] = worldPatrolPoint;
         }
-        Debug.Log("Patrol Points: " + patrolPoints.Count);
     }
 
     // Calculate the Perlin Noise at those coordinates

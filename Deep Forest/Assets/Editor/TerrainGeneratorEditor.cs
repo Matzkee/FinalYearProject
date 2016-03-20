@@ -16,6 +16,7 @@ public class TerrainGeneratorEditor :  Editor{
             terrainGen.GenerateMesh();
             terrainGen.GenerateWalls();
             terrainGen.GeneratePatrolPoints();
+            terrainGen.GenerateSpawnPoints();
             if (terrainGen.generateTrees)
             {
                 terrainGen.GenerateTrees();

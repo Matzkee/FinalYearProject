@@ -21,13 +21,14 @@ public class GuardController : MonoBehaviour {
     public bool seekEnabled = false, followingEnabled = false;
     [HideInInspector]
     public Vector3 targetPosition;
-    public Path path = new Path();
+    public Path path = null;
     
     
 
     void Start () {
         rigidbody = gameObject.AddComponent<Rigidbody>();
         rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        ResetAll();
     }
 
     void ResetAll()
@@ -42,7 +43,7 @@ public class GuardController : MonoBehaviour {
         {
             force += SeekTarget(targetPosition);
         }
-        if (followingEnabled)
+        if (followingEnabled && path != null)
         {
             force += FollowingPath();
         }
@@ -113,7 +114,7 @@ public class GuardController : MonoBehaviour {
 
     void OnDrawGizmos()
     {
-        if (path.waypoints != null)
+        if (path != null && path.waypoints != null)
         {
             Gizmos.color = Color.white;
             for (int i = 0; i < path.waypoints.Count - 1; i++)
