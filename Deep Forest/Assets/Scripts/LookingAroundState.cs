@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class LookingAroundState : State {
-
-    bool nothingFound;
-    List<Vector3> directions;
-    int iteration = 0;
+    
+    GuardController guardController;
 
     public LookingAroundState(GuardBehaviour owner):base(owner)
     {
@@ -20,19 +18,27 @@ public class LookingAroundState : State {
 
     public override void Enter()
     {
-        directions = new List<Vector3>();
-        nothingFound = false;
+        guardController = owner.GetComponent<GuardController>();
+        guardController.iteration = 0;
+        List<Quaternion> directions = new List<Quaternion>();
         for (int i = 0; i < owner.directionsToLook; i++)
         {
             Vector3 randomDirection = Random.insideUnitSphere + owner.transform.position;
             randomDirection.y = owner.transform.position.y;
-            directions.Add(randomDirection);
+
+            Quaternion targetRotation =
+                    Quaternion.LookRotation(randomDirection - owner.transform.position, Vector3.up);
+
+            directions.Add(targetRotation);
         }
+
+        guardController.lookingDirections = directions;
+        guardController.lookingEnabled = true;
     }
 
     public override void Exit()
     {
-        
+        guardController.lookingEnabled = false;
     }
 
     public override void Update()
@@ -41,31 +47,9 @@ public class LookingAroundState : State {
         {
             owner.SwitchState(new ChasingState(owner));
         }
-        if (nothingFound)
+        if (!guardController.lookingEnabled)
         {
             owner.SwitchState(new PatrolState(owner));
-        }
-        else
-        {
-            if (directions != null)
-            {
-                Quaternion targetRotation = 
-                    Quaternion.LookRotation(directions[iteration] - owner.transform.position, Vector3.up);
-                float angle = Quaternion.Angle(owner.transform.rotation, targetRotation);
-                if (angle > 0.1f)
-                {
-                    owner.transform.rotation = 
-                        Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime * owner.rotationSpeed);
-                }
-                else
-                {
-                    iteration++;
-                    if (iteration == directions.Count)
-                    {
-                        nothingFound = true;
-                    }
-                }
-            }
         }
 
     }

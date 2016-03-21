@@ -16,12 +16,16 @@ public class GuardController : MonoBehaviour {
     public float maxSpeed = 3.0f;
     public float maxForce = 3.0f;
     public float slowingDistance = 5.0f;
+    public float lookingRotationSpeed = 1.5f;
 
     [HideInInspector]
-    public bool seekEnabled = false, followingEnabled = false;
+    public bool seekEnabled = false, followingEnabled = false, lookingEnabled = false;
+    [HideInInspector]
+    public int iteration;
     [HideInInspector]
     public Vector3 targetPosition;
     public Path path = null;
+    public List<Quaternion> lookingDirections = null;
     
     
 
@@ -33,7 +37,7 @@ public class GuardController : MonoBehaviour {
 
     void ResetAll()
     {
-        seekEnabled = followingEnabled = false;
+        seekEnabled = followingEnabled = lookingEnabled = false;
     }
 	
 	void Update () {
@@ -46,6 +50,10 @@ public class GuardController : MonoBehaviour {
         if (followingEnabled && path != null)
         {
             force += FollowingPath();
+        }
+        if (lookingEnabled && lookingDirections != null)
+        {
+            LookAround();
         }
 
         force = Vector3.ClampMagnitude(force, maxForce);
@@ -110,6 +118,25 @@ public class GuardController : MonoBehaviour {
         Vector3 desired = toTarget * maxSpeed;
 
         return desired - velocity;
+    }
+
+    public void LookAround()
+    {
+        Quaternion targetRotation = lookingDirections[iteration];
+        float angle = Quaternion.Angle(transform.rotation, targetRotation);
+        if (angle > 0.1f)
+        {
+            transform.rotation =
+                Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * lookingRotationSpeed);
+        }
+        else
+        {
+            iteration++;
+            if (iteration == lookingDirections.Count)
+            {
+                lookingEnabled = false;
+            }
+        }
     }
 
     void OnDrawGizmos()
