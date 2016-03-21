@@ -23,4 +23,19 @@ public class Game : MonoBehaviour {
 	void Update () {
 	    
 	}
+
+    public void GameOver()
+    {
+
+    }
+
+    public void addScore()
+    {
+
+    }
+
+    public void nextLevel()
+    {
+        
+    }
 }

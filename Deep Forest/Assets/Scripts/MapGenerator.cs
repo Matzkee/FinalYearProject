@@ -63,7 +63,7 @@ public class MapGenerator
 
         List<List<Coord>> wallRegions = GetRegions(1);
 
-        int wallThresholdSize = 50;
+        int wallThresholdSize = 100;
         foreach (List<Coord> wallRegion in wallRegions)
         {
             if (wallRegion.Count < wallThresholdSize)
@@ -75,7 +75,7 @@ public class MapGenerator
             }
         }
 
-        int roomThresholdSize = 50;
+        int roomThresholdSize = 80;
         List<List<Coord>> roomRegions = GetRegions(0);
 
         foreach (List<Coord> roomRegion in roomRegions)

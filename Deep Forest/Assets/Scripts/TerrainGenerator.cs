@@ -66,8 +66,23 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         // Spawn player and guard
-        SpawnPlayer(playerSpawn);
-        SpawnGuard(guardSpawn);
+        //SpawnPlayer(playerSpawn);
+        //SpawnGuard(guardSpawn);
+    }
+
+    void OnDrawGizmos()
+    {
+        if (worldGrid != null)
+        {
+            Gizmos.color = Color.black;
+            foreach (Node n in worldGrid)
+            {
+                if (n.walkable)
+                {
+                    Gizmos.DrawWireCube(n.worldPosition, Vector3.one);
+                }
+            }
+        }
     }
 
     public void GenerateSeed()
