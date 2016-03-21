@@ -61,8 +61,8 @@ public class MapGenerator
     {
         List<Room> survivingRooms = new List<Room>();
 
+        // Remove smaller filled rooms
         List<List<Coord>> wallRegions = GetRegions(1);
-
         int wallThresholdSize = 50;
         foreach (List<Coord> wallRegion in wallRegions)
         {
@@ -75,9 +75,9 @@ public class MapGenerator
             }
         }
 
+        // Remove smaller non-filled rooms
         int roomThresholdSize = 50;
         List<List<Coord>> roomRegions = GetRegions(0);
-
         foreach (List<Coord> roomRegion in roomRegions)
         {
             if (roomRegion.Count < roomThresholdSize)
@@ -98,6 +98,18 @@ public class MapGenerator
         
         ConnectClosestRooms(survivingRooms);
         // Smooth the map again after connecting rooms to remove outliers
+        // Also remove smaller filled areas
+        wallRegions = GetRegions(1);
+        foreach (List<Coord> wallRegion in wallRegions)
+        {
+            if (wallRegion.Count < wallThresholdSize)
+            {
+                foreach (Coord tile in wallRegion)
+                {
+                    map[tile.tileX, tile.tileY] = 0;
+                }
+            }
+        }
         for (int i = 0; i < 5; i++)
         {
             SmoothMap();
@@ -230,7 +242,7 @@ public class MapGenerator
         List<Coord> edgesToAssign = outlineEdges;
         List<List<Coord>> orderedEdges = new List<List<Coord>>();
 
-        while (edgesToAssign.Count != 0 || edgesToAssign.Count < 4)
+        while (edgesToAssign.Count != 0)
         {
             List<Coord> newOrderedEdges = new List<Coord>();
             newOrderedEdges.Add(edgesToAssign[0]);
@@ -242,6 +254,7 @@ public class MapGenerator
                 Coord lastEdge = newOrderedEdges[newOrderedEdges.Count - 1];
                 Coord toAdd = GetNextEdge(lastEdge, newOrderedEdges, edgesToAssign);
                 Coord newCoord = new Coord();
+                newCoord.tileX = -1;
                 if (toAdd.tileX != newCoord.tileX)
                 {
                     newOrderedEdges.Add(toAdd);
@@ -262,21 +275,21 @@ public class MapGenerator
     }
 
 
-    // Function to order edge coordinates to later generate the collision mesh
-    List<Coord> OrderOutlineEdges(int[,] map, List<Coord> outlineEdges)
-    {
-        List<Coord> orderedEdges = new List<Coord>();
-        // Add the first edge from the list
-        orderedEdges.Add(outlineEdges[0]);
-        // Keep adding edges until lists are the same in size
-        while (orderedEdges.Count != outlineEdges.Count)
-        {
-            Coord lastEdge = orderedEdges[orderedEdges.Count - 1];
-            orderedEdges.Add(GetNextEdge(lastEdge, orderedEdges, outlineEdges));
-        }
+    //// Function to order edge coordinates to later generate the collision mesh
+    //List<Coord> OrderOutlineEdges(int[,] map, List<Coord> outlineEdges)
+    //{
+    //    List<Coord> orderedEdges = new List<Coord>();
+    //    // Add the first edge from the list
+    //    orderedEdges.Add(outlineEdges[0]);
+    //    // Keep adding edges until lists are the same in size
+    //    while (orderedEdges.Count != outlineEdges.Count)
+    //    {
+    //        Coord lastEdge = orderedEdges[orderedEdges.Count - 1];
+    //        orderedEdges.Add(GetNextEdge(lastEdge, orderedEdges, outlineEdges));
+    //    }
 
-        return orderedEdges;
-    }
+    //    return orderedEdges;
+    //}
 
     bool TouchingSamePlayTile(Coord currentTile, Coord nextTile, List<Coord> playTiles)
     {
@@ -306,6 +319,7 @@ public class MapGenerator
     Coord GetNextEdge(Coord lastEdge, List<Coord> orderedEdges, List<Coord> outlineEdges)
     {
         Coord nextEdge = new Coord();
+        nextEdge.tileX = -1;
         List<Coord> playTiles = new List<Coord>();
         List<Coord> wallTiles = new List<Coord>();
 

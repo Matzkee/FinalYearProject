@@ -90,17 +90,6 @@ public class TerrainGenerator : MonoBehaviour {
                 }
             }
         }
-        if (orderedEdgeMaps != null)
-        {
-            foreach (List<Vector3> edgeList in orderedEdgeMaps)
-            {
-                foreach (Vector3 pos in edgeList)
-                {
-                    Gizmos.color = Color.white;
-                    Gizmos.DrawLine(pos, pos + Vector3.up * wallHeight);
-                }
-            }
-        }
     }
 
     public void GenerateSeed()
@@ -133,7 +122,7 @@ public class TerrainGenerator : MonoBehaviour {
         guardSpawn = mapGenerator.guardSpawn;
         guardSpawn = worldGrid[Mathf.RoundToInt(guardSpawn.x + width / 2),
             Mathf.RoundToInt(guardSpawn.z + height / 2)].worldPosition + Vector3.up;
-        Debug.Log("Player Spawn: " + playerSpawn + "Guard Spawn: " + guardSpawn);
+        //Debug.Log("Player Spawn: " + playerSpawn + "Guard Spawn: " + guardSpawn);
     }
 
     public void GeneratePatrolPoints()
