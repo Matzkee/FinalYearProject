@@ -30,6 +30,7 @@ public class SearchingState : State {
 
     public override void Exit()
     {
+        guardController.path = null;
         guardController.followingEnabled = false;
     }
 

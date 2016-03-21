@@ -30,6 +30,11 @@ public class GuardBehaviourEditor : Editor {
                 gh.transform.forward,
                 gh.viewAngle / 2,
                 gh.viewRange);
+
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = Color.white;
+            Handles.Label(gh.transform.position + Vector3.up * 1.5f,
+                "Pos: " + gh.transform.position.ToString() + "\nState: " + gh.state.Description(), style);
         }
     }
 

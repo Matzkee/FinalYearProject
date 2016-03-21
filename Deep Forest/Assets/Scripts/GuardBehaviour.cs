@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GuardBehaviour : MonoBehaviour {
     
-    State state = null;
+    public State state = null;
     LayerMask walls;
     [HideInInspector]
     public TerrainGenerator tg;
