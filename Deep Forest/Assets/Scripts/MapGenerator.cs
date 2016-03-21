@@ -11,7 +11,7 @@ public class MapGenerator
     public int fillPercent;
     public int[,] map;
     public System.Random rng;
-    public List <Vector3> orderedEdgeMap;
+    public List <List<Vector3>> orderedEdgeMaps;
     public List <Vector3> patrolPoints;
     public Vector3 playerSpawn, guardSpawn;
 
@@ -63,7 +63,7 @@ public class MapGenerator
 
         List<List<Coord>> wallRegions = GetRegions(1);
 
-        int wallThresholdSize = 100;
+        int wallThresholdSize = 50;
         foreach (List<Coord> wallRegion in wallRegions)
         {
             if (wallRegion.Count < wallThresholdSize)
@@ -75,7 +75,7 @@ public class MapGenerator
             }
         }
 
-        int roomThresholdSize = 80;
+        int roomThresholdSize = 50;
         List<List<Coord>> roomRegions = GetRegions(0);
 
         foreach (List<Coord> roomRegion in roomRegions)
@@ -97,8 +97,11 @@ public class MapGenerator
         survivingRooms[0].isAccessibleFromMainRoom = true;
         
         ConnectClosestRooms(survivingRooms);
-        // Smooth the map once more after connecting rooms to remove outliers
-        SmoothMap();
+        // Smooth the map again after connecting rooms to remove outliers
+        for (int i = 0; i < 5; i++)
+        {
+            SmoothMap();
+        }
         CalculatePatrolPoints(survivingRooms);
         CreateSpawnPoints(patrolPoints);
         PreparePlayArea();
@@ -172,7 +175,7 @@ public class MapGenerator
     void PreparePlayArea()
     {
         List<Coord> edgeCoords = new List<Coord>();
-        List<Coord> orderedEdges = new List<Coord>();
+        List<List<Coord>> orderedEdges = new List<List<Coord>>();
 
         // Get the edge tiles for play area, since GetRegions will return a list with only 1 list
         // assign it to a playRoom variable
@@ -206,13 +209,58 @@ public class MapGenerator
             }
         }
         // Calculate outline tile edges
-        orderedEdges = OrderOutlineEdges(map, edgeCoords);
-        orderedEdgeMap = new List<Vector3>();
-        foreach (Coord edge in orderedEdges)
+        orderedEdges = OrderEdges(map, edgeCoords);
+        orderedEdgeMaps = new List<List<Vector3>>();
+
+        Debug.Log("Number of Wall Maps: " + orderedEdges.Count);
+
+        foreach (List<Coord> edgeMap in orderedEdges)
         {
-            orderedEdgeMap.Add(new Vector3(-width / 2 + edge.tileX, 0, -height / 2 + edge.tileY));
+            List<Vector3> newEdgeMap = new List<Vector3>();
+            foreach (Coord tile in edgeMap)
+            {
+                newEdgeMap.Add(new Vector3(-width / 2 + tile.tileX, 0, -height / 2 + tile.tileY));
+            }
+            orderedEdgeMaps.Add(newEdgeMap);
         }
     }
+
+    List<List<Coord>> OrderEdges(int[,] map, List<Coord> outlineEdges)
+    {
+        List<Coord> edgesToAssign = outlineEdges;
+        List<List<Coord>> orderedEdges = new List<List<Coord>>();
+
+        while (edgesToAssign.Count != 0 || edgesToAssign.Count < 4)
+        {
+            List<Coord> newOrderedEdges = new List<Coord>();
+            newOrderedEdges.Add(edgesToAssign[0]);
+
+            // Keep adding edges until null is returned
+            bool reachedEnd = false;
+            while (!reachedEnd)
+            {
+                Coord lastEdge = newOrderedEdges[newOrderedEdges.Count - 1];
+                Coord toAdd = GetNextEdge(lastEdge, newOrderedEdges, edgesToAssign);
+                Coord newCoord = new Coord();
+                if (toAdd.tileX != newCoord.tileX)
+                {
+                    newOrderedEdges.Add(toAdd);
+                }
+                else
+                {
+                    reachedEnd = true;
+                }
+            }
+            foreach (Coord tile in newOrderedEdges)
+            {
+                edgesToAssign.Remove(tile);
+            }
+            orderedEdges.Add(newOrderedEdges);
+        }
+
+        return orderedEdges;
+    }
+
 
     // Function to order edge coordinates to later generate the collision mesh
     List<Coord> OrderOutlineEdges(int[,] map, List<Coord> outlineEdges)
@@ -230,7 +278,7 @@ public class MapGenerator
         return orderedEdges;
     }
 
-    bool TilesTouchingSameEdge(Coord currentTile, Coord nextTile, List<Coord> currentTouchingEdges)
+    bool TouchingSamePlayTile(Coord currentTile, Coord nextTile, List<Coord> playTiles)
     {
         int i = 0;
         List<Coord> nextTileTouchingEdges = new List<Coord>();
@@ -244,7 +292,7 @@ public class MapGenerator
                 }
             }
         }
-        foreach (Coord edge in currentTouchingEdges)
+        foreach (Coord edge in playTiles)
         {
             if (nextTileTouchingEdges.Contains(edge))
             {
@@ -258,8 +306,8 @@ public class MapGenerator
     Coord GetNextEdge(Coord lastEdge, List<Coord> orderedEdges, List<Coord> outlineEdges)
     {
         Coord nextEdge = new Coord();
-        List<Coord> touchingEdges = new List<Coord>();
-        List<Coord> touchingWalls = new List<Coord>();
+        List<Coord> playTiles = new List<Coord>();
+        List<Coord> wallTiles = new List<Coord>();
 
         for (int x = lastEdge.tileX - 1; x <= lastEdge.tileX + 1; x++)
         {
@@ -267,22 +315,22 @@ public class MapGenerator
             {
                 if (IsInMapRange(x, y) && map[x, y] == 0)
                 {
-                    touchingEdges.Add(new Coord(x, y));
+                    playTiles.Add(new Coord(x, y));
                 }
                 else
                 {
                     Coord nextCoord = new Coord(x, y);
                     if (!orderedEdges.Contains(nextCoord) && outlineEdges.Contains(nextCoord))
                     {
-                        touchingWalls.Add(nextCoord);
+                        wallTiles.Add(nextCoord);
                     }
                 }
             }
         }
 
-        foreach (Coord edge in touchingWalls)
+        foreach (Coord edge in wallTiles)
         {
-            if (TilesTouchingSameEdge(lastEdge, edge, touchingEdges))
+            if (TouchingSamePlayTile(lastEdge, edge, playTiles))
             {
                 nextEdge = edge;
             }

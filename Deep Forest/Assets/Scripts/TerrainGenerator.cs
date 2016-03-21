@@ -6,7 +6,7 @@ public class TerrainGenerator : MonoBehaviour {
 
     GameObject walls;
     List<GameObject> trees;
-    List<Vector3> orderedEdgeMap;
+    List<List<Vector3>> orderedEdgeMaps;
     public List<Vector3> patrolPoints;
     public Node[,] worldGrid;
     [HideInInspector]
@@ -74,12 +74,30 @@ public class TerrainGenerator : MonoBehaviour {
     {
         if (worldGrid != null)
         {
-            Gizmos.color = Color.black;
             foreach (Node n in worldGrid)
             {
-                if (n.walkable)
+                if (patrolPoints.Contains(n.worldPosition))
                 {
-                    Gizmos.DrawWireCube(n.worldPosition, Vector3.one);
+                    Gizmos.color = new Color(1, 1, 1, 0.3f);
+                }
+                else
+                {
+                    Gizmos.color = new Color(0, 0, 0, 0.3f);
+                }
+                if (n != null && n.walkable)
+                {
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one);
+                }
+            }
+        }
+        if (orderedEdgeMaps != null)
+        {
+            foreach (List<Vector3> edgeList in orderedEdgeMaps)
+            {
+                foreach (Vector3 pos in edgeList)
+                {
+                    Gizmos.color = Color.white;
+                    Gizmos.DrawLine(pos, pos + Vector3.up * wallHeight);
                 }
             }
         }
@@ -94,7 +112,7 @@ public class TerrainGenerator : MonoBehaviour {
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
         mapGenerator = new MapGenerator(width, height, fillPercentage, roomRadius, rng);
-        orderedEdgeMap = mapGenerator.orderedEdgeMap;
+        orderedEdgeMaps = mapGenerator.orderedEdgeMaps;
         patrolPoints = mapGenerator.patrolPoints;
     }
 
@@ -158,9 +176,14 @@ public class TerrainGenerator : MonoBehaviour {
         MeshCollider meshCollider = walls.AddComponent<MeshCollider>();
         Mesh mesh = new Mesh();
 
+        int wallTiles = 0;
+        foreach (List<Vector3> wallList in orderedEdgeMaps)
+        {
+            wallTiles += wallList.Count;
+        }
         // 2 traingles per square 2 * 3 = 6
-        int triangleIndexCount = 6 * orderedEdgeMap.Count;
-        int vertexCount = orderedEdgeMap.Count * 2;
+        int triangleIndexCount = 6 * wallTiles;
+        int vertexCount = wallTiles * 2;
         
         Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[triangleIndexCount];
@@ -168,35 +191,63 @@ public class TerrainGenerator : MonoBehaviour {
         // Indexes
         int vertexIndex = 0;
         int triangleIndex = 0;
-        // Triangle Indexes
-        int tLeft = vertexIndex;
-        int bLeft = vertexIndex + 1;
-        int tRight = vertexIndex + 2;
-        int bRight = vertexIndex + 3;
 
-        for (int i = 0; i < orderedEdgeMap.Count; i++)
+        foreach (List<Vector3> edgeMap in orderedEdgeMaps)
         {
-            Vector3 bottomLeft = orderedEdgeMap[i];
-            Vector3 topLeft = new Vector3(bottomLeft.x, wallHeight, bottomLeft.z);
+            // Triangle Indexes
+            int tLeft = vertexIndex;
+            int bLeft = vertexIndex + 1;
+            int tRight = vertexIndex + 2;
+            int bRight = vertexIndex + 3;
 
-            vertices[vertexIndex++] = topLeft;
-            vertices[vertexIndex++] = bottomLeft;
+            for (int i = 0; i < edgeMap.Count; i++)
+            {
+                Vector3 bottomLeft = edgeMap[i];
+                Vector3 topLeft = new Vector3(bottomLeft.x, wallHeight, bottomLeft.z);
 
-            triangles[triangleIndex++] = tLeft;
-            triangles[triangleIndex++] = bLeft;
-            triangles[triangleIndex++] = bRight;
-            triangles[triangleIndex++] = tLeft;
-            triangles[triangleIndex++] = bRight;
-            triangles[triangleIndex++] = tRight;
+                vertices[vertexIndex++] = topLeft;
+                vertices[vertexIndex++] = bottomLeft;
 
-            // Rearrange triangle indexes
-            tLeft = tRight;
-            tRight += 2;
-            tRight = tRight % vertexCount;
-            bLeft = bRight;
-            bRight += 2;
-            bRight = bRight % vertexCount;
+                triangles[triangleIndex++] = tLeft;
+                triangles[triangleIndex++] = bLeft;
+                triangles[triangleIndex++] = bRight;
+                triangles[triangleIndex++] = tLeft;
+                triangles[triangleIndex++] = bRight;
+                triangles[triangleIndex++] = tRight;
+
+                // Rearrange triangle indexes
+                tLeft = tRight;
+                tRight += 2;
+                tRight = (i == edgeMap.Count - 2) ? tRight - edgeMap.Count * 2 : tRight;
+                bLeft = bRight;
+                bRight += 2;
+                bRight = (i == edgeMap.Count - 2) ? bRight - edgeMap.Count * 2 : bRight;
+            }
         }
+
+        //for (int i = 0; i < orderedEdgeMap.Count; i++)
+        //{
+        //    Vector3 bottomLeft = orderedEdgeMap[i];
+        //    Vector3 topLeft = new Vector3(bottomLeft.x, wallHeight, bottomLeft.z);
+
+        //    vertices[vertexIndex++] = topLeft;
+        //    vertices[vertexIndex++] = bottomLeft;
+
+        //    triangles[triangleIndex++] = tLeft;
+        //    triangles[triangleIndex++] = bLeft;
+        //    triangles[triangleIndex++] = bRight;
+        //    triangles[triangleIndex++] = tLeft;
+        //    triangles[triangleIndex++] = bRight;
+        //    triangles[triangleIndex++] = tRight;
+
+        //    // Rearrange triangle indexes
+        //    tLeft = tRight;
+        //    tRight += 2;
+        //    tRight = tRight % vertexCount;
+        //    bLeft = bRight;
+        //    bRight += 2;
+        //    bRight = bRight % vertexCount;
+        //}
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
