@@ -53,4 +53,14 @@ public class FirstPersonController : MonoBehaviour {
     {
         rigidbody.MovePosition(rigidbody.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
     }
+
+    // Check for collisions
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "EndObjective")
+        {
+            Game gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+            gameController.NextLevel();
+        }
+    }
 }

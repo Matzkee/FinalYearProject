@@ -10,13 +10,14 @@ public class Game : MonoBehaviour {
             - Spawning of player and the guard as game is prepared
             - level counting / scoring system
     */
-
     public GameObject terrain;
-
-    //int level;
+    //public GameObject player;
+    //public GameObject guard;
     
+    int level;
+    TerrainGenerator terrainGen;
+
     void Start () {
-        //level = 0;
         Instantiate(terrain);
     }
 	
@@ -29,13 +30,11 @@ public class Game : MonoBehaviour {
 
     }
 
-    public void addScore()
+    public void NextLevel()
     {
-
-    }
-
-    public void nextLevel()
-    {
-        
+        level++;
+        terrainGen = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
+        terrainGen.Generate();
+        Debug.Log("Current Level: " + level);
     }
 }

@@ -12,15 +12,7 @@ public class TerrainGeneratorEditor :  Editor{
         
         if (GUILayout.Button("Generate New Map"))
         {
-            terrainGen.GenerateSeed();
-            terrainGen.GenerateMesh();
-            terrainGen.GenerateWalls();
-            terrainGen.GeneratePatrolPoints();
-            terrainGen.GenerateSpawnPoints();
-            if (terrainGen.generateTrees)
-            {
-                terrainGen.GenerateTrees();
-            }
+            terrainGen.Generate();
         }
     }
 }

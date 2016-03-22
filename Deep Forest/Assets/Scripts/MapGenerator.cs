@@ -13,6 +13,7 @@ public class MapGenerator
     public System.Random rng;
     public List <List<Vector3>> orderedEdgeMaps;
     public List <Vector3> patrolPoints;
+    public Vector3 endObjPosition;
     public Vector3 playerSpawn, guardSpawn;
 
     public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, int roomRadius, System.Random randomSeed)
@@ -151,6 +152,8 @@ public class MapGenerator
         // All we are left to do is check which tile has the most tiles
         // next to it
         patrolPoints = new List<Vector3>();
+        endObjPosition = new Vector3();
+        float furthest = 0;
 
         foreach (Room room in rooms)
         {
@@ -179,8 +182,21 @@ public class MapGenerator
                     bestTile = currentTile;
                 }
             }
+            // Calculate Best positions for objective tiles
+            // For now lets just pick the most distant tile from center of the map
+            Vector3 centre = new Vector3(-width / 2, 0, -height / 2);
+            foreach (Coord tile in room.tiles)
+            {
+                Vector3 toCheck = new Vector3(-width / 2 + tile.tileX, 0, -height / 2 + tile.tileY);
+                float newDist = Vector3.Distance(centre, toCheck);
+                if (newDist > furthest)
+                {
+                    furthest = newDist;
+                    endObjPosition = new Vector3(tile.tileX, 0, tile.tileY);
+                }
+            }
 
-            patrolPoints.Add(new Vector3(-width / 2 + bestTile.tileX, 0, -height / 2 + bestTile.tileY));
+            patrolPoints.Add(new Vector3(bestTile.tileX, 0, bestTile.tileY));
         }
     }
 

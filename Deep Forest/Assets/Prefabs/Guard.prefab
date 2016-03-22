@@ -32,7 +32,7 @@ GameObject:
   - 114: {fileID: 11429718}
   m_Layer: 0
   m_Name: Guard
-  m_TagString: Untagged
+  m_TagString: Guard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -459,9 +459,13 @@ MonoBehaviour:
   maxSpeed: 15
   maxForce: 15
   slowingDistance: 5
+  lookingRotationSpeed: 1.5
   seekEnabled: 0
   followingEnabled: 0
+  lookingEnabled: 0
+  iteration: 0
   targetPosition: {x: 0, y: 0, z: 0}
+  lookingDirections: []
 --- !u!114 &11429718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -476,8 +480,8 @@ MonoBehaviour:
   tg: {fileID: 0}
   player: {fileID: 0}
   seesTarget: 0
-  viewRange: 15
-  viewAngle: 100
+  viewRange: 25
+  viewAngle: 90
   directionsToLook: 5
   rotationSpeed: 1
 --- !u!136 &13664252

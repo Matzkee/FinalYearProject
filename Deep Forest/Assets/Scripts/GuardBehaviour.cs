@@ -27,6 +27,15 @@ public class GuardBehaviour : MonoBehaviour {
         StartCoroutine("WarmUp");
     }
 	
+    public void Restart()
+    {
+        StopAllCoroutines();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        walls = LayerMask.GetMask("Walls");
+        tg = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
+        StartCoroutine("WarmUp");
+    }
+
     public void SwitchState(State _state)
     {
         // Exit the old state and enter a new one

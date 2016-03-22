@@ -39,14 +39,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc24b6ba2ca26942b366c33147ef1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patrolPoints: []
+  patrolPoints:
+  - {x: -36, y: 0, z: -20}
+  - {x: 42, y: 0, z: 1}
+  - {x: 43, y: 0, z: -29}
+  - {x: -34, y: 0, z: 30}
+  - {x: -41, y: 0, z: -43}
+  - {x: -22, y: 0, z: 29}
   playerSpawn: {x: 0, y: 0, z: 0}
   guardSpawn: {x: 0, y: 0, z: 0}
   width: 100
   height: 100
   roomRadius: 2
-  fillPercentage: 52
-  seed: 
+  fillPercentage: 51
+  seed: 0
   scale: 10
   octaves: 2
   persistance: 1.5
@@ -54,9 +60,10 @@ MonoBehaviour:
   wallHeight: 3
   treeSeparation: 4
   useRandomSeed: 1
-  generateTrees: 1
+  generateTrees: 0
   player: {fileID: 172388, guid: 0dc97dae4da7b384a897bc24feb45e42, type: 2}
   guard: {fileID: 109530, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
+  endObjective: {fileID: 152982, guid: cbb41e5804ada8442a44434aebb4a343, type: 2}
   prefabs:
   - {fileID: 171844, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
   - {fileID: 167302, guid: 90a3aa8ad0ee40044ad85bcd9290a875, type: 2}

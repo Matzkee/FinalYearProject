@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TerrainGenerator : MonoBehaviour {
+public class TerrainGenerator : MonoBehaviour
+{
 
     GameObject walls;
     List<GameObject> trees;
     List<List<Vector3>> orderedEdgeMaps;
     public List<Vector3> patrolPoints;
+    public Vector3 endObjPoint;
     public Node[,] worldGrid;
     [HideInInspector]
     public Vector3 playerSpawn, guardSpawn;
@@ -22,7 +24,7 @@ public class TerrainGenerator : MonoBehaviour {
     [Header("Map Options")]
     public int width = 100;
     public int height = 100;
-    [Range(1,5)]
+    [Range(1, 5)]
     public int roomRadius;
     [Range(0, 100)]
     public int fillPercentage;
@@ -40,10 +42,9 @@ public class TerrainGenerator : MonoBehaviour {
 
     public GameObject player;
     public GameObject guard;
+    public GameObject endObjective;
     public GameObject[] prefabs;
     public Material terrainMaterial;
-
-
 
     // Use this for initialization
     void Start()
@@ -55,19 +56,25 @@ public class TerrainGenerator : MonoBehaviour {
         colider = gameObject.AddComponent<MeshCollider>();
         mesh.Clear();
 
+        Generate();
+    }
+
+    public void Generate()
+    {
         GenerateSeed();
         GenerateMesh();
         GenerateWalls();
         GeneratePatrolPoints();
+        GenerateEndObjSpawnPoints();
         GenerateSpawnPoints();
         if (generateTrees)
         {
             GenerateTrees();
         }
-
+        SpawnEndObj();
         // Spawn player and guard
-        //SpawnPlayer(playerSpawn);
-        //SpawnGuard(guardSpawn);
+        SpawnPlayer(playerSpawn);
+        SpawnGuard(guardSpawn);
     }
 
     void OnDrawGizmos()
@@ -76,20 +83,19 @@ public class TerrainGenerator : MonoBehaviour {
         {
             foreach (Node n in worldGrid)
             {
-                if (patrolPoints.Contains(n.worldPosition))
-                {
-                    Gizmos.color = new Color(1, 1, 1, 0.3f);
-                }
-                else
-                {
-                    Gizmos.color = new Color(0, 0, 0, 0.3f);
-                }
+                Gizmos.color = new Color(0, 0, 0, 0.3f);
                 if (n != null && n.walkable)
                 {
                     Gizmos.DrawCube(n.worldPosition, Vector3.one);
                 }
             }
         }
+        Gizmos.color = Color.white;
+        Gizmos.DrawCube(endObjPoint, Vector3.one);
+        Gizmos.color = Color.green;
+        Gizmos.DrawCube(playerSpawn, Vector3.one);
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(guardSpawn, Vector3.one);
     }
 
     public void GenerateSeed()
@@ -103,25 +109,64 @@ public class TerrainGenerator : MonoBehaviour {
         mapGenerator = new MapGenerator(width, height, fillPercentage, roomRadius, rng);
         orderedEdgeMaps = mapGenerator.orderedEdgeMaps;
         patrolPoints = mapGenerator.patrolPoints;
+        endObjPoint = mapGenerator.endObjPosition;
     }
 
     public void SpawnPlayer(Vector3 spawnPoint)
     {
-        Instantiate(player, spawnPoint, transform.rotation);
+        GameObject prefab = GameObject.FindGameObjectWithTag("Player");
+        if (prefab == null)
+        {
+            Instantiate(player, spawnPoint, transform.rotation);
+        }
+        else
+        {
+            prefab.transform.position = spawnPoint;
+        }
     }
     public void SpawnGuard(Vector3 spawnPoint)
     {
-        Instantiate(guard, spawnPoint, transform.rotation);
+        GameObject prefab = GameObject.FindGameObjectWithTag("Guard");
+        if (prefab == null)
+        {
+            Instantiate(guard, spawnPoint, transform.rotation);
+        }
+        else
+        {
+            prefab.transform.position = spawnPoint;
+            prefab.GetComponent<GuardBehaviour>().Restart();
+        }
+    }
+    public void SpawnEndObj()
+    {
+        Vector3 toPlayer = (playerSpawn - endObjPoint).normalized;
+        Quaternion targetRot = Quaternion.LookRotation(toPlayer, Vector3.up);
+        GameObject prefab = GameObject.FindGameObjectWithTag("EndObjective");
+        if (prefab == null)
+        {
+            Instantiate(endObjective, endObjPoint, targetRot);
+        }
+        else
+        {
+            prefab.transform.position = endObjPoint;
+            prefab.transform.rotation = targetRot;
+        }
+    }
+
+    public void GenerateEndObjSpawnPoints()
+    {
+        endObjPoint = mapGenerator.endObjPosition;
+        Vector3 worldEndObjPoint = endObjPoint;
+        worldEndObjPoint = worldGrid[(int)worldEndObjPoint.x, (int)worldEndObjPoint.z].worldPosition;
+        endObjPoint = worldEndObjPoint;
     }
 
     public void GenerateSpawnPoints()
     {
         playerSpawn = mapGenerator.playerSpawn;
-        playerSpawn = worldGrid[Mathf.RoundToInt(playerSpawn.x + width / 2), 
-            Mathf.RoundToInt(playerSpawn.z + height / 2)].worldPosition + Vector3.up;
+        playerSpawn = worldGrid[(int)playerSpawn.x, (int)playerSpawn.z].worldPosition + Vector3.up;
         guardSpawn = mapGenerator.guardSpawn;
-        guardSpawn = worldGrid[Mathf.RoundToInt(guardSpawn.x + width / 2),
-            Mathf.RoundToInt(guardSpawn.z + height / 2)].worldPosition + Vector3.up;
+        guardSpawn = worldGrid[(int)(guardSpawn.x), (int)guardSpawn.z].worldPosition + Vector3.up;
         //Debug.Log("Player Spawn: " + playerSpawn + "Guard Spawn: " + guardSpawn);
     }
 
@@ -131,9 +176,7 @@ public class TerrainGenerator : MonoBehaviour {
         for (int i = 0; i < patrolPoints.Count; i++)
         {
             Vector3 worldPatrolPoint = patrolPoints[i];
-            worldPatrolPoint = worldGrid[
-                Mathf.RoundToInt(worldPatrolPoint.x + width / 2), 
-                Mathf.RoundToInt(worldPatrolPoint.z + height / 2)].worldPosition;
+            worldPatrolPoint = worldGrid[(int)worldPatrolPoint.x, (int)worldPatrolPoint.z].worldPosition;
             patrolPoints[i] = worldPatrolPoint;
         }
     }
@@ -173,7 +216,7 @@ public class TerrainGenerator : MonoBehaviour {
         // 2 traingles per square 2 * 3 = 6
         int triangleIndexCount = 6 * wallTiles;
         int vertexCount = wallTiles * 2;
-        
+
         Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[triangleIndexCount];
 
@@ -254,12 +297,12 @@ public class TerrainGenerator : MonoBehaviour {
         {
             for (int x = 0; x < width; x++)
             {
-                if (map[x,y] == 1 && (x % treeSeparation) == 0 && (y % treeSeparation) == 0)
+                if (map[x, y] == 1 && (x % treeSeparation) == 0 && (y % treeSeparation) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
-                        x - (width / 2), 
-                        mesh.vertices[index].y, 
+                        x - (width / 2),
+                        mesh.vertices[index].y,
                         y - (height / 2));
                     GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
                     tree.transform.parent = forest.transform;
