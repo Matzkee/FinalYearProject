@@ -39,6 +39,7 @@ public class TerrainGenerator : MonoBehaviour
     public float treeSeparation = 3f;
     public bool useRandomSeed = false;
     public bool generateTrees = false;
+    public bool drawGizmos = false;
 
     public GameObject player;
     public GameObject guard;
@@ -79,23 +80,26 @@ public class TerrainGenerator : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (worldGrid != null)
+        if (drawGizmos)
         {
-            foreach (Node n in worldGrid)
+            if (worldGrid != null)
             {
-                Gizmos.color = new Color(0, 0, 0, 0.3f);
-                if (n != null && n.walkable)
+                foreach (Node n in worldGrid)
                 {
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one);
+                    Gizmos.color = new Color(0, 0, 0, 0.3f);
+                    if (n != null && n.walkable)
+                    {
+                        Gizmos.DrawCube(n.worldPosition, Vector3.one);
+                    }
                 }
             }
+            Gizmos.color = Color.white;
+            Gizmos.DrawCube(endObjPoint, Vector3.one);
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube(playerSpawn, Vector3.one);
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(guardSpawn, Vector3.one);
         }
-        Gizmos.color = Color.white;
-        Gizmos.DrawCube(endObjPoint, Vector3.one);
-        Gizmos.color = Color.green;
-        Gizmos.DrawCube(playerSpawn, Vector3.one);
-        Gizmos.color = Color.red;
-        Gizmos.DrawCube(guardSpawn, Vector3.one);
     }
 
     public void GenerateSeed()

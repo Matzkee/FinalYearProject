@@ -198,7 +198,7 @@ public class MeshGenerator{
         mesh.RecalculateNormals();
         // Assign leaves to the tree structure
         meshRenderer.material = leafMaterial;
-
+        //Debug.Log("Amount of triangles: " + triangles.Length);
         return treeLeaves;
     }
 }

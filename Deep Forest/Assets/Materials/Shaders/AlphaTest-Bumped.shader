@@ -1,8 +1,9 @@
-Shader "Custom/TransparentBumpedDiffuse" {
+Shader "Custom/CutoutBumpedDiffuse" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 	_BumpMap ("Normalmap", 2D) = "bump" {}
+	_Cutoff ("Alpha cutoff", Range(0,1)) = 0.5
 	_ShakeDisplacement("Displacement", Range(0, 1.0)) = 1.0
 	_ShakeTime("Shake Time", Range(0, 1.0)) = 1.0
 	_ShakeWindspeed("Shake Windspeed", Range(0, 1.0)) = 1.0
@@ -10,13 +11,13 @@ Properties {
 }
 
 SubShader {
-	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+	Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
 	LOD 300
 	Cull Off
-
+	
 CGPROGRAM
 #pragma target 3.0
-#pragma surface surf Lambert alpha:fade vertex:vert addshadow
+#pragma surface surf Lambert alphatest:_Cutoff vertex:vert addshadow
 
 sampler2D _MainTex;
 sampler2D _BumpMap;
@@ -47,6 +48,7 @@ void FastSinCos(float4 val, out float4 s, out float4 c) {
 }
 
 // Calculating offset on each vertex of the texture using Sin & Cos
+// Preset floats are used in order to maintain stability
 void vert(inout appdata_full v) {
 
 	float factor = (1 - _ShakeDisplacement - v.color.r) * 0.5;
@@ -95,5 +97,5 @@ void surf (Input IN, inout SurfaceOutput o) {
 ENDCG
 }
 
-FallBack "Legacy Shaders/Transparent/Diffuse"
+FallBack "Legacy Shaders/Transparent/Cutout/Diffuse"
 }

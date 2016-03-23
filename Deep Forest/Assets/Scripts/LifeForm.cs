@@ -29,7 +29,7 @@ public class LifeForm : MonoBehaviour {
     public string[] ruleStrings;
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
-    public int generations = 0;
+    public int maxGenerations = 0;
     public Material treeBark;
 
     [Header("Leaf Options")]
@@ -41,7 +41,7 @@ public class LifeForm : MonoBehaviour {
 	void Start () {
         meshGenerator = new MeshGenerator();
         //Randomize generation numbers
-        generations = Random.Range(1, generations);
+        maxGenerations = Random.Range(1, maxGenerations + 1);
 
         // Look up so we rotate the tree structure
         transform.Rotate(Vector3.right * -90.0f);
@@ -61,7 +61,7 @@ public class LifeForm : MonoBehaviour {
             length, turn, pitch, roll, gameObject, widthRatio, lengthRatio);
 
         // Generate the alphabet n(generations) times
-        for (int i = 0; i <= generations; i++)
+        for (int i = 0; i < maxGenerations; i++)
         {
             lsystem.Generate();
         }
