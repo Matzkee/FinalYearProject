@@ -46,6 +46,7 @@ MonoBehaviour:
   - {x: -34, y: 0, z: 30}
   - {x: -41, y: 0, z: -43}
   - {x: -22, y: 0, z: 29}
+  endObjPoint: {x: 0, y: 0, z: 0}
   playerSpawn: {x: 0, y: 0, z: 0}
   guardSpawn: {x: 0, y: 0, z: 0}
   width: 100
@@ -60,7 +61,7 @@ MonoBehaviour:
   wallHeight: 3
   treeSeparation: 4
   useRandomSeed: 1
-  generateTrees: 0
+  generateTrees: 1
   player: {fileID: 172388, guid: 0dc97dae4da7b384a897bc24feb45e42, type: 2}
   guard: {fileID: 109530, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
   endObjective: {fileID: 152982, guid: cbb41e5804ada8442a44434aebb4a343, type: 2}

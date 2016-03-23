@@ -18,6 +18,7 @@ public class Game : MonoBehaviour {
     TerrainGenerator terrainGen;
 
     void Start () {
+        level = 1;
         Instantiate(terrain);
     }
 	

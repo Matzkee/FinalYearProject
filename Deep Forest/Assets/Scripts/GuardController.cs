@@ -35,7 +35,7 @@ public class GuardController : MonoBehaviour {
         ResetAll();
     }
 
-    void ResetAll()
+    public void ResetAll()
     {
         seekEnabled = followingEnabled = lookingEnabled = false;
         path = null;

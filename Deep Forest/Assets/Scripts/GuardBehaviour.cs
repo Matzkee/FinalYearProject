@@ -30,6 +30,7 @@ public class GuardBehaviour : MonoBehaviour {
     public void Restart()
     {
         StopAllCoroutines();
+        GetComponent<GuardController>().ResetAll();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         walls = LayerMask.GetMask("Walls");
         tg = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
