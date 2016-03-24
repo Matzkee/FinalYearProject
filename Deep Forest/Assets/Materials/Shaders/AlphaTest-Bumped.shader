@@ -5,10 +5,13 @@ Properties {
 	_BumpMap ("Normalmap", 2D) = "bump" {}
 	_Cutoff ("Alpha cutoff", Range(0,1)) = 0.5
 	_ShakeDisplacement("Displacement", Range(0, 1.0)) = 1.0
-	_ShakeTime("Shake Time", Range(0, 1.0)) = 1.0
-	_ShakeWindspeed("Shake Windspeed", Range(0, 1.0)) = 1.0
-	_ShakeBending("Shake Bending", Range(0, 1.0)) = 1.0
+	_ShakeTime("Time", Range(0, 1.0)) = 1.0
+	_ShakeWindspeed("Windspeed", Range(0, 1.0)) = 1.0
+	_ShakeBending("Bending", Range(0, 1.0)) = 1.0
 }
+
+// Cutout type of shader is used so that the pixels which are opaque on the picture 
+// still cast shadow. The tree leaves will project shadow on to the ground.
 
 SubShader {
 	Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}

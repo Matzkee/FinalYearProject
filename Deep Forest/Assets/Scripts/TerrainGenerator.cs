@@ -6,19 +6,22 @@ public class TerrainGenerator : MonoBehaviour
 {
 
     GameObject walls;
+    GameObject terrainWeeds;
     List<GameObject> trees;
     List<List<Vector3>> orderedEdgeMaps;
+    List<SquarePolygon> weeds;
     public List<Vector3> patrolPoints;
     public Vector3 endObjPoint;
     public Node[,] worldGrid;
+    int[,] vegetationFlags;
     [HideInInspector]
     public Vector3 playerSpawn, guardSpawn;
 
     System.Random rng;
     Vector2[] octaveOffsets;
-    Mesh mesh;
-    MeshRenderer meshRenderer;
-    MeshCollider colider;
+    Mesh terrainMesh;
+    MeshRenderer terrainMeshRenderer;
+    MeshCollider terrainColider;
     MapGenerator mapGenerator;
 
     [Header("Map Options")]
@@ -34,6 +37,9 @@ public class TerrainGenerator : MonoBehaviour
     public int octaves = 2;
     public float persistance = 1.5f;
     public float lacunarity = 1f;
+    [Header("Weed Options")]
+    public float weedSize = 1f;
+    public Material weedMaterial;
     [Header("Other Options")]
     public float wallHeight = 4;
     public float treeSeparation = 3f;
@@ -47,16 +53,18 @@ public class TerrainGenerator : MonoBehaviour
     public GameObject[] prefabs;
     public Material terrainMaterial;
 
-    // Use this for initialization
     void Start()
     {
+        // Instantiate arrays & lists
         worldGrid = new Node[width, height];
+        vegetationFlags = new int[width, height];
         trees = new List<GameObject>();
-        mesh = gameObject.AddComponent<MeshFilter>().mesh;
-        meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        colider = gameObject.AddComponent<MeshCollider>();
-        mesh.Clear();
-
+        // Add components
+        terrainMesh = gameObject.AddComponent<MeshFilter>().mesh;
+        terrainMeshRenderer = gameObject.AddComponent<MeshRenderer>();
+        terrainColider = gameObject.AddComponent<MeshCollider>();
+        terrainMesh.Clear();
+        // Launch
         Generate();
     }
 
@@ -68,16 +76,21 @@ public class TerrainGenerator : MonoBehaviour
         GeneratePatrolPoints();
         GenerateEndObjSpawnPoints();
         GenerateSpawnPoints();
+        // For debugging issues a bool is used
         if (generateTrees)
         {
             GenerateTrees();
         }
+        GenerateWeeds();
         SpawnEndObj();
         // Spawn player and guard
         SpawnPlayer(playerSpawn);
         SpawnGuard(guardSpawn);
     }
 
+    /*
+        Gizmos for debugging purposes
+    */
     void OnDrawGizmos()
     {
         if (drawGizmos)
@@ -111,6 +124,8 @@ public class TerrainGenerator : MonoBehaviour
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
         mapGenerator = new MapGenerator(width, height, fillPercentage, roomRadius, rng);
+
+        // Get the generated gameplay points & lists 
         orderedEdgeMaps = mapGenerator.orderedEdgeMaps;
         patrolPoints = mapGenerator.patrolPoints;
         endObjPoint = mapGenerator.endObjPosition;
@@ -174,6 +189,9 @@ public class TerrainGenerator : MonoBehaviour
         //Debug.Log("Player Spawn: " + playerSpawn + "Guard Spawn: " + guardSpawn);
     }
 
+    /*
+        Create patrol points previously made in MapGenerator class
+    */
     public void GeneratePatrolPoints()
     {
         patrolPoints = mapGenerator.patrolPoints;
@@ -185,23 +203,25 @@ public class TerrainGenerator : MonoBehaviour
         }
     }
 
-    // Calculate the Perlin Noise at those coordinates
+    /* 
+        Calculate the Perlin Noise at those coordinates
+    */
     float Sample(float x, float y)
     {
-        float perlinValue = 0;
+        float perlin = 0;
         float frequency = 1f;
         float amplitude = 1f;
         for (int i = 0; i < octaves; i++)
         {
             float sampleX = x / scale * frequency + octaveOffsets[i].x;
             float sampleY = y / scale * frequency + octaveOffsets[i].y;
-            perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
-            perlinValue *= amplitude;
+            perlin = Mathf.PerlinNoise(sampleX, sampleY);
+            perlin *= amplitude;
             amplitude *= persistance;
             frequency *= lacunarity;
         }
 
-        return perlinValue;
+        return perlin;
     }
 
     public void GenerateWalls()
@@ -261,30 +281,6 @@ public class TerrainGenerator : MonoBehaviour
             }
         }
 
-        //for (int i = 0; i < orderedEdgeMap.Count; i++)
-        //{
-        //    Vector3 bottomLeft = orderedEdgeMap[i];
-        //    Vector3 topLeft = new Vector3(bottomLeft.x, wallHeight, bottomLeft.z);
-
-        //    vertices[vertexIndex++] = topLeft;
-        //    vertices[vertexIndex++] = bottomLeft;
-
-        //    triangles[triangleIndex++] = tLeft;
-        //    triangles[triangleIndex++] = bLeft;
-        //    triangles[triangleIndex++] = bRight;
-        //    triangles[triangleIndex++] = tLeft;
-        //    triangles[triangleIndex++] = bRight;
-        //    triangles[triangleIndex++] = tRight;
-
-        //    // Rearrange triangle indexes
-        //    tLeft = tRight;
-        //    tRight += 2;
-        //    tRight = tRight % vertexCount;
-        //    bLeft = bRight;
-        //    bRight += 2;
-        //    bRight = bRight % vertexCount;
-        //}
-
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
@@ -301,17 +297,19 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
+                vegetationFlags[x, y] = 0;
                 if (map[x, y] == 1 && (x % treeSeparation) == 0 && (y % treeSeparation) == 0)
                 {
                     int prefabNo = Random.Range(0, prefabs.Length);
                     Vector3 posToSpawn = new Vector3(
                         x - (width / 2),
-                        mesh.vertices[index].y,
+                        terrainMesh.vertices[index].y,
                         y - (height / 2));
                     GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
                     tree.transform.parent = forest.transform;
                     tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
                     trees.Add(tree);
+                    vegetationFlags[x, y] = 1;
                 }
                 index += 6;
             }
@@ -391,13 +389,61 @@ public class TerrainGenerator : MonoBehaviour
 
         }
         // Assign arrays to the mesh
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uvs;
+        terrainMesh.vertices = vertices;
+        terrainMesh.triangles = triangles;
+        terrainMesh.uv = uvs;
 
-        mesh.RecalculateNormals();
-        colider.sharedMesh = mesh;
-        meshRenderer.material = terrainMaterial;
+        terrainMesh.RecalculateNormals();
+        terrainColider.sharedMesh = terrainMesh;
+        terrainMeshRenderer.material = terrainMaterial;
+    }
+
+    /* 
+        Create weeds wherever there is a free space and not a play area
+    */
+    void GenerateWeeds()
+    {
+        Destroy(terrainWeeds);
+        weeds = new List<SquarePolygon>();
+        int[,] map = mapGenerator.map;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int randomSeparation = Random.Range(1, 3);
+                if (map[x, y] == 1 && vegetationFlags[x, y] == 0 && (x % randomSeparation) == 0 && (y % randomSeparation) == 0)
+                {
+                    float angle = Random.Range(0, 90);
+                    float displacement = 40;
+                    Vector3 centre = worldGrid[x, y].worldPosition + Vector3.down;
+                    // Make 3 squares 
+                    for (int i = 0; i < 3; i++)
+                    {
+                        // Pick a random point along a unit circle using sin/cos
+                        Vector3 bottomRight = new Vector3();
+                        bottomRight.x = centre.x + (Mathf.Sin(angle + displacement * i) * (weedSize / 2));
+                        bottomRight.z = centre.z + (Mathf.Cos(angle + displacement * i) * (weedSize / 2));
+                        bottomRight.y = centre.y;
+
+                        Vector3 toCentre = (centre - bottomRight).normalized;
+                        Vector3 bottomLeft = bottomRight + (toCentre * weedSize);
+                        Vector3 topRight = bottomRight + (Vector3.up * weedSize);
+                        Vector3 topLeft = bottomLeft + (Vector3.up * weedSize);
+
+                        weeds.Add(new SquarePolygon(topLeft, bottomLeft, topRight, bottomRight));
+                    }
+                    vegetationFlags[x, y] = 1;
+                }
+            }
+        }
+
+        MeshGenerator meshGen = new MeshGenerator();
+
+        terrainWeeds = meshGen.GenerateWeeds(weeds, weedMaterial);
+        terrainWeeds.transform.position = transform.position;
+
+        //Debug.Log("Number of weeds: " + weeds.Count);
     }
 
 }

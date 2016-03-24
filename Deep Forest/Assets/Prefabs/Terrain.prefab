@@ -58,10 +58,13 @@ MonoBehaviour:
   octaves: 2
   persistance: 1.5
   lacunarity: 1
+  weedSize: 1
+  weedMaterial: {fileID: 2100000, guid: 783ace3a8585b5d439c1890fe3f3b3b9, type: 2}
   wallHeight: 3
   treeSeparation: 4
   useRandomSeed: 1
   generateTrees: 1
+  drawGizmos: 0
   player: {fileID: 172388, guid: 0dc97dae4da7b384a897bc24feb45e42, type: 2}
   guard: {fileID: 109530, guid: e8d5cdb2f4ebf714991cd3284773d193, type: 2}
   endObjective: {fileID: 152982, guid: cbb41e5804ada8442a44434aebb4a343, type: 2}

@@ -138,7 +138,71 @@ public class MeshGenerator{
         return treeStructure;
     }
 
-    public GameObject GenerateTreeLeaves(List<Leaf> leaves, Material leafMaterial)
+    public GameObject GenerateWeeds(List<SquarePolygon> weeds, Material weedMaterial)
+    {
+        GameObject terrainWeeds = new GameObject("Weeds");
+        Mesh mesh;
+        MeshRenderer meshRenderer;
+
+        mesh = terrainWeeds.AddComponent<MeshFilter>().mesh;
+        meshRenderer = terrainWeeds.AddComponent<MeshRenderer>();
+        mesh.Clear();
+
+        int vertexCount = weeds.Count * 4;
+        int triangleCount = weeds.Count * 6;
+        // Indexes
+        int vertexIndex = 0;
+        int triangleIndex = 0;
+        int uvIndex = 0;
+        // Triangle indexes
+        int tLeft = vertexIndex;
+        int bLeft = vertexIndex + 1;
+        int tRight = vertexIndex + 2;
+        int bRight = vertexIndex + 3;
+        // Alocate new arrays
+        Vector3[] vertices = new Vector3[vertexCount];
+        Vector2[] uvs = new Vector2[vertexCount];
+        int[] triangles = new int[triangleCount];
+
+        foreach (SquarePolygon weed in weeds)
+        {
+            // Apply vertices
+            vertices[vertexIndex++] = weed.tLeft;
+            vertices[vertexIndex++] = weed.bLeft;
+            vertices[vertexIndex++] = weed.tRight;
+            vertices[vertexIndex++] = weed.bRight;
+            // Apply uvs
+            uvs[uvIndex++] = new Vector2(0, 1);
+            uvs[uvIndex++] = new Vector2(0, 0);
+            uvs[uvIndex++] = new Vector2(1, 1);
+            uvs[uvIndex++] = new Vector2(1, 0);
+
+            // Apply triangles
+            triangles[triangleIndex++] = tLeft;
+            triangles[triangleIndex++] = bRight;
+            triangles[triangleIndex++] = bLeft;
+            triangles[triangleIndex++] = tLeft;
+            triangles[triangleIndex++] = tRight;
+            triangles[triangleIndex++] = bRight;
+
+            tLeft = vertexIndex;
+            bLeft = vertexIndex + 1;
+            tRight = vertexIndex + 2;
+            bRight = vertexIndex + 3;
+        }
+
+        // Assign arrays to the mesh
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        // Assign leaves to the tree structure
+        meshRenderer.material = weedMaterial;
+
+        return terrainWeeds;
+    }
+
+    public GameObject GenerateTreeLeaves(List<SquarePolygon> leaves, Material leafMaterial)
     {
         GameObject treeLeaves = new GameObject("Tree Leaves");
         Mesh mesh;
@@ -164,7 +228,7 @@ public class MeshGenerator{
         Vector2[] uvs = new Vector2[vertexCount];
         int[] triangles = new int[triangleCount];
 
-        foreach (Leaf t in leaves)
+        foreach (SquarePolygon t in leaves)
         {
             // Apply vertices
             vertices[vertexIndex++] = t.tLeft;

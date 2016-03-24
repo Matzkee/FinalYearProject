@@ -16,6 +16,8 @@ public class MapGenerator
     public Vector3 endObjPosition;
     public Vector3 playerSpawn, guardSpawn;
 
+    int smoothValue = 5;
+
     public MapGenerator(int mapWidth, int mapHeight, int mapFillPercent, int roomRadius, System.Random randomSeed)
     {
         width = mapWidth;
@@ -30,9 +32,9 @@ public class MapGenerator
     public void GenerateMap()
     {
         map = new int[width, height];
-        RandomFillMap();
+        FillMap();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < smoothValue; i++)
         {
             SmoothMap();
         }
@@ -40,7 +42,12 @@ public class MapGenerator
         ProcessMap();
     }
 
-    void RandomFillMap()
+    /*
+        Randomly fill the map using the system.Random created in terrain generator
+        if the array index is an outline set it to 1
+        otherwise fill the map with prefered percentage
+    */
+    void FillMap()
     {
         for (int x = 0; x < width; x++)
         {
@@ -95,7 +102,7 @@ public class MapGenerator
         }
         survivingRooms.Sort();
         survivingRooms[0].isMainRoom = true;
-        survivingRooms[0].isAccessibleFromMainRoom = true;
+        survivingRooms[0].isReachableFromMainRoom = true;
         
         ConnectClosestRooms(survivingRooms);
         // Smooth the map again after connecting rooms to remove outliers
@@ -111,7 +118,7 @@ public class MapGenerator
                 }
             }
         }
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < smoothValue; i++)
         {
             SmoothMap();
         }
@@ -183,12 +190,12 @@ public class MapGenerator
                 }
             }
             // Calculate Best positions for objective tiles
-            // For now lets just pick the most distant tile from center of the map
-            Vector3 centre = new Vector3(-width / 2, 0, -height / 2);
+            // For now lets just pick the most distant tile from a random vector on the map
+            Vector3 random = new Vector3(UnityEngine.Random.Range(0, width), 0, UnityEngine.Random.Range(0, height));
             foreach (Coord tile in room.tiles)
             {
                 Vector3 toCheck = new Vector3(-width / 2 + tile.tileX, 0, -height / 2 + tile.tileY);
-                float newDist = Vector3.Distance(centre, toCheck);
+                float newDist = Vector3.Distance(random, toCheck);
                 if (newDist > furthest)
                 {
                     furthest = newDist;
@@ -240,7 +247,7 @@ public class MapGenerator
         orderedEdges = OrderEdges(map, edgeCoords);
         orderedEdgeMaps = new List<List<Vector3>>();
 
-        Debug.Log("Number of Wall Maps: " + orderedEdges.Count);
+        //Debug.Log("Number of Wall Maps: " + orderedEdges.Count);
 
         foreach (List<Coord> edgeMap in orderedEdges)
         {
@@ -289,23 +296,6 @@ public class MapGenerator
 
         return orderedEdges;
     }
-
-
-    //// Function to order edge coordinates to later generate the collision mesh
-    //List<Coord> OrderOutlineEdges(int[,] map, List<Coord> outlineEdges)
-    //{
-    //    List<Coord> orderedEdges = new List<Coord>();
-    //    // Add the first edge from the list
-    //    orderedEdges.Add(outlineEdges[0]);
-    //    // Keep adding edges until lists are the same in size
-    //    while (orderedEdges.Count != outlineEdges.Count)
-    //    {
-    //        Coord lastEdge = orderedEdges[orderedEdges.Count - 1];
-    //        orderedEdges.Add(GetNextEdge(lastEdge, orderedEdges, outlineEdges));
-    //    }
-
-    //    return orderedEdges;
-    //}
 
     bool TouchingSamePlayTile(Coord currentTile, Coord nextTile, List<Coord> playTiles)
     {
@@ -379,7 +369,7 @@ public class MapGenerator
         {
             foreach (Room room in allRooms)
             {
-                if (room.isAccessibleFromMainRoom)
+                if (room.isReachableFromMainRoom)
                 {
                     roomListB.Add(room);
                 }
@@ -502,6 +492,11 @@ public class MapGenerator
         }
     }
 
+    /*
+        Project a line on a grid using pixel method
+        return the list of coords with tiles on the line
+    */
+
     List<Coord> GetLine(Coord from, Coord to)
     {
         List<Coord> line = new List<Coord>();
@@ -561,6 +556,10 @@ public class MapGenerator
         return line;
     }
 
+    /*
+        Get rooms with tiles of type specified
+        use another int array to map the tiles already picked
+    */
     List<List<Coord>> GetRegions(int tileType)
     {
         List<List<Coord>> regions = new List<List<Coord>>();
@@ -585,6 +584,12 @@ public class MapGenerator
 
         return regions;
     }
+
+    /*
+        This is similar as to how microsoft paint does fill bucket function
+        It picks a tile and queues all tiles touching it with same type and then adds them 
+        to the list
+    */
 
     List<Coord> GetRegionTiles(int startX, int startY)
     {
@@ -625,6 +630,11 @@ public class MapGenerator
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    /*
+        For every tile if there are 4 surrounding tiles of same type
+        then change it to this type
+    */
+
     void SmoothMap()
     {
         for (int x = 0; x < width; x++)
@@ -644,6 +654,11 @@ public class MapGenerator
             }
         }
     }
+
+    /*
+        Method returning a number of surrounding tiles counted as 'walls'
+        These wall tiles are set to 1 and the algorithm loops through 
+    */
 
     int GetSurroundingWallCount(int gridX, int gridY)
     {
@@ -669,6 +684,11 @@ public class MapGenerator
         return wallCount;
     }
 
+    /*
+        Class to store tile indexes from 2d array -> map[,]
+        Also used for many calculations
+    */
+
     struct Coord
     {
         public int tileX;
@@ -681,13 +701,19 @@ public class MapGenerator
         }
     }
 
+    /*
+        Class to store information on various tiles generated on a 2d grid
+        tiles ---> list of every tile within the room itself
+        edgeTiles ---> list of every wall tile touching the room horizontaly & verticaly
+        connectedRooms ---> list of rooms connected to the current room
+    */
     class Room : IComparable<Room>
     {
         public List<Coord> tiles;
         public List<Coord> edgeTiles;
         public List<Room> connectedRooms;
         public int roomSize;
-        public bool isAccessibleFromMainRoom;
+        public bool isReachableFromMainRoom;
         public bool isMainRoom;
 
         // Default contructor
@@ -722,11 +748,11 @@ public class MapGenerator
 
         public static void ConnectRooms(Room roomA, Room roomB)
         {
-            if (roomA.isAccessibleFromMainRoom)
+            if (roomA.isReachableFromMainRoom)
             {
                 roomB.SetAccessibleFromMainRoom();
             }
-            else if (roomB.isAccessibleFromMainRoom)
+            else if (roomB.isReachableFromMainRoom)
             {
                 roomA.SetAccessibleFromMainRoom();
             }
@@ -736,9 +762,9 @@ public class MapGenerator
 
         public void SetAccessibleFromMainRoom()
         {
-            if (!isAccessibleFromMainRoom)
+            if (!isReachableFromMainRoom)
             {
-                isAccessibleFromMainRoom = true;
+                isReachableFromMainRoom = true;
                 foreach (Room connectedRoom in connectedRooms)
                 {
                     connectedRoom.SetAccessibleFromMainRoom();
@@ -751,6 +777,7 @@ public class MapGenerator
             return connectedRooms.Contains(otherRoom);
         }
 
+        // C# sort() specific method form IComparable interface
         public int CompareTo(Room otherRoom)
         {
             return otherRoom.roomSize.CompareTo(roomSize);

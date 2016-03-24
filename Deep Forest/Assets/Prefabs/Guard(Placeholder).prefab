@@ -456,10 +456,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 1
   damping: 0.1
-  maxSpeed: 15
-  maxForce: 15
+  maxSpeed: 20
+  maxForce: 20
   slowingDistance: 5
-  lookingRotationSpeed: 1.5
+  lookingRotationSpeed: 2
   seekEnabled: 0
   followingEnabled: 0
   lookingEnabled: 0

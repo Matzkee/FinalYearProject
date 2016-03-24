@@ -13,7 +13,7 @@ public class LifeForm : MonoBehaviour {
     List<BranchSegment> branchSegments;
     List<BranchTip> branchTips;
     List<Circle> circles;
-    List<Leaf> leaves;
+    List<SquarePolygon> leaves;
 
     [Header("Tree Options")]
     public float length = 5.0f;
@@ -41,7 +41,7 @@ public class LifeForm : MonoBehaviour {
 	void Start () {
         meshGenerator = new MeshGenerator();
         //Randomize generation numbers
-        maxGenerations = Random.Range(1, maxGenerations + 1);
+        maxGenerations = Random.Range(2, maxGenerations + 1);
 
         // Look up so we rotate the tree structure
         transform.Rotate(Vector3.right * -90.0f);
@@ -144,7 +144,7 @@ public class LifeForm : MonoBehaviour {
 
     void MakeLeaves()
     {
-        leaves = new List<Leaf>();
+        leaves = new List<SquarePolygon>();
 
         foreach (BranchTip b in branchTips)
         {
@@ -159,7 +159,7 @@ public class LifeForm : MonoBehaviour {
     }
 
 
-    void MakeLeaf(Vector3 centre, Vector3 start, Vector3 end, float size, float leafGravity)
+    void MakeLeaf(Vector3 branchCentre, Vector3 branchStart, Vector3 branchEnd, float size, float leafGravity)
     {
         Vector3 toStart, toEnd, toLeafStart;
         Vector3 leafStart;
@@ -167,10 +167,10 @@ public class LifeForm : MonoBehaviour {
         Vector3 topLeft, bottomLeft, topRight, bottomRight;
 
         // Create a leaf position at a random spot between start and end points
-        leafStart = Vector3.Lerp(start, end, Random.value);
+        leafStart = Vector3.Lerp(branchStart, branchEnd, Random.value);
         // Calculate direction vectors
-        toStart = (start - centre).normalized;
-        toEnd = (end - start).normalized;
+        toStart = (branchStart - branchCentre).normalized;
+        toEnd = (branchEnd - branchStart).normalized;
         // perpendicular vector to leaf position vector
         leafPosPerpendicular = Vector3.Cross(toEnd, toStart);
         // at this point we can take 2 points setting boundaries
@@ -189,8 +189,8 @@ public class LifeForm : MonoBehaviour {
         topLeft += gravity;
         topRight += gravity;
         // Apply gravity to bottomLeft as well to create a small illusion of 3d object
-        bottomLeft += ((centre - bottomLeft).normalized * leafGravity);
+        bottomLeft += ((branchCentre - bottomLeft).normalized * leafGravity);
 
-        leaves.Add(new Leaf(topLeft, bottomLeft, topRight, bottomRight));
+        leaves.Add(new SquarePolygon(topLeft, bottomLeft, topRight, bottomRight));
     }
 }
