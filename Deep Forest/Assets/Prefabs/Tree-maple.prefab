@@ -54,6 +54,7 @@ MonoBehaviour:
   - FF
   skeletonLines: 0
   skeletonCircles: 0
+  minGenerations: 2
   maxGenerations: 4
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
   leafSize: 2

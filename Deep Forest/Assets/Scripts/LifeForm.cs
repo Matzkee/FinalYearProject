@@ -29,6 +29,7 @@ public class LifeForm : MonoBehaviour {
     public string[] ruleStrings;
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
+    public int minGenerations = 0;
     public int maxGenerations = 0;
     public Material treeBark;
 
