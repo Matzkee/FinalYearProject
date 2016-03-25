@@ -10,6 +10,7 @@ public class FirstPersonController : MonoBehaviour {
     public bool showGridPosition = false;
     public Vector2 gridPosition;
 
+    Game gameController;
     Transform cameraTransform;
     float verticalLookRotation;
 
@@ -20,6 +21,7 @@ public class FirstPersonController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
         rigidbody = gameObject.AddComponent<Rigidbody>();
         cameraTransform = Camera.main.transform;
 
@@ -59,8 +61,11 @@ public class FirstPersonController : MonoBehaviour {
     {
         if (other.gameObject.tag == "EndObjective")
         {
-            Game gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
             gameController.NextLevel();
+        }
+        if (other.gameObject.tag == "Guard")
+        {
+            gameController.GameOver();
         }
     }
 }

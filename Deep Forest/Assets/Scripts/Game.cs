@@ -1,41 +1,62 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Game : MonoBehaviour {
 
     /* 
         To do: 
-            - Look if player is dead and if so end the game
-            - Look if player has reached to finish object in the forest and redo the level
             - Spawning of player and the guard as game is prepared
-            - level counting / scoring system
     */
-    public GameObject terrain;
-    //public GameObject player;
-    //public GameObject guard;
+    public Canvas looseScreen;
+    public Text looseText;
+    public Button exitButton;
+
+    public GameObject terrainPrefab;
+    GameObject terrain;
+
+    public Text levelCounter;
     
-    int level;
+    int level = 0;
     TerrainGenerator terrainGen;
 
+    // Start the level
     void Start () {
-        level = 1;
-        Instantiate(terrain);
+        looseScreen = looseScreen.GetComponent<Canvas>();
+        looseText = looseText.GetComponent<Text>();
+        exitButton = exitButton.GetComponent<Button>();
+        looseScreen.enabled = false;
+        levelCounter = levelCounter.GetComponent<Text>();
+        UpdateLevelCount();
+        terrain = Instantiate(terrainPrefab);
+        terrainGen = terrain.GetComponent<TerrainGenerator>();
     }
-	
-	void Update () {
-	    
-	}
+
+    void UpdateLevelCount()
+    {
+        level++;
+        levelCounter.text = "LEVEL " + level;
+    }
 
     public void GameOver()
     {
+        Time.timeScale = 0;
+        looseText.text = "YOU LOOSE\n\n YOU FOUND THE EXIT " + (level - 1) + " TIME(S)";
 
+        looseScreen.enabled = true;
+    }
+
+    public void ExitToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void NextLevel()
     {
-        level++;
-        terrainGen = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
+        //terrainGen = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
         terrainGen.Generate();
-        Debug.Log("Current Level: " + level);
+        //Debug.Log("Current Level: " + level);
+        UpdateLevelCount();
     }
 }

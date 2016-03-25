@@ -177,7 +177,7 @@ public class TerrainGenerator : MonoBehaviour
         endObjPoint = mapGenerator.endObjPosition;
         Vector3 worldEndObjPoint = endObjPoint;
         worldEndObjPoint = worldGrid[(int)worldEndObjPoint.x, (int)worldEndObjPoint.z].worldPosition;
-        endObjPoint = worldEndObjPoint;
+        endObjPoint = worldEndObjPoint + Vector3.down;
     }
 
     public void GenerateSpawnPoints()
