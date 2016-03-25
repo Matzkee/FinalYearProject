@@ -4,11 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Game : MonoBehaviour {
-
-    /* 
-        To do: 
-            - Spawning of player and the guard as game is prepared
-    */
+    
     public Canvas looseScreen;
     public Text looseText;
     public Button exitButton;
@@ -23,6 +19,7 @@ public class Game : MonoBehaviour {
 
     // Start the level
     void Start () {
+        Time.timeScale = 1;
         looseScreen = looseScreen.GetComponent<Canvas>();
         looseText = looseText.GetComponent<Text>();
         exitButton = exitButton.GetComponent<Button>();
@@ -41,8 +38,9 @@ public class Game : MonoBehaviour {
 
     public void GameOver()
     {
+        // Pause the game, display text & canvas
         Time.timeScale = 0;
-        looseText.text = "YOU LOOSE\n\n YOU FOUND THE EXIT " + (level - 1) + " TIME(S)";
+        looseText.text = "YOU LOOSE\n\n YOU FOUND THE EXIT " + (level - 1) + " TIMES";
 
         looseScreen.enabled = true;
     }
@@ -54,9 +52,7 @@ public class Game : MonoBehaviour {
 
     public void NextLevel()
     {
-        //terrainGen = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
         terrainGen.Generate();
-        //Debug.Log("Current Level: " + level);
         UpdateLevelCount();
     }
 }

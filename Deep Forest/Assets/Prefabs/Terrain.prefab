@@ -53,6 +53,8 @@ MonoBehaviour:
   height: 100
   roomRadius: 2
   fillPercentage: 51
+  minCharAmount: 10
+  maxCharAmount: 20
   seed: 0
   scale: 10
   octaves: 2
@@ -71,6 +73,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 171844, guid: 7a173b76ba177624f8a988dbf764e768, type: 2}
   - {fileID: 167302, guid: 90a3aa8ad0ee40044ad85bcd9290a875, type: 2}
+  - {fileID: 167302, guid: dba0f437c657daf4f8caaa010c1581a9, type: 2}
   terrainMaterial: {fileID: 2100000, guid: 45fd9e61492ca0246a0576bf931ce076, type: 2}
 --- !u!1001 &100100000
 Prefab:

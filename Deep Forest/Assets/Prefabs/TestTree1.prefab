@@ -23,7 +23,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 167508}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -10, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -39,21 +39,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dca780a291444347a6247b4c08a8b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  length: 1.5
+  length: 1
   width: 0.3
   turn: 25
   pitch: 30
   roll: 50
-  lengthRatio: 0.9
+  lengthRatio: 0.98
   widthRatio: 0.8
   treeRoundness: 8
   axiom: F
   ruleChars: 4600
   ruleStrings:
-  - F\[+F][^-F[-F]F]F[F]/[-F]
-  skeletonLines: 0
+  - F\[+F][^-F[-F]vF]F[++F]/[-F]
+  skeletonLines: 1
   skeletonCircles: 0
+  minGenerations: 0
+  maxGenerations: 0
   treeBark: {fileID: 2100000, guid: b3ef4c1e351256b408079d82851abce2, type: 2}
+  hasLeaves: 1
+  leavesPerBranchTip: 6
+  leafSize: 1
+  leafGravity: 0.4
+  leafMaterial: {fileID: 2100000, guid: b88e58d5807740d439298ad6d978ca8e, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

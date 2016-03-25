@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    const string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     GameObject walls;
     GameObject terrainWeeds;
@@ -31,6 +33,8 @@ public class TerrainGenerator : MonoBehaviour
     public int roomRadius;
     [Range(0, 100)]
     public int fillPercentage;
+    public int minCharAmount = 0;
+    public int maxCharAmount = 0;
     public string seed;
     [Header("Perlin Noise")]
     public float scale = 10f;
@@ -119,7 +123,15 @@ public class TerrainGenerator : MonoBehaviour
     {
         if (useRandomSeed)
         {
-            seed = Time.time.ToString();
+            StringBuilder randomString = new StringBuilder();
+            int charAmount = Random.Range(minCharAmount, maxCharAmount);
+            // Create random string
+            for (int i = 0; i < charAmount; i++)
+            {
+                randomString.Append(alphabet[Random.Range(0, alphabet.Length)]);
+            }
+
+            seed = randomString.ToString();
         }
         // Generate the seed
         rng = new System.Random(seed.GetHashCode());
@@ -293,6 +305,7 @@ public class TerrainGenerator : MonoBehaviour
         GameObject forest = new GameObject("Forest");
         int[,] map = mapGenerator.map;
         int index = 0;
+        int treeType = Random.Range(0, prefabs.Length);
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -300,12 +313,8 @@ public class TerrainGenerator : MonoBehaviour
                 vegetationFlags[x, y] = 0;
                 if (map[x, y] == 1 && (x % treeSeparation) == 0 && (y % treeSeparation) == 0)
                 {
-                    int prefabNo = Random.Range(0, prefabs.Length);
-                    Vector3 posToSpawn = new Vector3(
-                        x - (width / 2),
-                        terrainMesh.vertices[index].y,
-                        y - (height / 2));
-                    GameObject tree = (GameObject)Instantiate(prefabs[prefabNo], posToSpawn, transform.rotation);
+                    Vector3 posToSpawn = worldGrid[x, y].worldPosition + Vector3.down;
+                    GameObject tree = (GameObject)Instantiate(prefabs[treeType], posToSpawn, transform.rotation);
                     tree.transform.parent = forest.transform;
                     tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
                     trees.Add(tree);

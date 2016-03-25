@@ -56,8 +56,10 @@ MonoBehaviour:
   minGenerations: 2
   maxGenerations: 3
   treeBark: {fileID: 2100000, guid: 8b47259a3a47287479f8c6792846ca3a, type: 2}
+  hasLeaves: 1
+  leavesPerBranchTip: 8
   leafSize: 2
-  leafGravity: 1
+  leafGravity: 0.8
   leafMaterial: {fileID: 2100000, guid: 74930f950b2903f4d94586496992a903, type: 2}
 --- !u!1001 &100100000
 Prefab:

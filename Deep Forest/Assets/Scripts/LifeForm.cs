@@ -26,6 +26,15 @@ public class LifeForm : MonoBehaviour {
     public int treeRoundness = 8;
     public string axiom;
     public char[] ruleChars;
+    [Tooltip("F: translate + add branch to the list\n" +
+        "+: rotate along Y axis(angle)\n" +
+        "-: rotate along Y axis(-angle)\n" +
+        "^: rotate along X axis(angle)\n" +
+        "v: rotate along X axis(-angle)\n" +
+        "/: rotate along Z axis(angle)\n" +
+        "\\: rotate along Z axis(-angle)\n" +
+        "[: push position & rotation to a stack\n" +
+        "]: pop position & rotation from the stack")]
     public string[] ruleStrings;
     public bool skeletonLines = false;
     public bool skeletonCircles = false;
@@ -34,6 +43,9 @@ public class LifeForm : MonoBehaviour {
     public Material treeBark;
 
     [Header("Leaf Options")]
+    public bool hasLeaves = false;
+    [Range(0,8)]
+    public int leavesPerBranchTip = 0;
     public float leafSize = 2f;
     [Range(0,1)]
     public float leafGravity;
@@ -81,7 +93,10 @@ public class LifeForm : MonoBehaviour {
         GetTreeBranches();
         DestroyTree();
         RenderTree();
-        MakeLeaves();
+        if (hasLeaves)
+        {
+            MakeLeaves();
+        }
     }
 
     // Destroy previous tree structure, if exist
@@ -149,9 +164,9 @@ public class LifeForm : MonoBehaviour {
 
         foreach (BranchTip b in branchTips)
         {
-            for (int i = 0; i < treeRoundness; i++)
+            for (int i = 0; i < leavesPerBranchTip; i++)
             {
-                MakeLeaf(b.start, b.startCircle.circlePoints[i], b.end, leafSize, leafGravity);
+                MakeLeaf(b.start, b.startCircle.circlePoints[Random.Range(0,treeRoundness)], b.end, leafSize, leafGravity);
             }
         }
 
