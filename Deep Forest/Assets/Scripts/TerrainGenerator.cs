@@ -57,6 +57,10 @@ public class TerrainGenerator : MonoBehaviour
     public GameObject[] prefabs;
     public Material terrainMaterial;
 
+    //debug information
+    [Header("Debug info")]
+    public int treeCount = 0, weedCount = 0, wallTileCount = 0;
+
     void Start()
     {
         // Instantiate arrays & lists
@@ -290,6 +294,7 @@ public class TerrainGenerator : MonoBehaviour
                 bLeft = bRight;
                 bRight += 2;
                 bRight = (i == edgeMap.Count - 2) ? bRight - edgeMap.Count * 2 : bRight;
+                wallTileCount++;
             }
         }
 
@@ -319,6 +324,7 @@ public class TerrainGenerator : MonoBehaviour
                     tree.transform.Rotate(Vector3.up * Random.Range(0, 360));
                     trees.Add(tree);
                     vegetationFlags[x, y] = 1;
+                    treeCount++;
                 }
                 index += 6;
             }
@@ -443,6 +449,7 @@ public class TerrainGenerator : MonoBehaviour
                         weeds.Add(new SquarePolygon(topLeft, bottomLeft, topRight, bottomRight));
                     }
                     vegetationFlags[x, y] = 1;
+                    weedCount++;
                 }
             }
         }

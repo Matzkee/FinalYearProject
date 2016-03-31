@@ -7,13 +7,15 @@ public class Game : MonoBehaviour {
     
     public Canvas looseScreen;
     public Text looseText;
+    public Text debugText;
+    public Text levelCounter;
     public Button exitButton;
+    public KeyCode debugKey;
 
     public GameObject terrainPrefab;
     GameObject terrain;
 
-    public Text levelCounter;
-    
+    bool debugActive = false;
     int level = 0;
     TerrainGenerator terrainGen;
 
@@ -22,12 +24,38 @@ public class Game : MonoBehaviour {
         Time.timeScale = 1;
         looseScreen = looseScreen.GetComponent<Canvas>();
         looseText = looseText.GetComponent<Text>();
+        debugText = debugText.GetComponent<Text>();
         exitButton = exitButton.GetComponent<Button>();
         looseScreen.enabled = false;
         levelCounter = levelCounter.GetComponent<Text>();
         UpdateLevelCount();
         terrain = Instantiate(terrainPrefab);
         terrainGen = terrain.GetComponent<TerrainGenerator>();
+
+        debugText.text = "PRESS " + debugKey.ToString() + " FOR DEBUG INFORMATION";
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(debugKey))
+        {
+            if (terrainGen != null)
+            {
+                if (!debugActive)
+                {
+                    debugText.text = "TOTAL NUMBER OF TREES  "+ terrainGen.treeCount +
+                        "\nTOTAL NUMBER OF WEEDS  " + terrainGen.weedCount + 
+                        "\nTOTAL NUMBER OF WALL TILES  " + terrainGen.wallTileCount + 
+                        "\nPRESS " + debugKey.ToString() + " AGAIN TO HIDE THIS";
+                    debugActive = true;
+                }
+                else
+                {
+                    debugText.text = "PRESS " + debugKey.ToString() + " FOR DEBUG INFORMATION";
+                    debugActive = false;
+                }
+            }
+        }
     }
 
     void UpdateLevelCount()

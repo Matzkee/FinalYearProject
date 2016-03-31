@@ -39,7 +39,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb6797ba63efd2c4989bf7661031d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  length: 1
+  length: 1.5
   width: 0.2
   turn: 25
   pitch: 30
