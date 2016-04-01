@@ -5,8 +5,10 @@ using System.Text;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    // Alphabet for random string generation
     const string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 
+    // Variable Initialization
     GameObject walls;
     GameObject terrainWeeds;
     List<GameObject> trees;
@@ -26,6 +28,7 @@ public class TerrainGenerator : MonoBehaviour
     MeshCollider terrainColider;
     MapGenerator mapGenerator;
 
+    // Editor variables
     [Header("Map Options")]
     public int width = 100;
     public int height = 100;
@@ -57,8 +60,8 @@ public class TerrainGenerator : MonoBehaviour
     public GameObject[] prefabs;
     public Material terrainMaterial;
 
-    //debug information
-    [Header("Debug info")]
+    // Debug information
+    [HideInInspector]
     public int treeCount = 0, weedCount = 0, wallTileCount = 0;
 
     void Start()
@@ -76,6 +79,9 @@ public class TerrainGenerator : MonoBehaviour
         Generate();
     }
 
+    /*
+        Generation control method
+    */
     public void Generate()
     {
         GenerateSeed();

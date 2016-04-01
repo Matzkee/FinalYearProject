@@ -30,13 +30,18 @@ public class FirstPersonController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        // Calculate the debug position
         gridPosition = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
 
+        // Rotate the object using horizontal mouse input
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
+        // To limit the vertical rotation on the mouse we clamp the float value
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -70, 70);
+        // Rotate the camera verticaly
         cameraTransform.localEulerAngles = Vector3.left * verticalLookRotation;
 
+        // Calculate the amount of movement the rigidbody will be applied with
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         Vector3 targetMoveAmount = moveDirection * walkSpeed;
         moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, 0.15f);

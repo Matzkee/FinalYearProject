@@ -322,6 +322,9 @@ public class MapGenerator
         return i > 0;
     }
 
+    /*
+        Method to get the next edge and follow the path
+    */
     Coord GetNextEdge(Coord lastEdge, List<Coord> orderedEdges, List<Coord> outlineEdges)
     {
         Coord nextEdge = new Coord();
@@ -359,7 +362,10 @@ public class MapGenerator
         return nextEdge;
     }
 
-
+    /*
+        Function to connect all rooms within the grid
+        Method loops through the rooms and checks for the best possible tiles to connect them with
+    */
     void ConnectClosestRooms(List<Room> allRooms, bool forceAccessabilityFromMainRoom = false)
     {
         List<Room> roomListA = new List<Room>();
@@ -473,7 +479,7 @@ public class MapGenerator
             The equation for a circle is: (x-a)^2 + (y+b)^2 = r^2
             Where a and b are centre points of the circle
             Since we are using 0,0 for our initial circle, the equation shrinks down
-            and all left to do is jsut to add the point to the centre at the end
+            and all left to do is just to add the point to the centre at the end
         */
         for (int x = -radius; x <= radius; x++)
         {
@@ -657,7 +663,6 @@ public class MapGenerator
 
     /*
         Method returning a number of surrounding tiles counted as 'walls'
-        These wall tiles are set to 1 and the algorithm loops through 
     */
 
     int GetSurroundingWallCount(int gridX, int gridY)
