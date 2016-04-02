@@ -167,7 +167,7 @@ public class MapGenerator
             Coord bestTile = new Coord();
             int bestTileAmount = 0;
             // Calculate which tile has the most tiles next to it in 4 directions
-            // Only tiles touching most average on each side count
+            // Only tiles touching most tiles on each side count
             foreach (Coord currentTile in room.tiles)
             {
                 int currentTileAmount = 0;
@@ -564,7 +564,7 @@ public class MapGenerator
 
     /*
         Get rooms with tiles of type specified
-        use another int array to map the tiles already picked
+        use another int array to flag the tiles already picked
     */
     List<List<Coord>> GetRegions(int tileType)
     {
