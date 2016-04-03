@@ -82,5 +82,8 @@ public class Game : MonoBehaviour {
     {
         terrainGen.Generate();
         UpdateLevelCount();
+        // Increase the speed of the guard
+        GameObject.FindGameObjectWithTag("Guard").GetComponent<GuardController>().maxSpeed += 1.0f;
+        GameObject.FindGameObjectWithTag("Guard").GetComponent<GuardController>().maxForce += 1.0f;
     }
 }

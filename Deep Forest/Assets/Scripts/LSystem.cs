@@ -30,8 +30,6 @@ public class LSystem{
             toReplace += current;
             // Iterate through the rules and append the toReplace string
             // at the end append the next string buffer
-            //
-            // Future Work: Apply Stochastic rules to randomize generation
             for (int j = 0; j< rules.Length; j++)
             {
                 char a = rules[j].a;

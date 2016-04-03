@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
         Example:
             Alphabet: A B
-            Aciom: A
+            Axiom: A
             Rules: (A -> AB), (B -> A)
 
         Now Lets create our alphabet
@@ -31,11 +31,6 @@ using System.Collections.Generic;
     Turtle uses the specified commands and applies them to each letter found in previously
     appended string from L-System
 */
-/*
-    To do:
-    Implement either booolean flags or linked list to determine tree trunk and its childs
-    This step will allow for easier branch sizing and more control over tree growth
-    */
 public class Turtle{
 
     float length;
@@ -206,9 +201,6 @@ public class Turtle{
 
     public Circle CreateCircleAt(Transform _centre, float _radius, int _numpoints)
     {
-        //** Note: Change this to quaternion rotation in the future
-        //** and test for performance?
-
         List<Vector3> newPoints = new List<Vector3>();
         float theta = Mathf.PI * 2.0f / _numpoints;
         // Save current transform's rotation

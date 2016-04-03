@@ -1,5 +1,5 @@
 ﻿/*
-    This class is sued to store any rules applied to an L-System
+    This class is used to store any rules applied to an L-System
 */
 public class Rule{
 
