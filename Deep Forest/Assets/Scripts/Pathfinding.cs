@@ -34,29 +34,6 @@ public class Pathfinding
         return path;
     }
 
-    public Path CreatePatrolPath(List<Vector3> patrolPoints)
-    {
-        Path path = new Path();
-
-        // Find path, optimize it and parse into loopedPath's list of waypoints
-        for (int i = 0; i < patrolPoints.Count; i++)
-        {
-            List<Node> waypoints = FindPath(patrolPoints[i], patrolPoints[(i + 1) % patrolPoints.Count]);
-            if (waypoints.Count < 3)
-            {
-                path.waypoints.AddRange(waypoints);
-            }
-            else
-            {
-                waypoints = OptimizePath(waypoints);
-                path.waypoints.AddRange(waypoints);
-            }
-        }
-        Debug.Log("Number of waypoints: " + path.waypoints.Count);
-
-        return path;
-    }
-
     public List<Node> OptimizePath(List<Node> path)
     {
         bool previousNodeDiagonal;
